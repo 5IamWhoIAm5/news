@@ -1,0 +1,35 @@
+import feedparser, requests, google.generativeai as genai, os
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+model = genai.GenerativeModel('gemini-2.5-flash')
+
+FEEDS = {
+    "WORLD": "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "TECH": "https://techcrunch.com/feed/",
+    "FINANCE": "https://search.cnbc.com/rs/search/combinedrender?source=cnbcnews&id=10000664&tab=news",
+    "AUTO": "https://www.autoblog.com/rss.xml",
+    "SCIENCE": "https://www.sciencedaily.com/rss/all.xml",
+    "SPORTS": "https://www.espn.com/espn/rss/news"
+}
+
+html_content = """<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{background:#121212;color:#e0e0e0;font-family:sans-serif;padding:15px;max-width:600px;margin:auto;}
+h2{color:#4da6ff;border-bottom:1px solid #333;margin-top:20px;font-size:16px;}
+p{font-size:14px;line-height:1.4;margin:8px 0;padding-bottom:6px;border-bottom:1px solid #222;}</style></head><body>
+<h1>Micro News</h1>"""
+
+for tag, feed_url in FEEDS.items():
+    html_content += f"<h2>{tag}</h2>"
+    feed = feedparser.parse(feed_url)
+    for entry in feed.entries[:3]:
+        prompt = f"Rewrite this story into EXACTLY ONE sentence under 12 words containing only hard facts, numbers, prices, or core actions. Zero fluff:\n{entry.title} - {entry.description}"
+        try:
+            summary = model.generate_content(prompt).text.strip()
+            html_content += f"<p>• {summary}</p>"
+        except:
+            pass
+
+html_content += "</body></html>"
+
+with open("index.html", "w") as f:
+    f.write(html_content)
