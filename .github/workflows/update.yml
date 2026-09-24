@@ -1,0 +1,30 @@
+name: Update News Feed
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Auto-runs every hour
+  workflow_dispatch:     # Allows you to trigger it manually anytime
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - run: pip install feedparser google-generativeai
+      
+      - run: python build.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
