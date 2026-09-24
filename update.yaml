@@ -1,6 +1,6 @@
 import feedparser, requests, google.generativeai as genai, os
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=os.environ["AQ.Ab8RN6LkYHINQhSQhKIYBp5PYTtJNHi10HSOk3geAOD-gNPYhw"])
 model = genai.GenerativeModel('gemini-2.5-flash')
 
 FEEDS = {
