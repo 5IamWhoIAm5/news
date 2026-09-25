@@ -81,19 +81,15 @@ def clean_text(raw_html):
     return text
 
 def is_junk_live_blog(title, content):
-    """Filters out routine market noise, daily opening/closing tickers, and live blog clutter."""
     t_lower = title.lower()
-    
     junk_patterns = [
         "stock market live", "sensex", "nifty", "trade flat", "traded flat",
         "opening bell", "share market live", "market live updates",
         "rupee opens", "rupee open", "equity benchmarks", "stocks to watch",
         "gainers and losers", "market opening", "bse sensex", "nifty 50"
     ]
-    
     if any(k in t_lower for k in junk_patterns):
         return True
-            
     return False
 
 def get_full_article_content(entry, url):
@@ -259,16 +255,14 @@ for tag, feed_list in FEEDS.items():
             ]
             
             prompt = (
-                f"You are an executive intelligence briefer for category '{tag}'. "
-                f"Analyze these news items:\n{json.dumps(input_items)}\n\n"
+                f"You are a ruthless editor. Analyze these news items for category '{tag}':\n{json.dumps(input_items)}\n\n"
                 f"STRICT RULES:\n"
-                f"1. DEDUPLICATION: Merge ALL items covering the same event/meeting/topic into EXACTLY 1 story object.\n"
-                f"2. ZERO META-TALK: NEVER mention journalists, correspondents, or publications. State the raw facts directly.\n"
-                f"3. NO CLIFFHANGERS: Never end on a teaser, open question, or unresolved statement. If a rule, situation, or event is mentioned, you must explicitly state the outcome or what it changed to.\n"
-                f"4. ENTITY CONTEXT: Whenever a specific person, business, or location is mentioned, insert a brief 3-5 word appositive explaining who or what they are (e.g., 'a local pharmaceutical executive', 'a multinational tech firm', 'a major pilgrimage site').\n"
-                f"5. COMPLETE THE STORY: Do not just regurgitate the provided text. Enhance the summary by pulling in relevant, factual background data (e.g., baseline statistics, efficiency ratios, historical context) to provide a complete, self-contained brief. The reader must NEVER need to click the original article.\n"
-                f"6. NO JUNK: Exclude routine market chatter, stock ticker updates, or non-news.\n"
-                f"7. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs).\n"
+                f"1. EXTREME BREVITY (CRITICAL): Each string in the 'takeaways' array MUST be a single, direct sentence (maximum 25 words). Break long articles into 2 to 4 separate, short bullet points. Strip all adjectives, quotes, and narrative fluff. Only output hard facts, numbers, and direct actions.\n"
+                f"2. DEDUPLICATION: Merge identical stories into 1 object.\n"
+                f"3. ZERO META: Never say 'Sources say', 'Watch:', or name journalists/news agencies (like AFP or BBC).\n"
+                f"4. ENTITY CONTEXT: Briefly define who/what an entity is within the short sentence (e.g., '63-year-old UP businessman Vineet Manocha').\n"
+                f"5. NO CLIFFHANGERS: State the final outcome directly. Do not end on unresolved statements.\n"
+                f"6. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of 1-4 short bullet strings), 'source_ids' (array of integer IDs).\n"
             )
             
             res = model.generate_content(prompt)
@@ -285,7 +279,7 @@ for tag, feed_list in FEEDS.items():
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
-            "takeaways": [a["content"]] if a["content"] else [a["title"]],
+            "takeaways": [a["content"][:100] + "..."] if a["content"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
@@ -311,7 +305,7 @@ for tag, feed_list in FEEDS.items():
 
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
-            valid_takeaways = [newest_article["content"]]
+            valid_takeaways = [newest_article["content"][:100] + "..."]
 
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
 
