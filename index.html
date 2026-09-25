@@ -15,464 +15,1432 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 12px; max-width: 600px; margin: 0 auto; padding-bottom: 50px; }
-  header { padding: 16px 4px 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-  h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
-  .tag-badge { background: #1e293b; color: var(--accent); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
-  h2 { color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 24px 4px 10px; }
+  header { padding: 12px 4px 8px; margin-bottom: 12px; }
+  h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 12px; }
+  
+  /* Navigation Tabs */
+  .tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; sticky: top; }
+  .tab-btn { flex: 1; padding: 8px 12px; background: #13151c; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center; }
+  .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  h2 { color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 20px 4px 8px; }
   .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
   details { width: 100%; }
-  summary { padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 500; cursor: pointer; list-style: none; color: #f1f5f9; display: flex; gap: 8px; }
+  summary { padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 500; cursor: pointer; list-style: none; color: #f1f5f9; display: flex; align-items: flex-start; gap: 8px; }
   summary::-webkit-details-marker { display: none; }
-  summary::before { content: "•"; color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .bullet { color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1.2; flex-shrink: 0; }
+  .time-badge { background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .summary-text { flex-grow: 1; }
   .details-content { padding: 10px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: var(--text-muted); line-height: 1.5; background: rgba(0,0,0,0.2); }
   .original-title { font-weight: 600; color: #cbd5e1; margin-bottom: 4px; }
   .source-btn { display: inline-block; margin-top: 10px; padding: 6px 12px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 6px; font-size: 12px; font-weight: 600; }
-  .source-btn:active { background: var(--accent); color: #000; }
+  .no-news { color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }
 </style>
 </head>
 <body>
 <header>
   <h1>Micro News</h1>
-  <span class="tag-badge">Live</span>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('today')">Today</button>
+    <button class="tab-btn" onclick="switchTab('yesterday')">Yesterday</button>
+    <button class="tab-btn" onclick="switchTab('older')">2-3 Days Ago</button>
+  </div>
 </header>
-<h2>PUNE (LOCAL)</h2>
-        <div class="card">
-          <details>
-            <summary>IIT alumnus gets life term for strangling sister in 2010</summary>
-            <div class="details-content">
-              <div class="original-title">IIT alumnus gets life term for strangling sister in 2010</div>
-              <div>Pune Sessions Court sentenced IIT alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavdhan flat in 2010</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/iit-alumnus-gets-life-term-for-strangling-sister-in-2010-101790279218095.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Seven FIRs involving losses of  ₹1.87 crore registered</summary>
-            <div class="details-content">
-              <div class="original-title">Seven FIRs involving losses of  ₹1.87 crore registered</div>
-              <div>Pune police registered seven cheating-related FIRs involving financial losses of around  ₹1.8 crore, with cases ranging from alleged fake RTO challan application to misappropriatio...</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/seven-firs-involving-losses-of-1-87-crore-registered-101790279037940.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>PMC prepared for Ganesh Visarjan on Anant Chaturdashi</summary>
-            <div class="details-content">
-              <div class="original-title">PMC prepared for Ganesh Visarjan on Anant Chaturdashi</div>
-              <div>PMC is all set for immersion of Ganesh idols on Friday by deploying 120 lifeguards and 37 fire brigade personnel at 15 immersion ghats across the city for safety purposes</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/pmc-prepared-for-ganesh-visarjan-on-anant-chaturdashi-101790278737918.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>MPSC stir: Student leaders, Telegram admins served notices</summary>
-            <div class="details-content">
-              <div class="original-title">MPSC stir: Student leaders, Telegram admins served notices</div>
-              <div>Police said the proposed locations could see traffic and public-order issues, particularly during Ganeshotsav</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/mpsc-stir-student-leaders-telegram-admins-served-notices-101790278498943.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Police face heat after man dies during Ganpati immersion procession</summary>
-            <div class="details-content">
-              <div class="original-title">Police face heat after man dies during Ganpati immersion procession</div>
-              <div>The death of man during Ganpati immersion procession in Ahilyanagar has triggered a controversy, with NCP MLA Sangram Jagtap and residents alleging that he died following police la...</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Katraj SWaCH waste facility gets notice over fire safety lapses</summary>
-            <div class="details-content">
-              <div class="original-title">Katraj SWaCH waste facility gets notice over fire safety lapses</div>
-              <div>PMC fire brigade on Thursday issued notice to SWaCH waste facility at Garbage Ramp, Katraj, directing it to address fire-safety lapses within seven days</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>58% concerned about climate change but only 3% consider it political priority: Study</summary>
-            <div class="details-content">
-              <div class="original-title">58% concerned about climate change but only 3% consider it political priority: Study</div>
-              <div>The report, ‘State of Mind: Mapping Values and Climate Perceptions - Maharashtra Edition’, is based on responses from 6,160 people across Maharashtra</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/58-concerned-about-climate-change-but-only-3-consider-it-political-priority-study-101790273637990.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>PMC fire brigade serves notice to 18 hospitals</summary>
-            <div class="details-content">
-              <div class="original-title">PMC fire brigade serves notice to 18 hospitals</div>
-              <div>Pune's fire brigade expands inspections to hospitals and schools, issuing notices for safety violations as part of a citywide crackdown on fire regulations.</div>
-              <a href="https://www.hindustantimes.com/cities/pune-news/pmc-fire-brigade-serves-notice-to-18-hospitals-101790269135148.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        <h2>INDIA</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>WORLD</h2>
-        <div class="card">
-          <details>
-            <summary>Netanyahu defends Israeli military action as delegates walk out before UN speech</summary>
-            <div class="details-content">
-              <div class="original-title">Netanyahu defends Israeli military action as delegates walk out before UN speech</div>
-              <div>The Israeli leader labels those who left his speech at the UN General Assembly as "moral cowards".</div>
-              <a href="https://www.bbc.co.uk/news/articles/c3y0z7kxlegdo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Media outlets banned by Trump denied access to White House dinner despite judge's order</summary>
-            <div class="details-content">
-              <div class="original-title">Media outlets banned by Trump denied access to White House dinner despite judge's order</div>
-              <div>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</div>
-              <a href="https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Hundreds of thousands expected in Paris for Pope's visit</summary>
-            <div class="details-content">
-              <div class="original-title">Hundreds of thousands expected in Paris for Pope's visit</div>
-              <div>The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</div>
-              <a href="https://www.bbc.co.uk/news/articles/cmq8j904212po?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Why Australia chose the world's biggest political stage to reveal OpenAI hack</summary>
-            <div class="details-content">
-              <div class="original-title">Why Australia chose the world's biggest political stage to reveal OpenAI hack</div>
-              <div>Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</div>
-              <a href="https://www.bbc.co.uk/news/articles/cr3eqk15ld14o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</summary>
-            <div class="details-content">
-              <div class="original-title">Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</div>
-              <div>Pakistan says it struck 10 targets, adding the strikes were "strictly limited to identified military objectives".</div>
-              <a href="https://www.bbc.co.uk/news/articles/cm86xn0nnw58o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Priest killed and four injured in knife attack at Polish abbey</summary>
-            <div class="details-content">
-              <div class="original-title">Priest killed and four injured in knife attack at Polish abbey</div>
-              <div>A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</div>
-              <a href="https://www.bbc.co.uk/news/articles/c607lrvm41l3o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</summary>
-            <div class="details-content">
-              <div class="original-title">Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</div>
-              <div>Prime Minister Giorgia Meloni described the measures as "common-sense tools that do not divide but really help to integrate".</div>
-              <a href="https://www.bbc.co.uk/news/articles/cw99d8g48873o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</summary>
-            <div class="details-content">
-              <div class="original-title">Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</div>
-              <div>Proceeds from the tour, which begins in Dublin next month, will go to organisations supporting Palestinians, he says.</div>
-              <a href="https://www.bbc.co.uk/news/articles/cqzjzlve8jg7o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        <h2>TECH</h2>
-        <div class="card">
-          <details>
-            <summary>How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)</summary>
-            <div class="details-content">
-              <div class="original-title">How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2025/12/how-i-get-free-traffic-from-chatgpt-in.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Top 10 AI Tools That Will Transform Your Content Creation in 2025</summary>
-            <div class="details-content">
-              <div class="original-title">Top 10 AI Tools That Will Transform Your Content Creation in 2025</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2025/01/top-10-ai-tools-that-will-transform.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>LimeWire AI Studio Review 2023: Details, Pricing & Features</summary>
-            <div class="details-content">
-              <div class="original-title">LimeWire AI Studio Review 2023: Details, Pricing & Features</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2023/12/limewire-ai-studio-review-2023-details.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Top 10 AI Tools in 2023 That Will Make Your Life Easier</summary>
-            <div class="details-content">
-              <div class="original-title">Top 10 AI Tools in 2023 That Will Make Your Life Easier</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2023/01/top-10-ai-tools-in-2023-that-will-make.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Top 10 AI Content Generator & Writer Tools in 2022</summary>
-            <div class="details-content">
-              <div class="original-title">Top 10 AI Content Generator & Writer Tools in 2022</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2022/11/top-10-ai-content-generator-writer.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Beginner Guide to CJ Affiliate (Commission Junction) in 2022</summary>
-            <div class="details-content">
-              <div class="original-title">Beginner Guide to CJ Affiliate (Commission Junction) in 2022</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2022/09/cj-affiliate-ultimate-guide-to.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>TOP 11 AI MARKETING TOOLS YOU SHOULD USE (Updated 2022)</summary>
-            <div class="details-content">
-              <div class="original-title">TOP 11 AI MARKETING TOOLS YOU SHOULD USE (Updated 2022)</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2022/07/top-10-ai-marketing-tools-you-should-use.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Most Frequently Asked Questions About Affiliate Marketing</summary>
-            <div class="details-content">
-              <div class="original-title">Most Frequently Asked Questions About Affiliate Marketing</div>
-              <div></div>
-              <a href="https://techncruncher.blogspot.com/2022/06/most-frequently-asked-questions-about.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        <h2>FINANCE</h2>
-        <div class="card">
-          <details>
-            <summary>Tech Titans Mingle With Trump and Xi at State Dinner</summary>
-            <div class="details-content">
-              <div class="original-title">Tech Titans Mingle With Trump and Xi at State Dinner</div>
-              <div>Prominent executives attended a dinner at the White House Thursday night, as the countries wrangled over tariffs, trade and potential A.I. regulation.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/economy/tech-executives-state-dinner-xi-trump.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Massachusetts Is Investigating Gambling Companies’ Use of A.I.</summary>
-            <div class="details-content">
-              <div class="original-title">Massachusetts Is Investigating Gambling Companies’ Use of A.I.</div>
-              <div>In response to a New York Times report on DraftKings, the state’s gaming commission said it would evaluate how each company deployed the technology.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/massachusetts-draftkings-ai-gambling.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</summary>
-            <div class="details-content">
-              <div class="original-title">Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</div>
-              <div>Real America’s Voice and LindellTV have teamed up to provide a feed of daily presidential events.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/media/trump-white-house-press-ban-tv-pool-conservative-news.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Trump Struggles to Find Leverage With Xi Over Chinese Exports</summary>
-            <div class="details-content">
-              <div class="original-title">Trump Struggles to Find Leverage With Xi Over Chinese Exports</div>
-              <div>The Trump administration, like its predecessors, has struggled to deal with China’s excess industrial capacity.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/trump-xi-china-exports.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</summary>
-            <div class="details-content">
-              <div class="original-title">Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</div>
-              <div>A24, Sony and The New York Times Company all registered their interest in acquiring the cinephile’s paradise.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/media/letterboxd-sale-sony-a24-nyt.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Starbucks to Close 250 Stores in the US</summary>
-            <div class="details-content">
-              <div class="original-title">Starbucks to Close 250 Stores in the US</div>
-              <div>The company said the affected cafes did not meet financial or customer service expectations.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/starbucks-store-closures.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</summary>
-            <div class="details-content">
-              <div class="original-title">More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</div>
-              <div>The raw pork, beef and goat products from Star Meat Delivery Inc. of North Carolina were distributed across the United States.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/meat-recall-usda-star-ad-foods.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</summary>
-            <div class="details-content">
-              <div class="original-title">Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</div>
-              <div>The average rate on a 30-year mortgage in the United States jumped to 7.03 percent, putting pressure on housing affordability.</div>
-              <a href="https://www.nytimes.com/2026/09/24/business/mortgage-rates-7-percent.html" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        <h2>AUTO</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>SPORTS</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>CULTURE & MOVIES</h2>
-        <div class="card">
-          <details>
-            <summary>Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</summary>
-            <div class="details-content">
-              <div class="original-title">Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</div>
-              <div>Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protes...</div>
-              <a href="https://variety.com/2026/politics/news/hannah-einbinder-speaks-out-arrested-netanyahu-protest-1236875306/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</summary>
-            <div class="details-content">
-              <div class="original-title">Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</div>
-              <div>The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary ...</div>
-              <a href="https://variety.com/2026/film/festivals/aamir-khan-singapore-film-festival-hur-jin-ho-the-assassins-1236873907/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</summary>
-            <div class="details-content">
-              <div class="original-title">The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</div>
-              <div>Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and ot...</div>
-              <a href="https://variety.com/gallery/horror-show-academy-museum-halloween-saw/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</summary>
-            <div class="details-content">
-              <div class="original-title">Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</div>
-              <div>Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances f...</div>
-              <a href="https://variety.com/2026/shopping/news/power-of-women-gift-bag-2026-shop-online-1236875113/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</summary>
-            <div class="details-content">
-              <div class="original-title">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</div>
-              <div>The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and ...</div>
-              <a href="https://variety.com/2026/film/festivals/ai-robots-ann-hui-pingyao-film-festival-10th-edition-1236875276/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</summary>
-            <div class="details-content">
-              <div class="original-title">12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</div>
-              <div>Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chap...</div>
-              <a href="https://variety.com/2026/film/news/takeaways-bob-chapek-book-ousted-disney-ceo-1236875084/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</summary>
-            <div class="details-content">
-              <div class="original-title">Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</div>
-              <div>New, mysterious and cryptic clips of Dakota Johnson flanked by another woman and man have taken rhe internet by storm, but this time, they aren’t part of her latest movie, “Verity”...</div>
-              <a href="https://variety.com/2026/film/news/dakota-johnson-taylor-swift-music-video-1236875221/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</summary>
-            <div class="details-content">
-              <div class="original-title">‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</div>
-              <div>SPOILER ALERT: This article contains spoilers for “Tomorrow’s Enterprise,” the Season 4 finale of “Star Trek: Strange New Worlds,“ now streaming on Paramount+. “Star Trek: Strange ...</div>
-              <a href="https://variety.com/2026/tv/news/star-trek-strange-new-worlds-finale-celia-rose-gooding-timejump-1236873713/" target="_blank" class="source-btn">Open Source ↗</a>
-            </div>
-          </details>
-        </div>
-        </body></html>
+
+<div id="tab-today" class="tab-content active">
+<h2>ALL TOP STORIES</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Trump-Xi summit: Four key takeaways from the Washington, DC, meeting - Al Jazeera</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Trump-Xi summit: Four key takeaways from the Washington, DC, meeting - Al Jazeera</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxORDBwV3d5TTVkeFJpdjhwSDV3Y2JLNkxRd0pyQjhWLTZETGc0ZjZjN29LdlhObEJXd29zMzAza0tZZ0FwN3BaN3ZMc2g0N2tCZUhPUnpfVU5nWjBrNFVZbHRRLTIxUUZQZHRfYnRfOXBpQWZaRFR0dkcxbE5WcjEzeDdZQjNuM3dpekVWbDllS3lBVmNDVXBIVUFwMW5OTDZFYU1Ub0ZTa2ZfQdIBrwFBVV95cUxPN3ZkbFVZTXRoNE02bHo2bXBkLTVybmtnT0JjYWJRZFVZbm9ULTJJeXhuLW1IbUhJRDNoMXpHc3NCM3M5MjFPakN1aC1sVTYyc21wWWFJMHZWNWg2N0xDWV9UZTA3RlJXZGNRZ2lfQm9SS3JyT3p2dC1pZ1dEWTBLV1FuZVBwU0JsbnZBVVJwd21oeTBoemZOalpjOVlyemRxeFdmZEZyUDlvYmFjZE9V?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">BREAKING | Plea In Bombay High Court To Quash 14 Orders Passed By CEC Gyanesh Kumar Despite Objections Of ... - Live Law</span>
+                      <span class="time-badge">11h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">BREAKING | Plea In Bombay High Court To Quash 14 Orders Passed By CEC Gyanesh Kumar Despite Objections Of ... - Live Law</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxNS1lLQzFxbjVhbkQ3S1NlNm52MGh4UFRFemtDR0kzSDJGbWd4ZVRNT3BGUkthbmVncTZWREVZaS02alhkMUw5OUJRZkFCeFZhaHFlTlVjNDBoVHA0YW8ydnFHN1NBbzhuOVZtRk5iOTdKNVl0MENweV9MNy1MdDA5SzZwQ0hMSmhsbV92bWx5TEpUYnpoQS1MOVZZYmFnTmpJZnhKOEUxeXJEU3VRWmtmQVZoYjdDVkV6UmczT2p6ckV4U0RkSHgyOUZLV3Z1MUF1UWkwalpfZjJhcDlzcDhLNFhkVlhaeWtzanlybtIB8gFBVV95cUxQcG1YRlhtS2FSZl9QQ2tvV0NFak5TYXR4VEJnUnFReW5fSm5HbTB1LWdONWdUZ0l2WnRFWU1pRzF4M1FIVzg3OEJubU02SjNhWnZLQjAyM1g3ckE0eVMxUmVYdmV4Y1lRNmZVejVDRlhBZ0JRcGgwSHN5bXB3NWFGODNBNHdNNWNqbnlUZTM2a216Y0tkcU9nRmVWYVo1NHEtNHZZcWZ4N29WcXFWeDQ0U1QxZG1rc29EZnpCYnh1WGE4clRkelozRzZVQWZNRTV4NGJJNmk4c3EzQ2NVa1NDUmFKcVdzVDY4WkhzZnliaV9CUQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Which countries walked out of Netanyahu's UNGA speech? Israeli PM reacts as delegates leave in dozens | World News - Hindustan Times</span>
+                      <span class="time-badge">6h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Which countries walked out of Netanyahu's UNGA speech? Israeli PM reacts as delegates leave in dozens | World News - Hindustan Times</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi9AFBVV95cUxPd3laRnZORHJaU1dIamtENE9YcjVsb1VtTENia1diVVpLTEJDNHRqaDVMbWNONTdvU2ZJT0dGUlVxR2k0OEhZd3RrdEtTbVpnMjlRRDZJV29aYWk3LVRsZmZzTjZGOTBHVWZGOEJKMFBjWF9VTFVyYzZueDkybG1sbXRreW43akZmMnRzWm9hMGhSNTkyTmliMUhlTGJYWVM4Y2RkZ3pWaWgzMjZMaVJXMFVfVW5ydm5TbEZfM29CYUJYaVNBcVhjMGVBeUloSnhEM3VhR1lUTTlrM0RjM1liT284RVBjMzJwSTBkUmRTWFEtX2FY0gH6AUFVX3lxTE8zSXlXUDN0ODB2ZWFkZ3IwWGE1RGV4eUZLLUs5RGRqMnBfZTNfQ0h5aFkxSjNKbndiVzF0OWJiODhxeFNYbkFhbnc1aXNrY1hsZWxLSjhfN1Q5MXVwaVFsRlY0WnRIcnNGQzRfYlB6Smxmd2xoLTBZLXNfV0U2QkZfNkdqVGtyVjB5RllxQUxDZm5xTHlWc1A5Slc1WDE1U0ctUHByX2NVSlF0U0tVSXZFMjl6QUoxcHFqYjFZdV96N1JJRlRoYk5zUDBUbkN1QnNpaThEYWFocUtDcEZRbkJBLXFQMlExZW53d0dVa2NEYV96Qm5TTVg1Rmc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">US and Iran discuss phased deal to reopen Hormuz and end US blockade, sources say - Reuters</span>
+                      <span class="time-badge">9h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">US and Iran discuss phased deal to reopen Hormuz and end US blockade, sources say - Reuters</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxNYXMwQlBmRVM4WXVFeXhQVkcyYnpaUzE3dk1wUWswS3pZWDBKTGNWVEpqdFNsWXZEYm5PQ3pSVmRhVFl1empQN3p6SFY0YTVHRmxxNWpxbXFNWVlCOEF5T0tBLVp0MzNyWVlyQnpkbUtyVzNTeGtxQXZVc3hhb0E4aVV6bU5QVEdHMFhCaXRhV3hxQVJ3MWRXNF9tNG5EeUVzcTdEOUhGSExiS3F2SUlkS2xzRk1mNlg4bkRhR0FoaE5QZw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">'Inappropriate to ask': Years before Sahil Wakode's death, IIT-Bombay professor warned students against c - The Times of India</span>
+                      <span class="time-badge">21h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">'Inappropriate to ask': Years before Sahil Wakode's death, IIT-Bombay professor warned students against c - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiigJBVV95cUxNZzE4My1lbnFWd2RCSUVLa3AwajU5VFJRNmItT2dlbWVZeDBsTExhelJ3Z0VRbHBHQkhSWGx4WUZ4SHIzWWd2cy1xd2ZHb2UzQnp5UUkxSEhWdk81Q2pTVHVFYnl3NmhyT052UlVWTVRiejZmWWw5VHl5X3RzMUloVGRKaXJSM2ZRNzlrMmV0MU5ubmQtdjItTlNGS0Zwd0s0ZVhfMmZEeGZfWW04RzhFTHpCdEtlaXVmQnBGV3lFZjB0YWNvb0xHR2JDaE5Pc0RPTDROM2hwMVliQ1BBWHdVbjZLSVBXa25Lbk4tbXItVXYzQXk1UmQyb1gtS25Cd2tKbGN4dzVxVU5EQQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Politico Barred From White House Despite Judge Overturning Ban - Forbes</span>
+                      <span class="time-badge">21h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Politico Barred From White House Despite Judge Overturning Ban - Forbes</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxQcEpyRGtyek9LekJaYXB2aE1EOTZ5djl1Mk5jUFJiMTZNSE9RaG1hR3NaeWdNS0RTN3JoS01wUXp2MDEwSjhJZHBUbmlBcUxmUkhubzNnaXpRVC1sbjBuRlQyRDh4d3VnZUNHTUlidDBvbEV4a2JVWTlzMDMyZjNER011M3h4a3BsRmVhVjdXS3hlU2czMDFDby1YRWZNdXZiQ3NrZEFNZmFfMkU3SHB5QmpzdUVuZUU?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Delhi Aastha Kunj park gang-rape accused carried condom in pocket, reveals probe - The Times of India</span>
+                      <span class="time-badge">20h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Delhi Aastha Kunj park gang-rape accused carried condom in pocket, reveals probe - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxNZFNqOEVPaUpoeW5sXzhmQzNaeC1qTm9pSmY3MzN3a0tENkdqNFJzMHhHN3hfMXFtczdmQkFlWlZGSVFjaldMTTJjLVZpQVRjbGFKZ1k0VkNDUUV1bzl6cjdaTEtSUGdrd09acER3emZYZnhwZ1VXUVlUVHdTSzdlSzNfSE0ycUZhYnRDMmFZZ0Y3UXFvemE5QXpBSi02X0o5TEZBVFFCQ3BIaWNrNUJfaUhTa0ZOV2FZeXRpVFM0TkRnVzNSLXVweFpMVHRmcjllZkpaVtIB2gFBVV95cUxNNjNyOWFWYVJIOFBXUTJITHVDZ0Y1NzhGZG1CY3o1dFhHV1RzREl2cFkzRFA2WGdNZUVaMFJaNUJieHFIN2NzZDFvUkFlcEYyQi1wQm80UEFQbjZMSGEtNkhXd2xjTDlQamdKRlhteExPMkxYOEdOR0tHN1BoeVRHVG1HLVI2Zk90TTIyVzJtRHdvMnVPVHNRSjdUb0NLUnRleFBKQTZFSUZNLVVmM2FEQ0s0YldJc25MZGdTSFExZWxVWXVrS1RBc1NfdnJMcTNGQlkzLUZzbnFjZw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">BJP spent more than half of its April-May election funds on Bengal polls - The Hindu</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">BJP spent more than half of its April-May election funds on Bengal polls - The Hindu</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxPTENQTHdYRWNPTGdNbmY0NE9keFFvam9DdEszcnoyQ2ZhNzJoLVJkZ2dFOTlYX0IzVnlJNDF5N2NCLURocHp2UlIzVTdjcWtrRjNuc0RsXzN1bDlxTUM4MUt4QURybmExMHdEWHVtRmU5bVhkRUFlTVo2S1FNOEVRVzhjSVl5ZDBtZTQ0Qk52RnZ2Ujc5bDVudmVJMkNBaUUxZ2VRUWV5Y19XRXNEZGkxMXNsSmdTQTA2MEE1cDlkSjlnUkNLUmVaUHNnNmQ3Sm13MXfSAdgBQVVfeXFMT185ei1ETld5ZnZxVFRGWE5KN1ctaUM0QTFMS2ZrYW9ONXd0YmFRTlhDMDh0bFlOa1FrTER6VTFNbkRkanNmc3RPa2lCOExXZTVJYVR0bXVFVnZtcnc0RTNBY1BwbVNhUzVJdGtSM21fYU02Y29QOTdscjg5QjlVOVh5NGlvOHlHRmdVek43bXZSYVA3VlI1dkZzcExqenlVR3hGNnpBWkpWMzlhX2R2ZThYTUVrTGlhS2l4XzE3VzBRY3hZa0FieVBkUmJFSy01cjl4MGxGeGY3?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">'Many Added': Goa Electoral Officer On 97 Electors Not Being Included In Rolls - NDTV</span>
+                      <span class="time-badge">8h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">'Many Added': Goa Electoral Officer On 97 Electors Not Being Included In Rolls - NDTV</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMigAJBVV95cUxNOGpWR2hYWGR2ZldkczVSSmZkUGlZdzdULTNjVl9zcFV4Y2dwVExERmRIVGJCdzVDNHI3Mzg3MUl3bDhGQzR0QzNvV1JCSE5YMGdNdm5vVW5PdlM5ZENMTWU5WjJVdTd4RndfdUhTNURTMmpERFNRQmNnSHNOYUVITkRiTmdVUXpFWVppNXpkVTd3bWxpV0NjRUtFRkc0blFYa1pDM012OUppQmtzeHpiM05YemFZODZOQWJ6SF82cTBPVV8xMjlJUTd6d2F2SV9uUFF2TzZ1azZyLU11MnBpenRwSGFHejBOVXU3b1ZVcmdEd2RmUTRJeHBqM3pjZFB10gGIAkFVX3lxTE5qeE9ZT3ptNmljeXA4NEgxSlc5ekhaelZEOE1HU3dvN1gwdUp3MHpGZ0syUEx0REdWV0c2QlRaOFotQWd5dmgzd1BMVHFJNEpzVU1KUFNCY0hJT2JZX0RNZWVOcG1RRl9PTDR5VC1BTzlDaHdyUEx6ZjgyNjYyMVNRLUNoS0FsenVwRUNvUEQtS0JRNEZucGdhTVVDSnNEWU1jNU1jc3pWLVRxYXQtamxzYlgzV3ZIb0djUEZVOXpUam5NZ2M0aGgxX01lN0F6YS1BaEZMUGQwbV8yX05VWU9KNk9uazJZUFBOaExrLU1qWFpHZl96NTg3OWVyQWRFLVpTcThKdWhtWg?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Supreme Court asks ECI for timeframe to decide on Trinamool Congress name, symbol - Bar and Bench</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Supreme Court asks ECI for timeframe to decide on Trinamool Congress name, symbol - Bar and Bench</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxNOV9WZHZ5REVReENyX0tRYUdDQkF3ekUteUpId0kzZ1NadE53VUxQdVptaUkxVFBBTTBxZmZWeGw4N3Z6OWNwRnhTWXZQMmN2MEFTMzUxeHh6OHB1ZFVMbGl3Y2NvQWNEQXRPQ3hVRlVidzlrVGkzeUpUUVIzTTRZQUxKejJjdDN5cEZsZ3NwRFRBN0tRaFI5X0tMZ1paUEhCWHhTNDI0WGRCMHYzc0VSMUJnWdIBwAFBVV95cUxOaXpUYzZvcG54dW9RNXBSQTM5dE9FVU5JRnZCUmRVT2ZRcW5uZmlhaEtsV295RnZHb2hGMnpqV3k4bTFSdGMtY2tCOGRMV21QZ0JjY2tHalV2RkdZa21jeDBxNUhBbEpOUDRDM080dFBnelRVa25TcC1mWnNLTVlIdzRHeU1KUlJTUy1KVEFiRWpyS0FYOExDRzQtN0R1WUx4U3FNd3NneS1WOXZjV1hmbHFWMkItOGI1a09FV21Gc0g?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">2 questions, no answer: Pakistan PM Sharif confronted at UN over Hafiz Saeed, harbouring terrorists | Watch | World News - Hindustan Times</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">2 questions, no answer: Pakistan PM Sharif confronted at UN over Hafiz Saeed, harbouring terrorists | Watch | World News - Hindustan Times</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi-wFBVV95cUxPQ2FpMXBkbXBDbW00WUVsQmtMYUN5cTd6RU8wQmt3OFNoREM2OF9JZ0hxOTFfYXBKaHlJbFQ5WThwM0IzZlRicENjX3o0YkVlOXJwQXRseW9iSnBPV2k3UDhLNk1iOFR6ZU00ZTBBWjVOSDhDaXRFUGx1d0UyVXF1czVxaERHNGVXX1N2Qnk5SDFuSEFyRDVWQ1VxUDVhUXA1aDc2NWUwdlhTV1VwTk1ySFZDS3dEb0ZNUHgza1B3Rlhpc0VFcnRhTHR6eFdyTEdlcG1qNzJma1dJeEVadDZOOGFvcWd2NDhKdjNOOXQtYVNETFJZZ3NTQ1I5WdIBgAJBVV95cUxPQVFNZ3lEY3JfcTVaNEZYOEFaZkFrQzczVkNZdi1fSGxsVTd6b1M0dFN1UzlzSEljZmFsc1J6eGNUX1l4Q1Y2WnpXZFJwSkQ4S2lNbWhGVHQ2SzE2RXdfaFY3VXJ3TmNHSGtrOVhVQzNRUWF3M3RRRGRNYjhUNHItbndESG52RWx4ODcwb2FGdUlFd09VRVNOb29LSmRkZ2Z4R1M3TFNhU09wMEhOT2xqUmFMVUx6cnAzSHR4M2I1QXBEakxEcURuNE9NX1JLcm5IOFFmaUo4SGM3ZzFkdlNuYThoaGgwdE9nZXBycTkwc2ZVcmc0VlVvaFFIaWZrZnE3?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Iran's president says it is up to US to choose if it wants to end Iran war - Reuters</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Iran's president says it is up to US to choose if it wants to end Iran war - Reuters</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxOb21pSm1ydXhYbXJ1SFNldm9vNm5nS0t3bmhGczZBS1Vfd3QwMTRJcnExUUY5cXh1OEZ4aDVSbDE2eFAtYk03Y0RfS1VROXZSV21mWkNwRUdjYWxqa2dzNVpVbWVxNGxEalNZc01qa3JVa1FGd3JVbXY4Ujdtb1dQcWFFdlVEUngyZng4WTlMZjhEa2dJVGY5OHhqNXFpZGxxVlFWLWl5d3FtNGV4aXdpYWVYaWQtMFI0dmc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>PUNE (LOCAL)</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Pune awarded 2032 Road Cycling World Championships - The Hindu</span>
+                      <span class="time-badge">13h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Pune awarded 2032 Road Cycling World Championships - The Hindu</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxObG9Qc0M0RUo5VDJjRjFab2s0Q1pzYktjRm1qMG9ESE02STg3NW9BSGFKdmhqcHVFV3dIektxa25QYlRRT0RuZDhLaGI1X1d5QVNCTjlkWWJDMGdick42Uk45eXZRdmU4ZmRfR2E2MW5HLXlwT1JjNU5EckhORlhjRjI1REVxUHc1WkVEeWNQUmQzSnFtdlcyNVBIYWh2bGVSOWhz0gGqAUFVX3lxTE5XSXRxdDRWZlpiOWhuZFdpTDB4YXo4T0N5Y1FWUlV4dnl4eHZGME5Rd2R1WXI4TWpBR0hDTVVXZ2xCTm1GQ2ZNNnc4dTN4RzBjNzR6elJrQkZ2UnM3czdvSWR4TkhrakxGLUVOTDdoNVpnZlF0LWlVWkJDSlgxalc5VlFCQm5CRk8xZnlNb0pmb0VDUFNWTUN1MFFPd2t2TGZYbjZnUV83XzJR?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Pune to host 2032 UCI cycling Road World Championships - The Indian Express</span>
+                      <span class="time-badge">20h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Pune to host 2032 UCI cycling Road World Championships - The Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxOMmxoUDVZWVdSQXlNVUxEZFlicVlsSEp4MFlHTnVHazRXempPVVg1ZTFUMWNjRVZhSUI1WmhRYUZCeS04T25hazlpYndPTEU0ekRDZUFkMXBUX2w4dVhsWTdzTXdDUGNkNEM5QkoxNHBKZ0NyeV9fWnJVTFBJdnVCdVZleWhpcEMzQTRlOGZVdFE1bUdHbE4xN0xPMlluMTNjbVRjM9IBqwFBVV95cUxNUW81dEF6b3dIM2lBajBRcmxVSm1qQjI2Y3RfQkxiUEQwN1l0TEdSMXR4M0RDZC1rWHkzWXByaGQ1NUp6Y2lUbVRSamMxYWo0SFhvVHRyVm5HeTE5RDBsdTY0UnZtMzlYTzQ0TFp3WEUxZGZ1Vzk1REtudWgxQ2VUNVM2ZG9weml4aUxzT2xuOVBzcURzUkR5T2tLWjBHa3hYTkhPbnhlV0JCMFE?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">UCI Road World Championships 2032: India set to host cycling showpiece for first time in Pune - olympics.com</span>
+                      <span class="time-badge">15h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">UCI Road World Championships 2032: India set to host cycling showpiece for first time in Pune - olympics.com</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxQUTQzWXAwYVRYakxWVWhRT1BUQmpiTVY3aURXbmpIVmhabkpaZHJ6Qjh0SnpzZXhNUWFnYlZBOFBIbzk0M0tCWTFVVHpjMmRDTmlkT2NsUDdzZjRaY0poOXBPeHVuMmFPMHlxbEZlNWZZdXBObGdOSDZQamNpNUZkUGdKWDJIOUZmYWc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Bus catches fire on Mumbai-Pune Expressway; all passengers escape unhurt - The New Indian Express</span>
+                      <span class="time-badge">21h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Bus catches fire on Mumbai-Pune Expressway; all passengers escape unhurt - The New Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi0wFBVV95cUxQNGw3c2N2LVg0anQ1RHZxdG1OY09zbXBXa0I5czVNNWRQUkpXckRyRXV5aU9aY1BRMWFrVkxQTDJkQkFPcDVocHVmcHlWeWxqUUJxNG50QmpBcFJ6T095OVAyZmZzZ2p3TG9iYXVfaDkxY21sTFpHZVh5aS1nRG1FXzZuUm41OXBWN1RSQ2dnZmI4LTFhTUhUQ1dXOGpDa3h3MkhVZUFycWNUbi1pN1BVdVJMWGVmRjN6cFhPVTVSUE5nR1k1RjFJYzR2YzB5Z25hWk5n0gHgAUFVX3lxTE1ueE9OTWJTSGQ2UkZxX2YwNVpXNkZtUUZMY2N4em9ZSlM4S1BiR2NsOWpfRnUtWG9icTNtX0JYSFhXb2p0YV9rdlpuUy1ka1BFajhOUUdMa3hQUUFkWjRUYW15cm1kaTM5MU4tWDJvZUctWFlYeEdjcTdUeVZ4M0RnSmNUNGpwLWdsbkZaeUVHZnZWUkk4eGdsemd4UXBWNF9YWlVneUtRTVVsSG5VWDZlZlNkakluQ1Y3VjZBeUhVNTk1VkRxRjRnU1Y1SW1zZ0ROb3JuQnhBUXlZODdSX2tu?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Double-decker tourist bus catches fire on Mumbai-Pune Expressway - The Times of India</span>
+                      <span class="time-badge">21h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Double-decker tourist bus catches fire on Mumbai-Pune Expressway - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxPQ3kyX0F5T1I1TVNESVR2bjNBczZQV0RXU1kyRzYwU291Tk9JVWJEamlEUmJCeGJzVEJaeVJJQjlqYTNGajRfR3lsOW02OWpwZ05ZTEdkM2F0MVRRbDZoOGw2eE1JNkNncGhGOFFUVGNqU2wxYXRuMURtMXhIWU9lemtEUFlURUs3Y2h0dU1oWDV1bENDYVBVb3dxQ2IwM3AzZTNQOU1wWGZVR094d0dyZGo4M3VpQVI0dUFoanJhVTdjSTEwMktYVFB3dnpEek5LOGtzZdIB2gFBVV95cUxPSVJjRHFIekZtNjRTWFZiWnBlQmRYYzRhazhPaFJnY1lmNUF5MmJaUnNhMnRSa1dsRUFqUHpudDczYUJfbGVqUHJtSWR0WXpCTDMtMGxrRXhmSFdJTkxHeXNibzNNQkNCMlNRMUJRUEg4OGVEQklMd3d2YWpGNlBucERGWU5wUUhFZ0pqODU5LVVmb0FpZDUtdmJiSzZoYVQxRUVFQ1ZDZGZ6a0cwTjlJa2R0Y3ZxeGZ2NENXV21zX0VERWR2QVl3UXVqR1Z5VGRxZTNqeUh2MDFqdw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Passenger Bus Catches Fire on Mumbai-Pune Expressway; all Passengers Safe - Pune Mirror</span>
+                      <span class="time-badge">20h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Passenger Bus Catches Fire on Mumbai-Pune Expressway; all Passengers Safe - Pune Mirror</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxNRkc5Z2kwdUZWSk1BN204WHZ1OG1lWkRSdFd6UHpDcVVUOXhLZnRtdXFBc3dEbWY1M2hqT2ZDVlNHT3FIZFpDRXhqWnF4a0NLU053NzAzeU9hTlFkQXpoNmRRekxmYnRLTXNiT3BkTEdrcklBSm5HM0FObmFndWUzazh0RUhHX1NNUC12Z214Mm53WlZaZHRjalBEM2FoWGhvanNJ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Two FIRs against 18 Pune cops over assault, public parade of detained persons, including children - ThePrint</span>
+                      <span class="time-badge">16h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Two FIRs against 18 Pune cops over assault, public parade of detained persons, including children - ThePrint</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiygFBVV95cUxPT3FPdDNLLXUzbU40TWlLaXByUzkyMDEtMkxmX21vMU41TjJrek1WT2E3SmhRbU02Y3lIYzFLY3JxazRGcHVqR0JiaHFQRGVCcE1YZzVNQ1QwR3FNOGtrX2RzLUNVeHRtMG1pRkk0V19hdlpLM3NEZ2hpOWxLNW9GVnRxVjRDNVlSNWtnc1dlRVJkelpSd0hUSDlJN04zek44NkhwTEFaQ254enA5dk1DVXgwOUt0b21LRmREUjlKZEVRS1dweUVhNGh30gHPAUFVX3lxTE1PM3dxUUZDdnhmc1hpVDNsbHp1c1Y0WXJWd1Z4cXMzLVhFSDZUWGxrTG81bk91VFVSLWxoMDZ0aGJ1UHh6aEFza0NlN01FcC1tTWxwajEwUEhYX25JVldxcWpqakVGZEJ3dm9qRU9Cb0oxRkRHc3VIVFFsLVhmRXpneXAtRHc2QUlrYVd6UkhUWWtZbkFMYmZXUTFubUhJRlRPRmZ4VjFfWnZpMFNFS2ZzcE9hTVVBcTcxcm93SElhRk5fSWFzTElobWNtdlJLSQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Two FIRs against 18 Pune cops over assault, public humiliation, parading of suspects - The Indian Express</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Two FIRs against 18 Pune cops over assault, public humiliation, parading of suspects - The Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMizAFBVV95cUxOV1EzdE5rWlhyZFRvdU9wYnFnSmh1SDFqaWEyeWFjYlcwaGNkOHFKcG1ISl9aQndDSUhMYnpDQlFWQV9ZVEVCYVcwOTRQc2RxaTRhaktTMXVvSXRDcUo5NmN3LUw2N2JsUFMtLWhnMW1KQm16VWRNdl84NnNfMXphb2E5V1ZHSTM0cWs1ZjktYnNHbG5WWXpsSVBQYjBOMmQ4X0ZrQXgxRzFDbzNBVDhKNE5xNmJ4M1YyamgwdVBKN0hYLXRYR2NCUGdGYVHSAdMBQVVfeXFMT3F0NkQ4UmJ5QWw0bWNLTTl0WDhtd2RxY1EyOXlOVC12T21CUDRjZUM5YThiRnZTc0NyMmU2cXhrb2plQnY1TlpFUU1BOHQ5N0YxYU9uOTBselpPd0I1cFlLSHZPU3Bvd2E4SWlKTnl1MFdVUjdNNHNia1Z1dUxnUEVzQ3RiZF9BRHluZW5JU29HZk81eThnbldIdmUyZ0EyYU1SY3RtbjBGMDJfTW1TVVFsZFFCQUsyOEozb3ZYU1cxZXREaWVlZEFPSGxkcVpzR3E2MA?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">18 Pune cops booked over alleged assault, public parade of adults, children | Hindustan Times - Hindustan Times</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">18 Pune cops booked over alleged assault, public parade of adults, children | Hindustan Times - Hindustan Times</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi2gFBVV95cUxNcWxJN0pZSzdZUDduVTZvSHo5TTNGeDY2ZGR0ajl1N1hsSU5tRm40d3N1QnE5bEpnOXFkNTI4T0M5dS1odWgyMVQ2eHFpMjMxZVJlRmtFV3NkMlVzQjRIT2JxRkl5MXh4LWpnU3FEN1BabTdlMXY3Nk9SR2NRMFdXZW5jQTQ0Z2xTcDMyLVhRTXN5ZEhBd0NyM1k2VTNOUFlMNW9YM3hmVEhlZ1k5SkxvcERDWG1mVGYyLVJkZDBILTlNOXJMNWlDdnJRNmw1ZTVqS1FTVWJhQjAxUdIB3wFBVV95cUxQQkR2WHF3T1o3M0Z6b013eUFNc2VONHQ0UFFJbnBzMThzZ0lDTnpsa0FfOTE3UGZxb2FFaF9MWlZNUFVycnc4alRYYkxmYmR3X0hQdDVfaG05eldxUlBzUENUUnVCX05JTHZBSGpaQ3hnZU1qN2pHOV9oNGgwRlZBcldxaE5odlZVcC13UndVZU1QUUZncnBZdWVCa1Z1SHhBTmt6S3dxWmdRWXNvZ0VXM0lXREd2MkcyTm4yaDFPQjZLVUVnR2prZ1duTVFSQW51N2ViOUplcmNjZjhubmpN?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">CISF catches serial fraudster operating under multiple identities outside Pune airport - The Times of India</span>
+                      <span class="time-badge">7h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">CISF catches serial fraudster operating under multiple identities outside Pune airport - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi7wFBVV95cUxObkotVXY2UjRnY3RjVF9JdVhGRWVaNnFNQ1loU3JhbEMzQUZMQzZkcVBsYWpWLW1MVjVhS25Rd2lfNktucXZQcktuSmVtcXF2STJ3MEZnTndlbWh0Ul83eVFrQjhuQXIzLWUxNkczMjNLVEJaV2JINEZaSWN4TWtVMThBX0VmTjRhRVhKVkFWYkVuMWVfWXNESGpwdUJiRFdMUnQ3MWF3by15di04c3hEaEVYQ2lLemNpa3JFYTVZU05uQ3J4WVlPXzNyRnhoNEFMNURXRm5mUGh1SnNjaXV0UlBmdmJIckJNZHJWaW55b9IB9AFBVV95cUxPZ3NaSUtEdTNMcjU5M0FWSkxQT002V1ZpbllleklHem9DNHZxRFFmWTU4a05LQ05xejNfRUZlVV9pc2hoNkhhVjlNR3Bxc0JhN1VnRHgxam13MlhXYk5PY3ZTSjhzUFZzeGllRmdWVThXajdJa3c0RG45OFBmQ2RKQmVWdVN0VmQ5Z0wyMW9UbTJjeHZrbld2WGZGVm9IbGt0cVNhc0c4RVNxX1RiLVBhZHA0bUx0NXVPN3l6ajdydXN6LUx4RnZMeGZqN0Y5ZWpTMjVfN1R5T2stazVzREpBcS1uanFEMVFGRW1RYUNtMnpOOXpC?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Fraudster held at Pune airport | Hindustan Times - Hindustan Times</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Fraudster held at Pune airport | Hindustan Times - Hindustan Times</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxNNjZETjNXQWN1TE1fLW51Vk5oWkRhQ2wwdTA0dGI3MUJsQ3RmTG56QjloTmEwMks5clZSTExOM2o3dTZKcEJVNXdnQUdyN29IemJRU2h0MTBBdlVsYWlTU1o3cUM5ZnkxSVFNRnQ3ZTF6dzJ5cXZwS2hRcXlKVHgzX0N6TE5nbjNnWDlPaC1lRUE3S2NZcjRSYlRZLUZ5dFd50gGmAUFVX3lxTFBKak1CNjVoYnlGRVcxYkotU2tKVE1LbWtXbmN4Vkc0TEJJTV8td3M4eEtGRXZZYi1iWDJuemEzOTZTMTl5c0dYTzA4eHJNblRHcWdKT3NwcXNacU1BTy1Daks2VUlGcU1wZXZSNjlFcUotWXBrR2pUcWlVMFBBQlJhLS1MaFNlVTN6VGw3a1QxVFVFdExBTnJ0MU5DMnBvLUJKT0thVUE?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>INDIA</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games 2026 live, September 25: Know India scores, updates and results from Day 6 - olympics.com</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games 2026 live, September 25: Know India scores, updates and results from Day 6 - olympics.com</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxPaWY1Z1Utam5IRzNLaFhfZ2RKYUNONGhqY2NnSmhIa19PTjZ0V0F5LVFVak1fWFhHZWgtMUN3NW9yUTJpdUtBVDdJVHF4UHVYRmZoVUtGRFh1R1FqbHlJN2REY0NQYmVMSWw0MzdzMHBKdlNDUFlGd3M4aXZHNk9zUnZKWVY2cktwbGdLSUZKUnVMOUFqUkFib0I0bko?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games 2026 Day 6 Live Updates: Kamaljeet-Suruchi eye gold in 10m air pistol final - The Times of India</span>
+                      <span class="time-badge">9m ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games 2026 Day 6 Live Updates: Kamaljeet-Suruchi eye gold in 10m air pistol final - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi-gFBVV95cUxOZi16LUFZTHVUUXhLVzRqZW1QLTJ0dkctN050Nlp4UEdWamxaZmdVbGVGOEdiWllPQjF5LXRxVFhiN3hGUDVOZExWNzFOSFdCY29zTjRhNzZ3ZS04NjlHS2U2ZVRYdTlsMzRxcnFqenRqV1JDcEp5NmRwZHU5NUdCZzhYTjVpOVdERHdWcjFVNGQwWFd6RlZiOG9YdFJod2owcW5xQ3Z2d3d4RUhic2g0Uzc1Q2V0VkFEOGlVRVoyRlpua3VyMUVUWEJVaFBwNmV1dHlIN2Q5bFFna1RHMHM4T0NNRmJRcDZZVFd3QjR2b2dlVjFBcjBpVnVB0gH_AUFVX3lxTE9TLWdzSHRHb0dJcGhQWVUzTTVPODBvanN1bWJiWWpQN1NNR2pkdDBfaHhKV0NFc3llQkhVM3lLbDMtV2RUUlh2SjFYM09jcVN1cXhsSkppYk5LOF84cXBSTFBTLXNJQkRnT2ljazJDUHI1b1lyUHZ1dXhoVy1ac3JFQVBOdzA2Uzc3LXdMWGRxVkNHdl8zQ3RLeHY0MUR3V0hTbzhEd2haVmxjcHE1REFwR2p4ZG9HLTJCZjR0dEh5Wm9YcmlxOWNGZ0JLMndxWVFsMFdGa2h2SEo5OTJ1aEE4dXNnM0dLcVo5QTFLeHJtUGdjQlZtdUk4VjFUbVByWQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - News On AIR</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - News On AIR</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNaDR4b0tMNThWLXdnX1JEWGlNRVJQMFdfNWdEZmxkbVBLZVY1ZExjN1pPNWpNLXFOV0pCem44bFMtWEtkWmpZMzBHNm5LaHpWa2J2eXBwZ2lqOGVSdnhDYUtCTTNrQWZJQWF2N3d1TTRRVjBjTUlnUlFteEZMeTZNNjdRVG84SnlKU3A4Tmw1X3lBUVlPWkJQZzgweC1SLUdtbTJRQXROa0Y5bTk1eVNvaldtQlJob1BlN3NqZGdRYkxFMkYxTU42MTJBZFQ4MmFWLXc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Union Minister Piyush Goyal highlights India’s expanding engagement with global economy at 13th PAFI Annual Forum 2026 in New Delhi - News On AIR</span>
+                      <span class="time-badge">48m ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Union Minister Piyush Goyal highlights India’s expanding engagement with global economy at 13th PAFI Annual Forum 2026 in New Delhi - News On AIR</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxPajhNQ3dGQUNXNVJqNzBsUUxDMVFrZ1pFOHM3aEJUSngzRFd4S2d1NGxUQ0dScEZBVWJMRUxhZWlpOTA1ekY5ZEltX2MxRTkwUzh3Rl9EOEY5MEMxZlJQbkV1b0NlTmF2b3FfMTF6aFVKdkVvekdkdTVJbEl4MnBNY3hkQnduWFF1RjMzSkhGQ2hnWjBKeld2bFNtTm1XNm9OX2NJd3kxMlhQYVJOdGtJNFJVZE50TDdfN3FUNXNMZFFLLURYakFScHd0TEhVTlVLQVRMQnV0LXFvU0ZiUXNaVVh5dVdocGRkNnNQdQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">CEC Gyanesh Kumar: Why India's Election Commission is in the eye of a storm - again - BBC</span>
+                      <span class="time-badge">18h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">CEC Gyanesh Kumar: Why India's Election Commission is in the eye of a storm - again - BBC</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFBKNEFqamZyMkFXQjBaMFFFQVpRTTMyXzE2OWhoR2l1S1MwSFlWeXJOSzBTdGViQjB4S1NDQnRxY2V5WG9abWRjR2R1RWM2aWczTWZ3UFdqZjZDOXc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Bollywood actor Mushtaq Khan dies after battle with cancer - The Indian Express</span>
+                      <span class="time-badge">12h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Bollywood actor Mushtaq Khan dies after battle with cancer - The Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxNRVFDX1N3WHpiMHBEM3AwQ0d3eW5oU0NkNEtVVEtCb09rZlIwNDFNRFJ4RHRXQmRyN2VUa19kUV9TVnVjUW55Z0hhMDNNM1Njb05jM0ZobWw4Z2JLWWdfWHpRTm5nRFZyb2t4Rzk1aDRtNElNa3JhZy01ajZUU2VnWHQxUzYtMmhWc3V0TU5XbE9TUG5sOFNITGNmVkd3OUNrcUFxMWpqUmdzREnSAbIBQVVfeXFMT2tmTndReDdQejZSUXBQRzVaNHNkSFlxV2d4TnN5dWRmOThMd0dMSHpEeGdIRzlra09HOTJ3SEQzUjNaLUFacUtUVzRZZUlZdUVaNjNrQzhqRUE5QkVVSU5qS3pMdmJ1akpQYUNCOEY1b2w3WUduazVzUVJzSmJEeDBvUGFvZ1cyQ2JxR3FVeklyTlFidV9zNjY2aE5YUFVheDlLMlhzQjNRX0JFSGkwU09hZw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">'China Views India Through The Prism Of United States' - Rediff</span>
+                      <span class="time-badge">22h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">'China Views India Through The Prism Of United States' - Rediff</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxQU3ZtQzlNclBiTzFTdGtWb1BkX21oZ2Y3UEttaFF0NFdmVkRBR1ExS0RGbXB0SVNDcFJuOHdvbU1CdHp4cERnM0pXb19kMlQzYUl6clpDWGluWjlKLTk5aHBKdGJxaDdpV2ZyVEhyOW9kNTJPM1dMYlFrbHdBTUJBUHJMWkNIZXZvLVRvdXhrQkNhMTFmS1Y5NnNqWm1IMDR1VnFZeGdn0gGoAUFVX3lxTFAtdHlpQlQzbmY5T1ZpY2I2TUdQRWd6Y3htMnhyNzRfUHVfRlp1OWVBNERyTEt1QkNQb0ljYW9td1kwSVM0MTdDSlluZ0wtSC00c1J6SUhMX2Rwd0hMb3FOR0N4VGd0WF9LUmFoRE5SdmFxa0dkUExHU19GSnJkWUpmSWtLLVI0SkFYQmhfcGtSRXJIS3pZa2g3UU1JUWp6RU9uZmg1TE9Iag?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Latest News, India News, Breaking News, Business, Bollywood, Cricket, Videos & Photos - NDTV</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Latest News, India News, Breaking News, Business, Bollywood, Cricket, Videos & Photos - NDTV</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPMGhzTnVNZndabUNQNGdVQjNIYVNMLWpnZjkwWUVzTE51Q1RWOWxubEIxN2J0VTJRRDQ5WFZmazh0dmdBQy0wZ1FKalhuaHR5S2YxajRTZHRhUU5sQ1hOUlRqeXlBUENRU2pvUUFXZEJtQ3gtd0pOS2g1cGs4TUtWYkFjOG5xTTRleE9wZzdTRFFsaXc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">A hidden India factor in Trump-Xi talks? China President in US after New Delhi visit - indiatoday.in</span>
+                      <span class="time-badge">15h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">A hidden India factor in Trump-Xi talks? China President in US after New Delhi visit - indiatoday.in</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi4gFBVV95cUxNa0JmR1dfcXdZRk5qemhXMlVUUEZKUEhBa0hnOF9EM0FDSzI2OHBWaTIyTnEtUzdqNzdYR3RoX0hhSngzb0l3WmxocDhwOEs2YkRhU2JwQTZMOHNkQ2xMM3FEVXlWTjZIb3ZPck12cTlsVEhoQVZBelF3ckk4c1NaMElzbzBDbWpNR2RjRjRDYUZrUFU5MlZpQ2pBaFV3aldNdlRpdk5INy1zcmR1cTBSc3lKR3pNREdrYWhJblk1VkJGMkMxVVNHUzAtZFkzcThSWHVGeUY1bXowcmVNM3I4SUNR0gHnAUFVX3lxTE5mbFA1VC1wREExWlVqMGNXeXFQeW1oVi1ReGJJcnBIdDJtWUNNVWlLdFZkbGlhZmVQQnByZGU4alE2UU1CNDRLWm5hMTlxNGVIRXNSLVdndllQOWxBM1VscUZpakpMdzBoY0toOThWRmxBQnNDY05mOHY0SlZUR0VkbGF4enlqVFc1M3JCeF9Lb1lPWW1QaTJtTHVmM054Z3h4bkppUzFfOU9oTzN0eEdWeEZ5U1BaMklBTWlBZ3p4TmFYYkg3WmFqVWlPVGtlVUJEcHJMeVVCcUZWREV2QnFsWGtSZTc4RQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">FSSAI proposes nationwide ban on manufacture, sale of non-dairy analogue products as ‘paneer’ | India News - Hindustan Times</span>
+                      <span class="time-badge">12h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">FSSAI proposes nationwide ban on manufacture, sale of non-dairy analogue products as ‘paneer’ | India News - Hindustan Times</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi6AFBVV95cUxOcmstZEItdVRISldWRnJJd2hFMURhTlpaUUtwMndvbDBidHoxTWw0QUdfN2MwZTlfQVdTR3gtY09vRng2WUtKejJXN00wbGt5a01tYnkwSV9WbE54a1ozTlRMMVlmeFVEMVFRSm55M1dGOFVxLUpsOW9fT1VORERSUmxnaTI0MHZkQnJZUXgwNHJEX1JFek1rOF9OLUFZcFlyZ0tqTkJjaVJ3UUNCdXI1Q2xGWWlmS0gzN3BqYjItYkptbXZZV3RSaVhqYUkya3JidmRZNEVHQVQ1T2FjZk5sMXFlSHBLNF9P0gHuAUFVX3lxTE94OWNPd2hDYktyTGhtS2VLd3NZMGlWNXlqU0FPTUszWGI2aUdScWtwNWxUTXNza0h4YjhIcC1WWlVPRzV0RGVjeDV2SGM3MXBSZm11eWhFMG1HT093dlVvNVFtLW13TFRGY1ZKY0JFODdHblQxV3RBZUJDbXM3R3ctZjBoYnFWcVVWaGJ5ZGV3VG41UmRQQkdZNXNESXpQWDNnQ2hNbS00aDVCdDktREV6N2ROMXpLaXJSNmN4YkM5MzhkV3lkRlZiZUNMMnZIc2Z5Wm12RUt3QWhFcTRqeWlTNktYcEFlX0VHMHFteHc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">35 years of liberalisation: India's workforce remains largely informal - business-standard.com</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">35 years of liberalisation: India's workforce remains largely informal - business-standard.com</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi0wFBVV95cUxQVjFmbXJPeV9PWGJNLVNjdDh5UTVTR3FMQm9ZSDlIbTktdkVmNjBFX2pocFoxTjNrT2tDRlBta2VNV3hOUXhoaEZGZElQeVNaQ1RXVXFNZHBIdE56TXAzaG8wVUw4a2Jza3JpaENCeUk0RW9UX19fYTlHV21wckNuVnBqbzhSME5HTGRRa25kLTY4dkFjb0NlMldRZGxyekI5QVF6V21wNmNKMGdLb2w3WjFjRGExU0R1VDFSR3pWM1hackhXVWQ5QV9TbEE2djVlWDJJ0gHYAUFVX3lxTE5LbF9UTFN3OWhBRThEMlNPMkdHa1dqTGhZQ1JiSkNKTHVvdTExWjVRSFBFRHBCVjdyS2NWM1hZLXBsWFlfSUVMUzN6eVcwM21VN2VPbFN2dUdQMkdLaFRQS2JyV09fX1NSd0htVmg1SGZ6LWF4LXo1WUdBdFpkYU41Nld0MFdVajN0RG5COXB3Ql9oWkZWVlpMWkFkZkRxZUU3UWRCNDN2VEpWQUUyUXQyUGx2SFJzTHM0dE9rLVJVZWxyZU15cElkVUYtaUVKakZvaS1UM1FocA?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>WORLD</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Netanyahu defends Israeli military action as delegates walk out before UN speech</span>
+                      <span class="time-badge">2h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Netanyahu defends Israeli military action as delegates walk out before UN speech</div>
+                      <div>The Israeli leader labels those who left his speech at the UN General Assembly as "moral cowards".</div>
+                      <a href="https://www.bbc.co.uk/news/articles/c3y0z7kxlegdo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Media outlets banned by Trump denied access to White House dinner despite judge's order</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Media outlets banned by Trump denied access to White House dinner despite judge's order</div>
+                      <div>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Hundreds of thousands expected in Paris for Pope's visit</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Hundreds of thousands expected in Paris for Pope's visit</div>
+                      <div>The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cmq8j904212po?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Why Australia chose the world's biggest political stage to reveal OpenAI hack</span>
+                      <span class="time-badge">8h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Why Australia chose the world's biggest political stage to reveal OpenAI hack</div>
+                      <div>Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cr3eqk15ld14o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</span>
+                      <span class="time-badge">8h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</div>
+                      <div>Pakistan says it struck 10 targets, adding the strikes were "strictly limited to identified military objectives".</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cm86xn0nnw58o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Priest killed and four injured in knife attack at Polish abbey</span>
+                      <span class="time-badge">7h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Priest killed and four injured in knife attack at Polish abbey</div>
+                      <div>A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/c607lrvm41l3o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</span>
+                      <span class="time-badge">7h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</div>
+                      <div>Prime Minister Giorgia Meloni described the measures as "common-sense tools that do not divide but really help to integrate".</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cw99d8g48873o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</span>
+                      <span class="time-badge">9h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</div>
+                      <div>Proceeds from the tour, which begins in Dublin next month, will go to organisations supporting Palestinians, he says.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cqzjzlve8jg7o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Ethiopia's army says it has repelled attacks in first comment on fresh fighting</span>
+                      <span class="time-badge">11h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Ethiopia's army says it has repelled attacks in first comment on fresh fighting</div>
+                      <div>The military says its soldiers inflicted casualties as fears grow of a resumption of a full-blown civil war.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cqevwm09w4xmo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">105-year-old investigated for crimes at Nazi PoW camp in Germany</span>
+                      <span class="time-badge">12h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">105-year-old investigated for crimes at Nazi PoW camp in Germany</div>
+                      <div>The suspect is alleged to have been an accessory to murder at the Stalag 326 camp, where tens of thousands of Soviet PoWs died.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cwzrzjy3pynvo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Poland says fire at Starlink station is sabotage as Denmark warns of rising Russian threat</span>
+                      <span class="time-badge">11h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Poland says fire at Starlink station is sabotage as Denmark warns of rising Russian threat</div>
+                      <div>The satellite station is used in part to provide internet coverage to neighbouring Ukraine, the government says.</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cmp30r1klk37o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Greek PM urges UK PM to return Elgin Marbles permanently</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Greek PM urges UK PM to return Elgin Marbles permanently</div>
+                      <div>Andy Burnham said in 2023 the sculptures should be returned to Greece with "no strings attached".</div>
+                      <a href="https://www.bbc.co.uk/news/articles/cqm2mgk6mlddo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>FINANCE</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Tech Titans Mingle With Trump and Xi at State Dinner</span>
+                      <span class="time-badge">2h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Tech Titans Mingle With Trump and Xi at State Dinner</div>
+                      <div>Prominent executives attended a dinner at the White House Thursday night, as the countries wrangled over tariffs, trade and potential A.I. regulation.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/economy/tech-executives-state-dinner-xi-trump.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Massachusetts Is Investigating Gambling Companies’ Use of A.I.</span>
+                      <span class="time-badge">6h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Massachusetts Is Investigating Gambling Companies’ Use of A.I.</div>
+                      <div>In response to a New York Times report on DraftKings, the state’s gaming commission said it would evaluate how each company deployed the technology.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/massachusetts-draftkings-ai-gambling.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</span>
+                      <span class="time-badge">8h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</div>
+                      <div>Real America’s Voice and LindellTV have teamed up to provide a feed of daily presidential events.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/media/trump-white-house-press-ban-tv-pool-conservative-news.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Trump Struggles to Find Leverage With Xi Over Chinese Exports</span>
+                      <span class="time-badge">9h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Trump Struggles to Find Leverage With Xi Over Chinese Exports</div>
+                      <div>The Trump administration, like its predecessors, has struggled to deal with China’s excess industrial capacity.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/trump-xi-china-exports.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</span>
+                      <span class="time-badge">9h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</div>
+                      <div>A24, Sony and The New York Times Company all registered their interest in acquiring the cinephile’s paradise.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/media/letterboxd-sale-sony-a24-nyt.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Starbucks to Close 250 Stores in the US</span>
+                      <span class="time-badge">9h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Starbucks to Close 250 Stores in the US</div>
+                      <div>The company said the affected cafes did not meet financial or customer service expectations.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/starbucks-store-closures.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</div>
+                      <div>The raw pork, beef and goat products from Star Meat Delivery Inc. of North Carolina were distributed across the United States.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/meat-recall-usda-star-ad-foods.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</span>
+                      <span class="time-badge">4h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</div>
+                      <div>The average rate on a 30-year mortgage in the United States jumped to 7.03 percent, putting pressure on housing affordability.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/mortgage-rates-7-percent.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">The court ordered Trump to restore access for CNN, MS Now and Politico last night.</span>
+                      <span class="time-badge">11h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">The court ordered Trump to restore access for CNN, MS Now and Politico last night.</div>
+                      <div>Around 1:15 a.m. Eastern,</div>
+                      <a href="https://www.nytimes.com/live/2026/09/24/business/trump-cnn-politico-msnow-white-house/the-court-ordered-trump-to-restore-access-for-cnn-ms-now-and-politico-last-night" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">A Weary Hollywood Celebrates the Prospect of Federal Funding</span>
+                      <span class="time-badge">8h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">A Weary Hollywood Celebrates the Prospect of Federal Funding</div>
+                      <div>In response to an exodus of movie and TV production, a bill is being introduced in Congress that would use tax credits to subsidize filming in the United States.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/movies/film-tax-credit-congress-bill.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">White House Restores Access for CNN, MS NOW and Politico</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">White House Restores Access for CNN, MS NOW and Politico</div>
+                      <div>A judge ordered President Trump to reverse his ban on three media outlets, but it took several hours for them to get back in. The White House TV pool remains suspended.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/media/trump-white-house-cnn-politico-msnow-ban.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Canada Goose Is Ensnared in Trump’s Tariff War With Canada</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Canada Goose Is Ensnared in Trump’s Tariff War With Canada</div>
+                      <div>The United States is a key market for brands that manufacture jackets and parkas in Canada, such as Canada Goose and Moose Knuckles.</div>
+                      <a href="https://www.nytimes.com/2026/09/24/business/canada-goose-tariffs-trade-war.html" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>AUTO</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Taking a look at 20 years of the Hyundai Verna in India</span>
+                      <span class="time-badge">36m ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Taking a look at 20 years of the Hyundai Verna in India</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/auto-features/taking-a-look-at-20-years-of-the-hyundai-verna-in-india-441086" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">5 things to know before buying the 2026 Triumph Daytona 660</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">5 things to know before buying the 2026 Triumph Daytona 660</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/auto-features/5-things-to-know-before-buying-the-2026-triumph-daytona-660-441102" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Mahindra Thar OG vs rivals price, spec comparison</span>
+                      <span class="time-badge">13h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Mahindra Thar OG vs rivals price, spec comparison</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/auto-features/2025-mahindra-thar-facelift-price-and-specs-compared-with-rivals-437616" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Nissan reveals the Pixo for Europe with up to 259km range</span>
+                      <span class="time-badge">15h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Nissan reveals the Pixo for Europe with up to 259km range</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/car-news/nissan-reveals-the-pixo-for-europe-with-up-to-259km-range-440847" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">2026 F1 Azerbaijan GP schedule, India timings</span>
+                      <span class="time-badge">17h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">2026 F1 Azerbaijan GP schedule, India timings</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/motor-sports-news/2026-f1-azerbaijan-gp-schedule-india-timings-440846" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">2026 BMW i7 facelift review – All the luxury you need</span>
+                      <span class="time-badge">18h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">2026 BMW i7 facelift review – All the luxury you need</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/car-reviews/bmw-i7-50-xdrive-review-all-the-luxury-you-need-440578" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Tata Aeris leaked in full ahead of launch</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Tata Aeris leaked in full ahead of launch</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/car-news/tata-aeris-leaked-in-full-ahead-of-launch-440844" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Ultraviolette receives USD 85 million funding to expand production capacity</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Ultraviolette receives USD 85 million funding to expand production capacity</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/bike-news/ultraviolette-receives-usd-85-million-funding-to-expand-production-capacity-440845" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Tata Aeris interior teased</span>
+                      <span class="time-badge">20h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Tata Aeris interior teased</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/car-news/tata-aeris-interior-teased-440843" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Bentley Torcal walkaround video</span>
+                      <span class="time-badge">22h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Bentley Torcal walkaround video</div>
+                      <div></div>
+                      <a href="https://www.autocarindia.com/auto-videos/bentley-torcal-walkaround-video-440192" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>SPORTS</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games 2026: India's full schedule on September 25; medal events, and timings - The Times of India</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games 2026: India's full schedule on September 25; medal events, and timings - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi9wFBVV95cUxNbWtsTkl4X2c1Qlo2Mm5ELU5xLW9WTjdHV0ozTTV5R1V6ZDNxNzFwTUNVQVlmS3JJcjNiZG0xQmVrTUtLOVBRdnpPTE01OV9HcEZlTjFmdF9UeS1TRy1pLXdmT2ZqQmVYbGtVMGxkZWM1Qy1rd1N4Z0Z6WGRQOWtfN3FvUTBLekxzUE53YjktMnlLeDhBTFJmTDI2NVNsWmNuaDFwMXVRUGVnQXBPX1VYNlFKLUxYSmtwOWctMVlKYnhkaTlFZkV5SFVVNDhQMDFZMnU5Z290M0hSb1RUYndpLXJoRmJpQUNFb1VWTFNIUnZHc3hGSkM00gH8AUFVX3lxTE43UTA3Tkt5aUtydWdyZ1ZhREl5WWw4OW5LenZkZDRuTzRCWG14cGhtUVdiMkpHUEJ0SXc3d05MTGp3TUdlOThCWUNZd20yd3Aza1BJZWxDS3N6NEZ2aU1ZbUc4NEt1LUQ3aUx5WkRCU2I1aTQzbGtadTdOSjZidG91YUVMSExSYVc3R1B5cFRqZS1hS3E2YW5QMTU3Zi1YRmlaeEt2X1NnZjNGeWQ0UWhmZHVicklJYW5TYjI3U3NfN3FfcUkzcmk3YW05ekh5QVNxdTJManpXNHVWT1ViREN4eFpBejN6ZXJZbnZFUlFZQVFaMDA4dEpvR2NHZg?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - News On AIR</span>
+                      <span class="time-badge">10h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - News On AIR</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNaDR4b0tMNThWLXdnX1JEWGlNRVJQMFdfNWdEZmxkbVBLZVY1ZExjN1pPNWpNLXFOV0pCem44bFMtWEtkWmpZMzBHNm5LaHpWa2J2eXBwZ2lqOGVSdnhDYUtCTTNrQWZJQWF2N3d1TTRRVjBjTUlnUlFteEZMeTZNNjdRVG84SnlKU3A4Tmw1X3lBUVlPWkJQZzgweC1SLUdtbTJRQXROa0Y5bTk1eVNvaldtQlJob1BlN3NqZGdRYkxFMkYxTU42MTJBZFQ4MmFWLXc?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Vithya Ramaraj turns on the afterburners, holds off Vietnam by 0.08 seconds as India storm to mixed 4x400 - The Times of India</span>
+                      <span class="time-badge">13h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Vithya Ramaraj turns on the afterburners, holds off Vietnam by 0.08 seconds as India storm to mixed 4x400 - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiowJBVV95cUxNWk1UeExqNDZTbjduVVFhTjZ3MUYyb2hxQXhBNkJIeTdMYVRadXNsa3oyaFl2Znhxdk9kTUZkZnAzSVpIaV9uNlRyZHJQeDFSM3FKdi1iZGdXTHcxWjlVQzNqVk9rLUtWZEZiQXBBNE0yODNVcXJjT0djNER5bmNHLXhRTUZuMFR1Z1p0NVBUWTk4WHZmZzJtdGhkZWtnQVJmZVQ2dXJxTzNRdVViZWRneXNZNGpVREhtUVVDRzlVSVV6S3UtaFFqMFVPYTYxWldFa2gyNXZ1ZUpWT0ZsSjNaTVlLemdLWHYtMUg0WW01b1daOGhqMkxuTTBoR1I0Zmc5Sjk1NWFHTGdhcXFvUng5SnVfU2tOQTEzc3BJOEprekFnd2_SAagCQVVfeXFMT2VYeWtSMFM5TnU0MDI1QWdxb1JFRTJxQ0syTnVhQmlaN0xTQ2loMTFPN0RsM205ZF8tRmpHaGlXbTUyakFJekNCaGRpbXViWDlBRDRRUEp1cGF1RldpUVNNdk9PSVd5UjRMdkFoc1RrZFFiVEZwSW5kQUpTZ1ZWUW04NXNtREN3QjVDdkVWWXctSUNITVpSdzhnVUFFc2swWHdfUGFwVU12dGY1OGF4U2xXXzJBRWZFdWQ1RTByV0NtUEVfZWhnWUtHbi1saV8zNUFJYzlSaTBtVlB5bk1tQ1RQc1pvRjlTb0xsWjc1Tkt2X3NCbGVzWG0tQlhBbG1weTF3Zjl5UXVjZzlEY25lckZwZWxXZzF2RHFCVGN6b2pWQ19pN2VJLWU?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Asian Games Athletics: India Secures Mixed Relay Silver, Seema Wins 10,000m Bronze - Rediff</span>
+                      <span class="time-badge">12h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Asian Games Athletics: India Secures Mixed Relay Silver, Seema Wins 10,000m Bronze - Rediff</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxQUnRaYnFXdzFKMDdoLWNmN0hHS1FkUGlTNjQxQS1JY0kxY3dmRzlXcEtMaDc3V3dqSGNERVJWUlJYTG9DSzZCMk16U2dHYk5CUTlJT2xLWDRBaURKOXlKWjViWWtPS2ktNzFmUGZNeDhONXFMb3hacU9ZRDdNSmMyY3lCNjZmNVRJbkhITWd5TnR5d0I2dUNmalVDVUppZ19SaDdTRFZISE95UWNOQWNNczkxUzd1dGpmQkE?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">NIVIA Sports looks beyond matchday with India’s new football jersey - afaqs!</span>
+                      <span class="time-badge">15h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">NIVIA Sports looks beyond matchday with India’s new football jersey - afaqs!</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxOaHJmZDVIbGdzR0Zicnk0UUV3M2t5LXlsS0lXbXUzWnl2RE5tbUU5c0pLSWk3WDZKUm03TG9DLUFDSVBscDBZeExiQTFCQTExcEdmQkk0ZmV6TVFVWmtKVndKb2xqaHpFTXJZUFBsaWM1YXVUSDFhNndWMmNVSk5McFhaY1RlVk11VEFQSWVNX05tZk5TQnRlaE8zbVIxblJ6ZXprZkxjUHliQWM?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Panama Coach Offers Blueprint For India's Football Future - Rediff</span>
+                      <span class="time-badge">12h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Panama Coach Offers Blueprint For India's Football Future - Rediff</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxOdjczWjhvLUQwTDAzd2NkVlhHLTNsX21BbDhhR1VZSmpiVTVvUDRUcjBhc3U0RXUwemJZU2RvbjZpYl93X2NBemk1Nkw4OVRnd09ZNjRnZ042UWVXRXpVa2oyWmozb1NpVHZYUnltYmR3QjVZR3MwcFI4S0JMakRRQUNkOVdBUFBYX0pBMlpSMTFCeU9IT05aXzN5Y0RrTHdnQ0pUdnp0c9IBqgFBVV95cUxOUm1tckNhQW4zOW9IM0xNcVhlOTdwMWhIaHltaW9zNzItVEJXY1NBeERlZ1V2ckVMckh2ajdTa2JYeS1NaUJoWFNZYkhnQzB6NmtFc2Z4MklMTnpZQ3dyNzJWdWE2ZXlWVWx5WnpLZ2o0Tllick9GZXh6WWlobXRlODEyaFRPd3VKOFk5TkJSLVR6bG1zTkFFeklQb2pYZWoxSHphSkNRWlhiUQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">India begin costly FIFA friendly window vs Panama ahead of Brazil, Uruguay - National Herald</span>
+                      <span class="time-badge">11h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">India begin costly FIFA friendly window vs Panama ahead of Brazil, Uruguay - National Herald</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPQV9PZWthcVZ2NTdsdjA2VDdZd2J0UW91YWtncHF3WG9VTWJwXzI4ME03ZlJHY3dkQXVhRHB0dHlwTVlDSWJJSGV4dW1ZX1c3LVlaRnloNTJkOGt2LUEyZ3k2WmRKREMzRGk3SEt3d2pScUdOelgwc2RqclVQN2xLSnRFZHRWbldaNkZQSlNCcTNYS3E2T2YzNk1waGhZZmhjYjVuMGFpdDliSURaOTM5Szlya1JaeGfSAcQBQVVfeXFMTWlUa1Jlc2gzUkJHcU5ISldMZzZRWG44QXd0Tlo2bUZPd3Mxdk9TcmFPM3VGX3lmbHdRa2o1MUQxV1E2N0lGc1I4UmNGMGZyU29JTGdxUmtKUW5lSXdTaHpEeHRBX05Wdll0TDJzakpOMndQU2Y5emF2d3hDNUJSaUVGdTVwN3J5RTJyeTBCQVFCYmlsWEtEX0ZFM3R6NF9XVUYxblpTeEVidjdiWFkwVUZPaVNXM0t0bHR4WXpMSklRUm5KNw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Dominant India defeat Chinese Taipei 37-21 to storm into kabaddi semifinals and claim group lead - Firstpost</span>
+                      <span class="time-badge">19h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Dominant India defeat Chinese Taipei 37-21 to storm into kabaddi semifinals and claim group lead - Firstpost</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxORUUwdm1xZV8xME9BQUtZaEdEQ3lKeXRQa1hzanFYOUNBdVdPRllRR2ZjbkduYjctQUhleXBsdnBBYk9CZ0poNXJTVzZHQlEtQXdvdkRLdGhwMjBiOW5la1QzOFdTRWhEaFRoSEFSaHA1ek9uYnRKSldobXVXTjBZNXZva0dBdi1WbElsQmROa2RGVzBkeFYxQTZMZlpsYS10SXNSdUtDUWw0UzBVOEZtdlZHRkg4UmpvT0gwYW1KamF4Q2VOS3Nvd0YwcXlMdUw2YkRmcVNHLS1YMU3SAeABQVVfeXFMT1AtdGd3X2ctdElOUURQNlVKU0lrYjlKSEFpZUdTTmx3LTVpNzB0ZmE5UnlIaWJkemRIczFtMXFLdXhEa1E2MVBYeThIalN3ZVpNcHBfYjcxQ1JDZ18wNEpqQmhwbWxBM2tCT2c3RHhxT0tIaVBCUTRfSHNLRndsbF96RkxtR2gxNnFHTGZTSUh4a3VfU0NUWVdrVlpBSGtmRkRvUnZMRVZvMWxPMXhnQmJoTFBPbGwyWnEwUW0zOVdPaVNtdkRQZ1V1WUZZWjNfSUdxcVBxM3UwQ1hrSFNrYzM?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">India earns first men's double sculls bronze at Asian Games as Satnam-Salman duo finish third - Firstpost</span>
+                      <span class="time-badge">22h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">India earns first men's double sculls bronze at Asian Games as Satnam-Salman duo finish third - Firstpost</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMi1gFBVV95cUxQMWJUa0ZsNHhFWmJIMTh2U0tCVjVuRVFRMDA5cXI0RXF3d0FRTUF0bS1LdzNmc1NmajBDVWNOOFNoVGJVS29FZ2lIWE5ka2pHMXE5MHFGVENTclV2dFhSU2tFT3NRSVgyR0l0N2hmdFo4YnJrYUFMQ0xPWHBvM2tiTGVpSTJuMmFQemF2eWJKOFpyQ0UycHQweGV6WWdGOGZuSHVGaV8xVm1ubjhjd2JDekZzejcxbkpxSHNEdkxCVlFSaEJ1aFhIQzJ4QVQzd0k4aUhQUlNn0gHbAUFVX3lxTFB6WGVLMzBhWGttNVgxNEZFcW5GMEd5alFtSVNKVi1maWVPOEhqUmJzOTFpSFl0SUZSNlVST0lvUXpfZ1lwZ3o2ckRRTGhGWXo3U3hGaWE0OXdzeFA4SGdKSThndU9CYVBRaXZ6ODh2bWtDYmVHaDZiNWUxdHlvRXhZRkktSElnX2gxOFI5MHF3MlV4cDNaUWtuTTNDc1VsSWJJTTRxSFUwVFVMWUIyOGczN2Z2bTBLVmxTaXZoR0doS0I2enRLLVduZ19xY3o1V0l4MTJsdlhwcGdRbw?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">An armyman – formerly an Uber driver-combines with navyman for India’s first rowing medal - The Indian Express</span>
+                      <span class="time-badge">4h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">An armyman – formerly an Uber driver-combines with navyman for India’s first rowing medal - The Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxQdWhkbDBYUGt1V1NRc0V0Zm9ZcVhqMndYdFlkb2duSmJ4Yi1tSHJRTVh1aS0tSlgyXzhPQVdJU1RBVUkxLW51Qi0zeUpHbEZrUDJ1aUJzOWYweGxuaVhmbnVBTTdXVFJDa2VkUUVweTJfQzhneGdvZ3VocGRoM2hNdS12X2wxUl9DWlZrd29zZFFERVI4QmJpcWtTONIBogFBVV95cUxONFdpYTkxbzVsdWFqUDFUXzIwcmhRUUN0cEt3S1NBdzYzajduMlNNUzVnb1dxZkJia0RiUzVYa2R3WXBRWG9CQUY4cmNPbjlGU2w1dkN4U2V4QWJaWUs4VC15bGxUTmdkS2s5UDBZWnh6cmZ0eFAtWVlpQk5kVWZqbEh1RzB5VUV2WExYeGVLZG9qLWF5WTF5akRmajFlTzN1dEE?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">'Today, a Khan and a Singh won a medal for India': Satnam Singh on Asian Games rowing bronze - The Times of India</span>
+                      <span class="time-badge">14h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">'Today, a Khan and a Singh won a medal for India': Satnam Singh on Asian Games rowing bronze - The Times of India</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMihAJBVV95cUxQWnQ1SFUxSVJTWFRlc0Y3eDIzX1N2UldreWZtSGVuREt3emdUb2NWcDE0Y3NBczYxN21uUU4xRENZcXVWVEJORVo0Rkw2OHhRSHRyc3hvQThrTTRvYnpjRWdrcDhNcmxhT1BpQmUxOENDa24wZ0xwRmFTUzFKRXdUQlhYR09OU2dibG1nUm8yTkpIWWh5QWJqYlZJaC1LZVJ3bnZkUnM5b3FWOGhuM0hLdjVDRnlaaUZJNURpUHZRQU5VYmdudnNTeGhVMTgwYWxlaldLSWFlSHRHRm1QY1JxNEVzME9NRU43ampqRE5nVVhnMzVyU3NIakNPT3l2akM3blY1Y9IBigJBVV95cUxNbm9iQXpCWHRfZ2hVRDNHYVNaU21EbkZSU0tCZ01hQmkyNm40R283OVkyX0E4eVlqc3ZZck5mLW5vQW5aeTFoTWMxTDJseV9RNWVncnBSX3NrNk53c25ZenVhaktEeDBQUlFGdTRVOVFBTEJoeWxpQzFMbzY1dC1GVjE3ckpGazE2NldHM1RHQmZNQmlhOWREdEk5RXh2VTlXak1BRTVieC1LVkhfV0pqcElRWkx2RkVaczJCWW9RT0NjU1J4dWtBT1ZwS3hOOGNURUpxSGRnZXk2Ym5UZnVuR21sMjctbHd1OVA2MnBIUXEwVEY0dksxWjBIeG40aV9BYVJKMHlsdm44QQ?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>CULTURE & MOVIES</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</span>
+                      <span class="time-badge">49m ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</div>
+                      <div>Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protes...</div>
+                      <a href="https://variety.com/2026/politics/news/hannah-einbinder-speaks-out-arrested-netanyahu-protest-1236875306/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</div>
+                      <div>The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary ...</div>
+                      <a href="https://variety.com/2026/film/festivals/aamir-khan-singapore-film-festival-hur-jin-ho-the-assassins-1236873907/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</div>
+                      <div>Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and ot...</div>
+                      <a href="https://variety.com/gallery/horror-show-academy-museum-halloween-saw/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</div>
+                      <div>Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances f...</div>
+                      <a href="https://variety.com/2026/shopping/news/power-of-women-gift-bag-2026-shop-online-1236875113/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</span>
+                      <span class="time-badge">1h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</div>
+                      <div>The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and ...</div>
+                      <a href="https://variety.com/2026/film/festivals/ai-robots-ann-hui-pingyao-film-festival-10th-edition-1236875276/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</span>
+                      <span class="time-badge">2h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</div>
+                      <div>Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chap...</div>
+                      <a href="https://variety.com/2026/film/news/takeaways-bob-chapek-book-ousted-disney-ceo-1236875084/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</div>
+                      <div>New, mysterious and cryptic clips of Dakota Johnson flanked by another woman and man have taken rhe internet by storm, but this time, they aren’t part of her latest movie, “Verity”...</div>
+                      <a href="https://variety.com/2026/film/news/dakota-johnson-taylor-swift-music-video-1236875221/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</span>
+                      <span class="time-badge">3h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</div>
+                      <div>SPOILER ALERT: This article contains spoilers for “Tomorrow’s Enterprise,” the Season 4 finale of “Star Trek: Strange New Worlds,“ now streaming on Paramount+. “Star Trek: Strange ...</div>
+                      <a href="https://variety.com/2026/tv/news/star-trek-strange-new-worlds-finale-celia-rose-gooding-timejump-1236873713/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">VMAs Producer Van Toffler on Madonna’s Return, the Taylor Takeover and Why He Brought the Show West Again: ‘L.A. and Snoop Is a Lethal Combo’</span>
+                      <span class="time-badge">4h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">VMAs Producer Van Toffler on Madonna’s Return, the Taylor Takeover and Why He Brought the Show West Again: ‘L.A. and Snoop Is a Lethal Combo’</div>
+                      <div>You can go home again, at least part-time, as former MTV Networks head Van Toffler proved when he came back in 2025 as the producer of the MTV Video Music Awards. He’s back in the ...</div>
+                      <a href="https://variety.com/2026/music/news/vmas-preview-producer-van-toffler-snoop-madonna-swift-2-1236875249/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Backers of U.S. Film Incentive See Window to Pass Bill This Year</span>
+                      <span class="time-badge">5h ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Backers of U.S. Film Incentive See Window to Pass Bill This Year</div>
+                      <div>Supporters of a federal film incentive are preparing an all-out push to pass the legislation by the end of the year, looking to take advantage of momentum before Congress potential...</div>
+                      <a href="https://variety.com/2026/film/news/film-incentive-window-pass-supporters-1236875089/" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                </div><div id="tab-yesterday" class="tab-content"><h2>PUNE (LOCAL)</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">‘Landowners can’t dictate’: Bombay High Court clears path for Pune airport project - The Indian Express</span>
+                      <span class="time-badge">1d ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">‘Landowners can’t dictate’: Bombay High Court clears path for Pune airport project - The Indian Express</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxNd21nSjViSXVlckFCRDZ5SXVMRnk4TDd3QjZfaERUWW1vNmFfUTRIRDlzbFg5U1N6M3hZQmdVbElrMTZOREdwLXFMY0Y4MEI4cFdZYURZQUE2WUlORDVSSW95bVVtc1NTNXkyc0hmNVhjZTZPczhDQXM3UmpVXzRBLXVJMWg5SWdHMVpWQTQ1VUE0a3pndWs5QTVhaUFxNVNMX3RoTXYzNWZsbkhzOTRpRV9GUjhNQdIBvAFBVV95cUxNNVBZQmpGdW9CcFVjZjNTdXdJTVpzcEF3bWpTck5PU3l3QUpqMHg1Uk03aEFEOUFyNF9ESlg2dnRJYV9FWjY4alhmSmZweGxHSGd6MWc5V2ROZmVkZEFRZ0JCV1N1ckdHbVYxZEg3b2VteElJREZscjZxUldackJBWVZibXlZOHZSQ3RmLUJheVNNWjBmcENQaW5TQ3dOZGR2N1E4RkE0TUsxUUh5RlotdVdTRDRpSEx2VGNIZA?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>INDIA</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Moneycontrol is India’s No. 1 business news platform in August: Comscore - Moneycontrol.com</span>
+                      <span class="time-badge">1d ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Moneycontrol is India’s No. 1 business news platform in August: Comscore - Moneycontrol.com</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxQQ0FhOFdKdWJESTBGNzVBczk4cXEyTUc1THhCU3Z5SGRjZlgtMlZzSUg1b3daV3Z1M2Y0T250V2g3V2dvd2FnQUxXdzE2SG5wZzZBODBCQUQ1OFgwY2tScHdqQ01BSkk4WWlKbDhlUWpwVVZhc2xXTjB4bVlTSFFuelF5bXNnSEt4YmozTXFRRmhuVV9TRWpiZ1d4Y3JGQ0NpTGxRWG9XdFk2bS1ZemJJLTcyOXNPMlZYV0xLeElqZ3ZYMkFvUWfSAcsBQVVfeXFMT3RXbE9qMHhUZGlETmNNYWRWWGdYSnF2WVJnaFJrcGRoUjNzWU9UUm1Xak43U2hnbDRDV3ZhQlVleDJ1SnZEclBhT3EzY2haQ3diQ2ZFSDlsNFJEY0hJTkFmVnhWeXgzazZMYy1YYWhMb2pZeXN4dm1XRmhSeWVrc3ZNeVFhMkM2SEFGRWEzYjRUSUFPcjg0TmVXdUtLeTAwaVJ4d3kzTkRIVV9rRzVydkM3Z3I2eVRBWS1FMWlRMUpDS0s5d0l4bXNHSU0?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                <h2>SPORTS</h2>
+                <div class="card">
+                  <details>
+                    <summary>
+                      <span class="bullet">•</span>
+                      <span class="summary-text">Over 40 sports bodies affiliated with J&K Sports Council functional, seven listed defunct - uniindia.com</span>
+                      <span class="time-badge">1d ago</span>
+                    </summary>
+                    <div class="details-content">
+                      <div class="original-title">Over 40 sports bodies affiliated with J&K Sports Council functional, seven listed defunct - uniindia.com</div>
+                      <div></div>
+                      <a href="https://news.google.com/rss/articles/CBMidEFVX3lxTFB5QWJxSnNadk9hT0Z6UFdGQVJLbHpIbjVFYWtTMDRNUXBPeDJwUU9HNzdYdHV1anNXX0h2aVV0cXp1Z0k3d0VMSzl5Z2NtU0I2c2psTTBJWnI5aFVHN25LdmlhS0lLWFNsWnJXeDljZGxQUGJn?oc=5" target="_blank" class="source-btn">Open Source ↗</a>
+                    </div>
+                  </details>
+                </div>
+                </div><div id="tab-older" class="tab-content"><div class='no-news'>No articles from 2-3 days ago.</div>
+</div>
+<script>
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabName).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
