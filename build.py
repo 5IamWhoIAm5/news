@@ -1,4 +1,5 @@
-import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime, re
+import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime, re, requests
+from bs4 import BeautifulSoup
 
 # Configure Gemini API
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -52,14 +53,12 @@ FEEDS = {
     "SPORTS": [
         ("ESPN Cricinfo", "https://www.espncricinfo.com/rss/content/story/feeds/0.xml"),
         ("NDTV Sports", "https://feeds.feedburner.com/ndtvsports-latest")
-    ],
-    "CULTURE & MOVIES": [
-        ("Variety", "https://variety.com/feed/"),
-        ("Indian Express Ent", "https://indianexpress.com/section/entertainment/feed/")
     ]
 }
 
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+}
 
 def clean_text(raw_html):
     if not raw_html:
@@ -69,13 +68,23 @@ def clean_text(raw_html):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-def clean_raw_title(title):
-    """Strip publisher tags, live flags, and takeaway hooks from titles."""
-    title = clean_text(title)
-    title = re.sub(r'\s*-\s*[A-Za-z0-9\s\.\&\'-]+$', '', title)
-    title = re.sub(r'^(BREAKING|WATCH|LIVE|EXCLUSIVE|JUST IN|LIVE Updates:?)\s*[\|\:]?\s*', '', title, flags=re.IGNORECASE)
-    title = re.sub(r'^(Key Takeaways|Five Takeaways|4 Takeaways|Top \d+ takeaways)\s*(from|of)?\s*', '', title, flags=re.IGNORECASE)
-    return title.strip()
+def scrape_full_article(url):
+    """Scrapes the main paragraph text from the actual article URL."""
+    if not url or url == '#':
+        return ""
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=4)
+        if resp.status_code != 200:
+            return ""
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        # Pull text from paragraph tags
+        paragraphs = soup.find_all('p')
+        text_list = [p.get_text().strip() for p in paragraphs if len(p.get_text().strip()) > 40]
+        full_text = " ".join(text_list[:6])  # Grab first 6 substantial paragraphs
+        return clean_text(full_text)[:1200]  # Cap at 1200 chars per article
+    except Exception:
+        return ""
 
 def parse_time_info(parsed_time):
     if not parsed_time:
@@ -103,7 +112,7 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# HTML Layout
+# HTML Layout Setup
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -134,18 +143,18 @@ html_out = f"""<!DOCTYPE html>
   .tab-content.active {{ display: block; }}
 
   h2 {{ color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 20px 4px 8px; }}
-  .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }}
+  .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }}
   details {{ width: 100%; }}
-  summary {{ padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 600; cursor: pointer; list-style: none; color: #f1f5f9; display: flex; align-items: flex-start; gap: 8px; }}
+  summary {{ padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 700; cursor: pointer; list-style: none; color: #f8fafc; display: flex; align-items: flex-start; gap: 8px; }}
   summary::-webkit-details-marker {{ display: none; }}
   .bullet {{ color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1.2; flex-shrink: 0; }}
   .time-badge {{ background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }}
   .summary-text {{ flex-grow: 1; }}
   
   .details-content {{ padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.25); }}
-  .takeaways-list {{ margin: 4px 0 10px 16px; padding: 0; }}
-  .takeaways-list li {{ margin-bottom: 6px; color: #e2e8f0; font-size: 12.5px; line-height: 1.4; }}
-  .sources-container {{ margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
+  .takeaways-list {{ margin: 4px 0 10px 14px; padding: 0; }}
+  .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 12.5px; line-height: 1.45; position: relative; }}
+  .sources-container {{ margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
   .sources-label {{ font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }}
   .source-btn {{ display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }}
   .no-news {{ color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }}
@@ -173,23 +182,24 @@ for tag, feed_list in FEEDS.items():
     raw_articles = []
 
     for source_name, feed_url in feed_list:
-        parsed = feedparser.parse(feed_url, agent=USER_AGENT)
-        for entry in parsed.entries[:6]:
+        parsed = feedparser.parse(feed_url)
+        for entry in parsed.entries[:5]:
             group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
             if group_key == "discard":
                 continue
                 
-            raw_title = entry.get('title', '')
-            clean_title = clean_raw_title(raw_title)
-            
-            raw_desc = entry.get('summary', entry.get('description', ''))
-            clean_desc = clean_text(raw_desc)[:350]
+            raw_title = clean_text(entry.get('title', ''))
             link = entry.get('link', '#')
             
+            # Scrape full text from the article link
+            full_content = scrape_full_article(link)
+            if not full_content:
+                full_content = clean_text(entry.get('summary', entry.get('description', '')))
+
             raw_articles.append({
                 "source": source_name,
-                "title": clean_title,
-                "desc": clean_desc,
+                "title": raw_title,
+                "content": full_content,
                 "link": link,
                 "pub_ts": pub_ts,
                 "group_key": group_key,
@@ -203,16 +213,19 @@ for tag, feed_list in FEEDS.items():
     
     if model:
         try:
-            input_items = [{"id": i, "title": a["title"], "desc": a["desc"]} for i, a in enumerate(raw_articles[:12])]
+            input_items = [
+                {"id": i, "title": a["title"], "full_text": a["content"]}
+                for i, a in enumerate(raw_articles[:10])
+            ]
             
             prompt = (
-                f"You are a master news editor for '{tag}'. Analyze these news items:\n"
+                f"You are a executive news summarizer for category '{tag}'. Analyze these full article texts:\n"
                 f"{json.dumps(input_items)}\n\n"
-                f"STRICT RULES:\n"
-                f"1. DEDUPLICATION: Any items reporting on the same event/meeting/topic (e.g., Trump-Xi summit, UN speeches, elections) MUST be merged into EXACTLY 1 story object. Never output separate objects for different articles covering the same event.\n"
-                f"2. HEADLINE: Write a neutral, non-clickbait title (8-12 words max). State the event directly. Strip 'LIVE', 'Updates', 'Takeaways', and media hooks.\n"
-                f"3. FACT-DENSE TAKEAWAYS: Provide 2 to 4 bullet points containing HARD FACTS, TOPICS DISCUSSED (e.g. trade tariffs, Taiwan, AI rules), DATES, LOCATIONS, and NUMBERS across all merged sources. Completely ignore fluff or empty quotes like 'had a great meeting'.\n"
-                f"4. Output JSON array of story objects with keys: 'headline', 'takeaways' (array of strings), 'source_ids' (array of integers matching inputs).\n"
+                f"STRICT INSTRUCTIONS:\n"
+                f"1. DEDUPLICATION: Any items covering the SAME event/topic (e.g. Trump-Xi summit, elections, stock market, Pune court cases) MUST be merged into 1 single story group.\n"
+                f"2. HEADLINE: Write a clear, informative 8-12 word headline summarizing the core event.\n"
+                f"3. DENSE FACTUAL SUMMARY: Write 3 to 5 bullet points containing HARD FACTS extracted from the text (names, exact quotes, figures, decisions, timelines, locations, context). NEVER use teaser lines or generic quotes like 'they discussed issues' or 'read more'. Give the actual substance!\n"
+                f"4. Output JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs merged).\n"
             )
             
             res = model.generate_content(prompt)
@@ -230,7 +243,7 @@ for tag, feed_list in FEEDS.items():
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
-            "takeaways": [a["desc"]] if a["desc"] else [a["title"]],
+            "takeaways": [a["content"][:200] + "..."] if a["content"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
@@ -254,7 +267,7 @@ for tag, feed_list in FEEDS.items():
 
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
-            valid_takeaways = [newest_article["desc"]] if newest_article["desc"] else [newest_article["title"]]
+            valid_takeaways = [newest_article["content"][:250]]
 
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
 
@@ -270,7 +283,7 @@ for tag, feed_list in FEEDS.items():
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">{headline}</span>
+              <span class="summary-text">{html.escape(headline)}</span>
               <span class="time-badge">{time_ago}</span>
             </summary>
             <div class="details-content">
@@ -292,7 +305,7 @@ for tag, feed_list in FEEDS.items():
             tab_data[gk] += f"<h2>{tag}</h2>" + cat_tab_html[gk]
 
 html_out += tab_data["today"] if tab_data["today"] else "<div class='no-news'>No news published today yet.</div>"
-html_out += '</div><div id="tab-yesterday" class="tab-content">'
+html_out += '0</div><div id="tab-yesterday" class="tab-content">'
 html_out += tab_data["yesterday"] if tab_data["yesterday"] else "<div class='no-news'>No articles from yesterday.</div>"
 html_out += '</div><div id="tab-older" class="tab-content">'
 html_out += tab_data["older"] if tab_data["older"] else "<div class='no-news'>No articles from 2-3 days ago.</div>"
