@@ -4,7 +4,10 @@ from bs4 import BeautifulSoup
 # Configure Gemini API
 api_key = os.environ.get("GEMINI_API_KEY")
 model = None
-if api_key:
+
+if not api_key:
+    print("🚨 CRITICAL ERROR: GEMINI_API_KEY is missing or empty!")
+else:
     try:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-3.8-flash')
@@ -12,7 +15,9 @@ if api_key:
         print(f"Gemini init error: {e}")
 
 now_ts = time.time()
-build_time_str = datetime.datetime.now(datetime.timezone.utc).strftime("%b %d, %H:%M UTC")
+# Converted build timestamp from UTC to IST (UTC + 5:30)
+ist_tz = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+build_time_str = datetime.datetime.now(ist_tz).strftime("%b %d, %H:%M IST")
 
 FEEDS = {
     "ALL TOP STORIES": [
@@ -220,10 +225,12 @@ for tag, feed_list in FEEDS.items():
 
     processed_groups = []
     if model:
-        try:
-            input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
-            
-            prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
+                
+                prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
 
 RAW ARTICLES:
 {json.dumps(input_items)}
@@ -247,30 +254,38 @@ STRICT RULES:
 2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
 3. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
 """
-            # Disable safety filters so violent news doesn't crash the API
-            safety_settings = [
-                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
-            ]
+                safety_settings = [
+                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+                ]
 
-            # FORCE valid JSON output at the server level
-            res = model.generate_content(
-                prompt, 
-                safety_settings=safety_settings,
-                generation_config={
-                    "temperature": 0.1,
-                    "response_mime_type": "application/json"
-                }
-            )
-            
-            if res and res.text:
-                processed_groups = json.loads(res.text)
+                # FORCE valid JSON output at the server level
+                res = model.generate_content(
+                    prompt, 
+                    safety_settings=safety_settings,
+                    generation_config={
+                        "temperature": 0.1,
+                        "response_mime_type": "application/json"
+                    }
+                )
                 
-            time.sleep(5) 
-        except Exception as e:
-            print(f"Gemini API Error for {tag}: {e}")
+                if res and res.text:
+                    processed_groups = json.loads(res.text)
+                
+                # Pause 13 seconds between requests to strictly respect the 5 RPM limit
+                time.sleep(13)
+                break  # Exit retry loop on success
+
+            except Exception as e:
+                err_msg = str(e)
+                if "429" in err_msg and attempt < max_retries - 1:
+                    print(f"⚠️ Rate limited on {tag}. Waiting 45s before retry {attempt + 1}/{max_retries}...")
+                    time.sleep(45)
+                else:
+                    print(f"Gemini API Error for {tag}: {e}")
+                    break
 
     # Fallback if API fails or returns invalid JSON
     if not processed_groups:
