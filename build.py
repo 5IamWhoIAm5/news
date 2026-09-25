@@ -16,7 +16,6 @@ if api_key:
 now_ts = time.time()
 build_time_str = datetime.datetime.now(datetime.timezone.utc).strftime("%b %d, %H:%M UTC")
 
-# Direct high-content RSS feeds
 FEEDS = {
     "ALL TOP STORIES": [
         ("NDTV", "https://feeds.feedburner.com/ndtvnews-top-stories"),
@@ -63,7 +62,6 @@ FEEDS = {
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 def clean_text(raw_html):
-    """Clean HTML tags and decode unescaped characters."""
     if not raw_html:
         return ""
     text = re.sub(r'<[^>]+>', ' ', raw_html)
@@ -72,10 +70,11 @@ def clean_text(raw_html):
     return text
 
 def clean_raw_title(title):
-    """Strip publisher suffixes (- NDTV, - Reuters) and prefixes (BREAKING |)."""
+    """Strip publisher tags, live flags, and takeaway hooks from titles."""
     title = clean_text(title)
     title = re.sub(r'\s*-\s*[A-Za-z0-9\s\.\&\'-]+$', '', title)
-    title = re.sub(r'^(BREAKING|WATCH|LIVE|EXCLUSIVE|JUST IN)\s*[\|\:]\s*', '', title, flags=re.IGNORECASE)
+    title = re.sub(r'^(BREAKING|WATCH|LIVE|EXCLUSIVE|JUST IN|LIVE Updates:?)\s*[\|\:]?\s*', '', title, flags=re.IGNORECASE)
+    title = re.sub(r'^(Key Takeaways|Five Takeaways|4 Takeaways|Top \d+ takeaways)\s*(from|of)?\s*', '', title, flags=re.IGNORECASE)
     return title.strip()
 
 def parse_time_info(parsed_time):
@@ -204,29 +203,30 @@ for tag, feed_list in FEEDS.items():
     
     if model:
         try:
-            input_items = [{"id": i, "title": a["title"], "desc": a["desc"]} for i, a in enumerate(raw_articles[:10])]
+            input_items = [{"id": i, "title": a["title"], "desc": a["desc"]} for i, a in enumerate(raw_articles[:12])]
             
             prompt = (
-                f"You are an objective news editor for category '{tag}'.\n"
-                f"Analyze these articles: {json.dumps(input_items)}\n\n"
-                f"Instructions:\n"
-                f"1. Group articles reporting on the exact same event together.\n"
-                f"2. For each story group, generate:\n"
-                f"   - 'headline': A neutral, factual headline (8-12 words max). NO clickbait, hooks, or publisher names.\n"
-                f"   - 'takeaways': Array of 2 to 3 short, dense bullet points summarizing core facts, decisions, numbers, or names. "
-                f"Extract key points from title AND description. NEVER write 'no context available' or generic placeholders.\n"
-                f"   - 'source_ids': Array of integer IDs included in this group.\n"
-                f"Return JSON array of story objects."
+                f"You are a master news editor for '{tag}'. Analyze these news items:\n"
+                f"{json.dumps(input_items)}\n\n"
+                f"STRICT RULES:\n"
+                f"1. DEDUPLICATION: Any items reporting on the same event/meeting/topic (e.g., Trump-Xi summit, UN speeches, elections) MUST be merged into EXACTLY 1 story object. Never output separate objects for different articles covering the same event.\n"
+                f"2. HEADLINE: Write a neutral, non-clickbait title (8-12 words max). State the event directly. Strip 'LIVE', 'Updates', 'Takeaways', and media hooks.\n"
+                f"3. FACT-DENSE TAKEAWAYS: Provide 2 to 4 bullet points containing HARD FACTS, TOPICS DISCUSSED (e.g. trade tariffs, Taiwan, AI rules), DATES, LOCATIONS, and NUMBERS across all merged sources. Completely ignore fluff or empty quotes like 'had a great meeting'.\n"
+                f"4. Output JSON array of story objects with keys: 'headline', 'takeaways' (array of strings), 'source_ids' (array of integers matching inputs).\n"
             )
             
             res = model.generate_content(prompt)
             if res and res.text:
-                processed_groups = json.loads(res.text)
+                resp_text = res.text.strip()
+                if resp_text.startswith("```"):
+                    resp_text = re.sub(r"^```[a-z]*\n?", "", resp_text)
+                    resp_text = re.sub(r"\n?```$", "", resp_text)
+                processed_groups = json.loads(resp_text)
             time.sleep(1)
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
-    # Fallback if Gemini API fails
+    # Fallback if Gemini fails
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
@@ -252,8 +252,7 @@ for tag, feed_list in FEEDS.items():
         headline = group.get("headline") or newest_article["title"]
         takeaways = group.get("takeaways", [])
 
-        # Guaranteed non-empty takeaways
-        valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str) and "no context" not in t.lower()]
+        valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
             valid_takeaways = [newest_article["desc"]] if newest_article["desc"] else [newest_article["title"]]
 
