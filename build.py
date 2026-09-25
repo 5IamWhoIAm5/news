@@ -268,7 +268,7 @@ STRICT RULES:
             if res and res.text:
                 processed_groups = json.loads(res.text)
                 
-            time.sleep(1.5) 
+            time.sleep(5) 
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
