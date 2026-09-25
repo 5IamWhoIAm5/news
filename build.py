@@ -223,14 +223,13 @@ for tag, feed_list in FEEDS.items():
         try:
             input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
             
-            # Simplified prompt that gets straight to the point
             prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
 
 RAW ARTICLES:
 {json.dumps(input_items)}
 
 OUTPUT FORMAT:
-You MUST return ONLY a valid JSON array of objects. No markdown, no explanations, no other text.
+Return a JSON array of objects using this exact schema:
 
 [
   {{
@@ -248,7 +247,7 @@ STRICT RULES:
 2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
 3. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
 """
-            # MUST disable safety filters to prevent news about violence/crime from crashing the API
+            # Disable safety filters so violent news doesn't crash the API
             safety_settings = [
                 {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
                 {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -256,24 +255,20 @@ STRICT RULES:
                 {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
             ]
 
+            # FORCE valid JSON output at the server level
             res = model.generate_content(
                 prompt, 
                 safety_settings=safety_settings,
-                generation_config={"temperature": 0.1}
+                generation_config={
+                    "temperature": 0.1,
+                    "response_mime_type": "application/json"
+                }
             )
             
-            # Bulletproof JSON extraction
-            try:
-                resp_text = res.text.strip()
-                # Use regex to find everything between the first [ and the last ]
-                match = re.search(r'\[\s*\{.*\}\s*\]', resp_text, re.DOTALL)
-                if match:
-                    resp_text = match.group(0)
-                processed_groups = json.loads(resp_text)
-            except ValueError:
-                print(f"Safety filter blocked response for {tag}.")
+            if res and res.text:
+                processed_groups = json.loads(res.text)
                 
-            time.sleep(1.5) # Prevent rate limits
+            time.sleep(1.5) 
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
