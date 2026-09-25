@@ -234,7 +234,7 @@ html_out = f"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Micro News</title>
+<title>NEWS</title>
 <style>
   :root {{ --bg: #090a0f; --card-bg: #13151c; --text: #e2e8f0; --text-muted: #94a3b8; --accent: #38bdf8; --border: #1e293b; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }}
@@ -268,7 +268,7 @@ html_out = f"""<!DOCTYPE html>
 <body>
 <header>
   <div class="header-top">
-    <h1>Micro News</h1>
+    <h1>News</h1>
     <span class="refresh-badge">Refreshed: {build_time_str}</span>
   </div>
   <div class="tabs">
