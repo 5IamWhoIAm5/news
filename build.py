@@ -15,7 +15,6 @@ else:
         print(f"Gemini init error: {e}")
 
 now_ts = time.time()
-# Converted build timestamp from UTC to IST (UTC + 5:30)
 ist_tz = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 build_time_str = datetime.datetime.now(ist_tz).strftime("%b %d, %H:%M IST")
 
@@ -144,6 +143,92 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
+# 1. Fetch all articles across all categories first
+category_raw_data = {}
+all_articles_map = {}
+
+for tag, feed_list in FEEDS.items():
+    raw_articles = []
+    for source_name, feed_url in feed_list:
+        parsed = feedparser.parse(feed_url)
+        for entry in parsed.entries[:6]:
+            group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
+            if group_key == "discard":
+                continue
+            raw_title = clean_text(entry.get('title', ''))
+            link = entry.get('link', '#')
+            full_content = get_full_article_content(entry, link)
+            if is_junk_live_blog(raw_title, full_content):
+                continue
+            raw_articles.append({
+                "source": source_name,
+                "title": raw_title,
+                "content": full_content,
+                "link": link,
+                "pub_ts": pub_ts,
+                "group_key": group_key,
+                "time_ago": time_ago
+            })
+    if raw_articles:
+        all_articles_map[tag] = raw_articles
+        category_raw_data[tag] = [
+            {"id": i, "title": a["title"], "full_text": a["content"]}
+            for i, a in enumerate(raw_articles[:8])
+        ]
+
+# 2. Perform a single batched Gemini API call for all categories
+batch_results = {}
+
+if model and category_raw_data:
+    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category.
+
+CATEGORIES AND RAW ARTICLES:
+{json.dumps(category_raw_data)}
+
+OUTPUT FORMAT:
+Return a JSON object where each key is the category name, mapping to an array of summarized story objects:
+
+{{
+  "CATEGORY_NAME": [
+    {{
+      "headline": "Clean, Factual Headline Here",
+      "takeaways": [
+        "First standalone factual sentence goes here.",
+        "Second standalone factual sentence goes here."
+      ],
+      "source_ids": [0, 1]
+    }}
+  ]
+}}
+
+STRICT RULES:
+1. 2 TO 4 COMPLETE SENTENCES: Write 2 to 4 crisp, standalone sentences per story takeaway. Do not truncate.
+2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
+3. DEDUPLICATION: Combine articles covering the exact same event into ONE object within that category.
+"""
+
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+    ]
+
+    try:
+        res = model.generate_content(
+            prompt,
+            safety_settings=safety_settings,
+            generation_config={
+                "temperature": 0.1,
+                "response_mime_type": "application/json"
+            }
+        )
+        if res and res.text:
+            batch_results = json.loads(res.text)
+    except Exception as e:
+        print(f"Batched Gemini API Error: {e}")
+
+# 3. Construct HTML
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -197,97 +282,10 @@ html_out = f"""<!DOCTYPE html>
 
 tab_data = {"today": "", "yesterday": "", "older": ""}
 
-for tag, feed_list in FEEDS.items():
-    raw_articles = []
-    for source_name, feed_url in feed_list:
-        parsed = feedparser.parse(feed_url)
-        for entry in parsed.entries[:6]:
-            group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
-            if group_key == "discard":
-                continue
-            raw_title = clean_text(entry.get('title', ''))
-            link = entry.get('link', '#')
-            full_content = get_full_article_content(entry, link)
-            if is_junk_live_blog(raw_title, full_content):
-                continue
-            raw_articles.append({
-                "source": source_name,
-                "title": raw_title,
-                "content": full_content,
-                "link": link,
-                "pub_ts": pub_ts,
-                "group_key": group_key,
-                "time_ago": time_ago
-            })
+for tag, raw_articles in all_articles_map.items():
+    processed_groups = batch_results.get(tag, [])
 
-    if not raw_articles:
-        continue
-
-    processed_groups = []
-    if model:
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
-                
-                prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
-
-RAW ARTICLES:
-{json.dumps(input_items)}
-
-OUTPUT FORMAT:
-Return a JSON array of objects using this exact schema:
-
-[
-  {{
-    "headline": "Clean, Factual Headline Here",
-    "takeaways": [
-      "First standalone factual sentence goes here.",
-      "Second standalone factual sentence goes here."
-    ],
-    "source_ids": [0, 1]
-  }}
-]
-
-STRICT RULES:
-1. 2 TO 4 COMPLETE SENTENCES: Write 2 to 4 crisp, standalone sentences per story. Do not truncate or use '...'.
-2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
-3. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
-"""
-                safety_settings = [
-                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-                    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-                    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
-                ]
-
-                # FORCE valid JSON output at the server level
-                res = model.generate_content(
-                    prompt, 
-                    safety_settings=safety_settings,
-                    generation_config={
-                        "temperature": 0.1,
-                        "response_mime_type": "application/json"
-                    }
-                )
-                
-                if res and res.text:
-                    processed_groups = json.loads(res.text)
-                
-                # Pause 13 seconds between requests to strictly respect the 5 RPM limit
-                time.sleep(13)
-                break  # Exit retry loop on success
-
-            except Exception as e:
-                err_msg = str(e)
-                if "429" in err_msg and attempt < max_retries - 1:
-                    print(f"⚠️ Rate limited on {tag}. Waiting 45s before retry {attempt + 1}/{max_retries}...")
-                    time.sleep(45)
-                else:
-                    print(f"Gemini API Error for {tag}: {e}")
-                    break
-
-    # Fallback if API fails or returns invalid JSON
+    # Fallback if API failed or didn't return this category
     if not processed_groups:
         processed_groups = [{
             "headline": f"[RAW] {a['title']}",
