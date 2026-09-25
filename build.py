@@ -16,49 +16,64 @@ if api_key:
 now_ts = time.time()
 build_time_str = datetime.datetime.now(datetime.timezone.utc).strftime("%b %d, %H:%M UTC")
 
+# Direct high-content RSS feeds
 FEEDS = {
     "ALL TOP STORIES": [
-        ("Google News", "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"),
-        ("BBC", "https://feeds.bbci.co.uk/news/world/rss.xml")
+        ("NDTV", "https://feeds.feedburner.com/ndtvnews-top-stories"),
+        ("BBC", "https://feeds.bbci.co.uk/news/rss.xml"),
+        ("Indian Express", "https://indianexpress.com/feed/")
     ],
     "PUNE (LOCAL)": [
         ("Hindustan Times", "https://www.hindustantimes.com/feeds/rss/cities/pune-news/rssfeed.xml"),
-        ("Google News Pune", "https://news.google.com/rss/search?q=Pune&hl=en-IN&gl=IN&ceid=IN:en")
+        ("Indian Express Pune", "https://indianexpress.com/section/cities/pune/feed/")
     ],
     "INDIA": [
+        ("NDTV India", "https://feeds.feedburner.com/ndtvnews-india-news"),
         ("Indian Express", "https://indianexpress.com/section/india/feed/"),
-        ("Google News India", "https://news.google.com/rss/search?q=India+News&hl=en-IN&gl=IN&ceid=IN:en")
+        ("Times of India", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms")
     ],
     "WORLD": [
-        ("BBC", "https://feeds.bbci.co.uk/news/world/rss.xml"),
-        ("NYT", "https://rss.nytimes.com/services/xml/rss/nyt/World.xml")
+        ("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
+        ("Al Jazeera", "https://www.aljazeera.com/xml/rss/all.xml"),
+        ("NYT World", "https://rss.nytimes.com/services/xml/rss/nyt/World.xml")
     ],
     "TECH": [
         ("TechCrunch", "https://feeds.feedburner.com/TechCrunch/"),
-        ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index")
+        ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
+        ("Verge", "https://www.theverge.com/rss/index.xml")
     ],
     "FINANCE": [
-        ("NYT Business", "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"),
-        ("Economic Times", "https://economictimes.indiatimes.com/rssfeedstopstories.cms")
+        ("Economic Times", "https://economictimes.indiatimes.com/rssfeedstopstories.cms"),
+        ("Moneycontrol", "https://www.moneycontrol.com/rss/latestnews.xml")
     ],
     "AUTO": [
         ("Autocar India", "https://www.autocarindia.com/rss/all"),
-        ("Motor Authority", "https://www.motorauthority.com/rss-feeds")
+        ("MotorOctane", "https://motoroctane.com/feed")
     ],
     "SPORTS": [
-        ("Google Sports", "https://news.google.com/rss/search?q=Sports+India&hl=en-IN&gl=IN&ceid=IN:en"),
-        ("ESPN", "https://www.espn.com/espn/rss/news")
+        ("ESPN Cricinfo", "https://www.espncricinfo.com/rss/content/story/feeds/0.xml"),
+        ("NDTV Sports", "https://feeds.feedburner.com/ndtvsports-latest")
     ],
     "CULTURE & MOVIES": [
         ("Variety", "https://variety.com/feed/"),
-        ("Hollywood Reporter", "https://www.hollywoodreporter.com/feed/")
+        ("Indian Express Ent", "https://indianexpress.com/section/entertainment/feed/")
     ]
 }
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
+def clean_text(raw_html):
+    """Clean HTML tags and decode unescaped characters."""
+    if not raw_html:
+        return ""
+    text = re.sub(r'<[^>]+>', ' ', raw_html)
+    text = html.unescape(text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
 def clean_raw_title(title):
     """Strip publisher suffixes (- NDTV, - Reuters) and prefixes (BREAKING |)."""
+    title = clean_text(title)
     title = re.sub(r'\s*-\s*[A-Za-z0-9\s\.\&\'-]+$', '', title)
     title = re.sub(r'^(BREAKING|WATCH|LIVE|EXCLUSIVE|JUST IN)\s*[\|\:]\s*', '', title, flags=re.IGNORECASE)
     return title.strip()
@@ -89,7 +104,7 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# HTML Layout Shell
+# HTML Layout
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,16 +180,17 @@ for tag, feed_list in FEEDS.items():
             if group_key == "discard":
                 continue
                 
-            raw_title = html.unescape(entry.get('title', ''))
+            raw_title = entry.get('title', '')
             clean_title = clean_raw_title(raw_title)
-            desc = html.unescape(entry.get('summary', entry.get('description', '')))
-            clean_desc = desc.split('<')[0] if '<' in desc else desc
+            
+            raw_desc = entry.get('summary', entry.get('description', ''))
+            clean_desc = clean_text(raw_desc)[:350]
             link = entry.get('link', '#')
             
             raw_articles.append({
                 "source": source_name,
                 "title": clean_title,
-                "desc": clean_desc[:300].strip(),
+                "desc": clean_desc,
                 "link": link,
                 "pub_ts": pub_ts,
                 "group_key": group_key,
@@ -194,10 +210,11 @@ for tag, feed_list in FEEDS.items():
                 f"You are an objective news editor for category '{tag}'.\n"
                 f"Analyze these articles: {json.dumps(input_items)}\n\n"
                 f"Instructions:\n"
-                f"1. Group articles reporting on the exact same news topic together.\n"
+                f"1. Group articles reporting on the exact same event together.\n"
                 f"2. For each story group, generate:\n"
-                f"   - 'headline': A neutral, non-clickbait headline (10-14 words max). Pure factual statement. No hooks or publisher names.\n"
-                f"   - 'takeaways': Array of 3 to 4 dense bullet points summarizing core facts, figures, dates, or decisions.\n"
+                f"   - 'headline': A neutral, factual headline (8-12 words max). NO clickbait, hooks, or publisher names.\n"
+                f"   - 'takeaways': Array of 2 to 3 short, dense bullet points summarizing core facts, decisions, numbers, or names. "
+                f"Extract key points from title AND description. NEVER write 'no context available' or generic placeholders.\n"
                 f"   - 'source_ids': Array of integer IDs included in this group.\n"
                 f"Return JSON array of story objects."
             )
@@ -209,11 +226,11 @@ for tag, feed_list in FEEDS.items():
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
-    # Fallback if Gemini is unavailable
+    # Fallback if Gemini API fails
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
-            "takeaways": [a["desc"]] if a["desc"] else ["No additional context provided by source."],
+            "takeaways": [a["desc"]] if a["desc"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
@@ -235,11 +252,12 @@ for tag, feed_list in FEEDS.items():
         headline = group.get("headline") or newest_article["title"]
         takeaways = group.get("takeaways", [])
 
-        # Ensure takeaways are never blank
-        if not takeaways or not isinstance(takeaways, list):
-            takeaways = [newest_article["desc"]] if newest_article["desc"] else ["No further details available."]
+        # Guaranteed non-empty takeaways
+        valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str) and "no context" not in t.lower()]
+        if not valid_takeaways:
+            valid_takeaways = [newest_article["desc"]] if newest_article["desc"] else [newest_article["title"]]
 
-        takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in takeaways if t])
+        takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
 
         sources_html = ""
         seen_sources = set()
