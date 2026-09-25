@@ -36,8 +36,9 @@
   .time-badge { background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
   .summary-text { flex-grow: 1; }
   
-  .details-content { padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.25); }
-  .gist-text { margin-bottom: 10px; font-weight: 400; }
+  .details-content { padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.25); }
+  .takeaways-list { margin: 4px 0 10px 16px; padding: 0; }
+  .takeaways-list li { margin-bottom: 6px; color: #e2e8f0; font-size: 12.5px; line-height: 1.4; }
   .sources-container { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .sources-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }
   .source-btn { display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }
@@ -48,7 +49,7 @@
 <header>
   <div class="header-top">
     <h1>Micro News</h1>
-    <span class="refresh-badge">Refreshed: Sep 25, 03:19 UTC</span>
+    <span class="refresh-badge">Refreshed: Sep 25, 03:26 UTC</span>
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('today')">Today</button>
@@ -63,14 +64,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Trade, Taiwan And AI: Five Takeaways From Donald Trump, Xi Jinping Summit - NDTV</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Trump-Xi summit: Four key takeaways from the Washington, DC, meeting</span>
+              <span class="time-badge">3h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxQSWk1cFNXZmo1N1A2SFVXNS1reTZRNWNjMnJyME1DOGpyUXlCNE9LLTFtRzhIUlQ4Z3RhLXUtS3dRZ1pSalBsZnZfMnNtWExIcnJVb2tUWk0tLWpQdG5wMjN3RF9rUmduU1JlTlFmZ0hKN1FzTUpXb3lra1ppZjN0bEZBYTdNdEFiNjNXaFhHbUJpa2Q3T1A4RGlhc1RQWGRSVW9Wb3FnbVBleHVyU3pkOA?oc=5" target="_blank" class="source-btn">Google News ↗</a>
+                <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxORDBwV3d5TTVkeFJpdjhwSDV3Y2JLNkxRd0pyQjhWLTZETGc0ZjZjN29LdlhObEJXd29zMzAza0tZZ0FwN3BaN3ZMc2g0N2tCZUhPUnpfVU5nWjBrNFVZbHRRLTIxUUZQZHRfYnRfOXBpQWZaRFR0dkcxbE5WcjEzeDdZQjNuM3dpekVWbDllS3lBVmNDVXBIVUFwMW5OTDZFYU1Ub0ZTa2ZfQdIBrwFBVV95cUxPN3ZkbFVZTXRoNE02bHo2bXBkLTVybmtnT0JjYWJRZFVZbm9ULTJJeXhuLW1IbUhJRDNoMXpHc3NCM3M5MjFPakN1aC1sVTYyc21wWWFJMHZWNWg2N0xDWV9UZTA3RlJXZGNRZ2lfQm9SS3JyT3p2dC1pZ1dEWTBLV1FuZVBwU0JsbnZBVVJwd21oeTBoemZOalpjOVlyemRxeFdmZEZyUDlvYmFjZE9V?oc=5" target="_blank" class="source-btn">Google News ↗</a>
               </div>
             </div>
           </details>
@@ -80,28 +83,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">BREAKING | Plea In Bombay High Court To Quash 14 Orders Passed By CEC Gyanesh Kumar Despite Objections Of ... - livelaw.in</span>
-              <span class="time-badge">11h ago</span>
-            </summary>
-            <div class="details-content">
-              <div class="gist-text"></div>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxNS1lLQzFxbjVhbkQ3S1NlNm52MGh4UFRFemtDR0kzSDJGbWd4ZVRNT3BGUkthbmVncTZWREVZaS02alhkMUw5OUJRZkFCeFZhaHFlTlVjNDBoVHA0YW8ydnFHN1NBbzhuOVZtRk5iOTdKNVl0MENweV9MNy1MdDA5SzZwQ0hMSmhsbV92bWx5TEpUYnpoQS1MOVZZYmFnTmpJZnhKOEUxeXJEU3VRWmtmQVZoYjdDVkV6UmczT2p6ckV4U0RkSHgyOUZLV3Z1MUF1UWkwalpfZjJhcDlzcDhLNFhkVlhaeWtzanlybtIB8gFBVV95cUxQcG1YRlhtS2FSZl9QQ2tvV0NFak5TYXR4VEJnUnFReW5fSm5HbTB1LWdONWdUZ0l2WnRFWU1pRzF4M1FIVzg3OEJubU02SjNhWnZLQjAyM1g3ckE0eVMxUmVYdmV4Y1lRNmZVejVDRlhBZ0JRcGgwSHN5bXB3NWFGODNBNHdNNWNqbnlUZTM2a216Y0tkcU9nRmVWYVo1NHEtNHZZcWZ4N29WcXFWeDQ0U1QxZG1rc29EZnpCYnh1WGE4clRkelozRzZVQWZNRTV4NGJJNmk4c3EzQ2NVa1NDUmFKcVdzVDY4WkhzZnliaV9CUQ?oc=5" target="_blank" class="source-btn">Google News ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Netanyahu Attacks UK, France, Turkey In Fiery UN Speech - NDTV</span>
+              <span class="summary-text">Netanyahu Attacks UK, France, Turkey In Fiery UN Speech</span>
               <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxPRVQxcnNWZzZsQ21XNkk4MldubFBRVFdSSGdPeE5Dbk1FVXhTcHhtMktHaDhFeEZEWmZqQ0ZKTjlIMTFEdUJsYlVnWFJERG9QQUJRRlE2Q3lXTThuWjM0dGNyb0FDUEROVGY4ZEdMTHR5ZVBUeExkeXZCX3d0VExGaEdmNnFXaG4zLXFIbU5QVTlyNUN6UTVieTYwVndfZWl0VER0RkN30gGuAUFVX3lxTE1PcjFFLTVwU2ZET050NE1GQmZFQlc0a2lGaGRzTldoQ0ttcXdaTTliMDFRMkpQb2dRMFFKTy0tc0o4dnZINGlyVmxiWE1TaWNJMU9kblNSOEREcjdsM3VJSXFfNHZWa0pNREZVZ3RSRG1uMjBxRW9iLWNMUktzOWZiLXBhYlQwQVhqMUtqUUZVWWJXU3ZjZEhpUklENWZ6SlBUeHhYV056Tk96VDNqUQ?oc=5" target="_blank" class="source-btn">Google News ↗</a>
@@ -114,11 +102,32 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">US and Iran discuss phased deal to reopen Hormuz and end US blockade, sources say - Reuters</span>
+              <span class="summary-text">Plea In Bombay High Court To Quash 14 Orders Passed By CEC Gyanesh Kumar Despite Objections Of ...</span>
+              <span class="time-badge">11h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxNS1lLQzFxbjVhbkQ3S1NlNm52MGh4UFRFemtDR0kzSDJGbWd4ZVRNT3BGUkthbmVncTZWREVZaS02alhkMUw5OUJRZkFCeFZhaHFlTlVjNDBoVHA0YW8ydnFHN1NBbzhuOVZtRk5iOTdKNVl0MENweV9MNy1MdDA5SzZwQ0hMSmhsbV92bWx5TEpUYnpoQS1MOVZZYmFnTmpJZnhKOEUxeXJEU3VRWmtmQVZoYjdDVkV6UmczT2p6ckV4U0RkSHgyOUZLV3Z1MUF1UWkwalpfZjJhcDlzcDhLNFhkVlhaeWtzanlybtIB8gFBVV95cUxQcG1YRlhtS2FSZl9QQ2tvV0NFak5TYXR4VEJnUnFReW5fSm5HbTB1LWdONWdUZ0l2WnRFWU1pRzF4M1FIVzg3OEJubU02SjNhWnZLQjAyM1g3ckE0eVMxUmVYdmV4Y1lRNmZVejVDRlhBZ0JRcGgwSHN5bXB3NWFGODNBNHdNNWNqbnlUZTM2a216Y0tkcU9nRmVWYVo1NHEtNHZZcWZ4N29WcXFWeDQ0U1QxZG1rc29EZnpCYnh1WGE4clRkelozRzZVQWZNRTV4NGJJNmk4c3EzQ2NVa1NDUmFKcVdzVDY4WkhzZnliaV9CUQ?oc=5" target="_blank" class="source-btn">Google News ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">US and Iran discuss phased deal to reopen Hormuz and end US blockade, sources say</span>
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxNYXMwQlBmRVM4WXVFeXhQVkcyYnpaUzE3dk1wUWswS3pZWDBKTGNWVEpqdFNsWXZEYm5PQ3pSVmRhVFl1empQN3p6SFY0YTVHRmxxNWpxbXFNWVlCOEF5T0tBLVp0MzNyWVlyQnpkbUtyVzNTeGtxQXZVc3hhb0E4aVV6bU5QVEdHMFhCaXRhV3hxQVJ3MWRXNF9tNG5EeUVzcTdEOUhGSExiS3F2SUlkS2xzRk1mNlg4bkRhR0FoaE5QZw?oc=5" target="_blank" class="source-btn">Google News ↗</a>
@@ -131,11 +140,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">'Inappropriate to ask': Years before Sahil Wakode's death, IIT-Bombay professor warned students against c - The Times of India</span>
+              <span class="summary-text">'Inappropriate to ask': Years before Sahil Wakode's death, IIT</span>
               <span class="time-badge">21h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiigJBVV95cUxNZzE4My1lbnFWd2RCSUVLa3AwajU5VFJRNmItT2dlbWVZeDBsTExhelJ3Z0VRbHBHQkhSWGx4WUZ4SHIzWWd2cy1xd2ZHb2UzQnp5UUkxSEhWdk81Q2pTVHVFYnl3NmhyT052UlVWTVRiejZmWWw5VHl5X3RzMUloVGRKaXJSM2ZRNzlrMmV0MU5ubmQtdjItTlNGS0Zwd0s0ZVhfMmZEeGZfWW04RzhFTHpCdEtlaXVmQnBGV3lFZjB0YWNvb0xHR2JDaE5Pc0RPTDROM2hwMVliQ1BBWHdVbjZLSVBXa25Lbk4tbXItVXYzQXk1UmQyb1gtS25Cd2tKbGN4dzVxVU5EQQ?oc=5" target="_blank" class="source-btn">Google News ↗</a>
@@ -148,11 +159,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">HDFC Bank, IndusInd Bank: Banking, financial stocks tumble after IRDAI proposal; NIFTY Bank tanks over 1,130 points - upstox.com</span>
+              <span class="summary-text">HDFC Bank, IndusInd Bank: Banking, financial stocks tumble after IRDAI proposal; NIFTY Bank tanks over 1,130 points</span>
               <span class="time-badge">18h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMigAJBVV95cUxPY3JqR1NPTHhQdU9JQ1c4V0ZfMzhHenBVcUxjSEZxZTB3QW9DcUk2bmZsb0ZtNkxpMFQ0QzRmU3F5ellDQ1hxbHJRQlRiTHZGVnctcXhvYXBCZmN6dTFMYkFHN1BHb3h3UmFNaGdNVTN0Y0xkQ3gtV2haZlhLVnROajY0WHhsRVZwY25WVUt3TUZtODB4bmdSYTRCbzF5RDFOZmc5SkJadGlxRDZOTDNBdWdxYjNkM20tWG1ibk4tQkRzZVUtREw0c0poeV9hd3R6OUZIM2N2T0dsRzVOMEtlb2dxSnFiRHZlRF94d1dhZXJCV2RTR1FmU3VwUXhtU1dZ?oc=5" target="_blank" class="source-btn">Google News ↗</a>
@@ -169,7 +182,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The Israeli leader labels those who left his speech at the UN General Assembly as "moral cowards".</div>
+              <ul class="takeaways-list">
+                <li>The Israeli leader labels those who left his speech at the UN General Assembly as &quot;moral cowards&quot;.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/c3y0z7kxlegdo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -186,7 +201,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</div>
+              <ul class="takeaways-list">
+                <li>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -200,10 +217,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">IIT alumnus gets life term for strangling sister in 2010</span>
-              <span class="time-badge">44m ago</span>
+              <span class="time-badge">51m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Pune Sessions Court sentenced IIT alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavdhan flat in 2010</div>
+              <ul class="takeaways-list">
+                <li>Pune Sessions Court sentenced IIT alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavdhan flat in 2010</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/iit-alumnus-gets-life-term-for-strangling-sister-in-2010-101790279218095.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -217,10 +236,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Seven FIRs involving losses of  ₹1.87 crore registered</span>
-              <span class="time-badge">45m ago</span>
+              <span class="time-badge">52m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Pune police registered seven cheating-related FIRs involving financial losses of around  ₹1.8 crore, with cases ranging from alleged fake RTO challan application to misappropriation of company funds</div>
+              <ul class="takeaways-list">
+                <li>Pune police registered seven cheating-related FIRs involving financial losses of around  ₹1.8 crore, with cases ranging from alleged fake RTO challan application to misappropriation of company funds</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/seven-firs-involving-losses-of-1-87-crore-registered-101790279037940.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -234,10 +255,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">PMC prepared for Ganesh Visarjan on Anant Chaturdashi</span>
-              <span class="time-badge">47m ago</span>
+              <span class="time-badge">54m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">PMC is all set for immersion of Ganesh idols on Friday by deploying 120 lifeguards and 37 fire brigade personnel at 15 immersion ghats across the city for safety purposes</div>
+              <ul class="takeaways-list">
+                <li>PMC is all set for immersion of Ganesh idols on Friday by deploying 120 lifeguards and 37 fire brigade personnel at 15 immersion ghats across the city for safety purposes</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/pmc-prepared-for-ganesh-visarjan-on-anant-chaturdashi-101790278737918.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -251,10 +274,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">MPSC stir: Student leaders, Telegram admins served notices</span>
-              <span class="time-badge">49m ago</span>
+              <span class="time-badge">56m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Police said the proposed locations could see traffic and public-order issues, particularly during Ganeshotsav</div>
+              <ul class="takeaways-list">
+                <li>Police said the proposed locations could see traffic and public-order issues, particularly during Ganeshotsav</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/mpsc-stir-student-leaders-telegram-admins-served-notices-101790278498943.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -268,10 +293,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Police face heat after man dies during Ganpati immersion procession</span>
-              <span class="time-badge">52m ago</span>
+              <span class="time-badge">59m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The death of man during Ganpati immersion procession in Ahilyanagar has triggered a controversy, with NCP MLA Sangram Jagtap and residents alleging that he died following police lathi-charge</div>
+              <ul class="takeaways-list">
+                <li>The death of man during Ganpati immersion procession in Ahilyanagar has triggered a controversy, with NCP MLA Sangram Jagtap and residents alleging that he died following police lathi-charge</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -285,10 +312,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Katraj SWaCH waste facility gets notice over fire safety lapses</span>
-              <span class="time-badge">57m ago</span>
+              <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">PMC fire brigade on Thursday issued notice to SWaCH waste facility at Garbage Ramp, Katraj, directing it to address fire-safety lapses within seven days</div>
+              <ul class="takeaways-list">
+                <li>PMC fire brigade on Thursday issued notice to SWaCH waste facility at Garbage Ramp, Katraj, directing it to address fire-safety lapses within seven days</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
@@ -301,11 +330,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Pune awarded 2032 Road Cycling World Championships - The Hindu</span>
-              <span class="time-badge">13h ago</span>
+              <span class="summary-text">Pune awarded 2032 Road Cycling World Championships</span>
+              <span class="time-badge">14h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxObG9Qc0M0RUo5VDJjRjFab2s0Q1pzYktjRm1qMG9ESE02STg3NW9BSGFKdmhqcHVFV3dIektxa25QYlRRT0RuZDhLaGI1X1d5QVNCTjlkWWJDMGdick42Uk45eXZRdmU4ZmRfR2E2MW5HLXlwT1JjNU5EckhORlhjRjI1REVxUHc1WkVEeWNQUmQzSnFtdlcyNVBIYWh2bGVSOWhz0gGqAUFVX3lxTE5XSXRxdDRWZlpiOWhuZFdpTDB4YXo4T0N5Y1FWUlV4dnl4eHZGME5Rd2R1WXI4TWpBR0hDTVVXZ2xCTm1GQ2ZNNnc4dTN4RzBjNzR6elJrQkZ2UnM3czdvSWR4TkhrakxGLUVOTDdoNVpnZlF0LWlVWkJDSlgxalc5VlFCQm5CRk8xZnlNb0pmb0VDUFNWTUN1MFFPd2t2TGZYbjZnUV83XzJR?oc=5" target="_blank" class="source-btn">Google News Pune ↗</a>
@@ -318,11 +349,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Pune to host 2032 UCI cycling Road World Championships - The Indian Express</span>
+              <span class="summary-text">Pune to host 2032 UCI cycling Road World Championships</span>
               <span class="time-badge">20h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxOMmxoUDVZWVdSQXlNVUxEZFlicVlsSEp4MFlHTnVHazRXempPVVg1ZTFUMWNjRVZhSUI1WmhRYUZCeS04T25hazlpYndPTEU0ekRDZUFkMXBUX2w4dVhsWTdzTXdDUGNkNEM5QkoxNHBKZ0NyeV9fWnJVTFBJdnVCdVZleWhpcEMzQTRlOGZVdFE1bUdHbE4xN0xPMlluMTNjbVRjM9IBqwFBVV95cUxNUW81dEF6b3dIM2lBajBRcmxVSm1qQjI2Y3RfQkxiUEQwN1l0TEdSMXR4M0RDZC1rWHkzWXByaGQ1NUp6Y2lUbVRSamMxYWo0SFhvVHRyVm5HeTE5RDBsdTY0UnZtMzlYTzQ0TFp3WEUxZGZ1Vzk1REtudWgxQ2VUNVM2ZG9weml4aUxzT2xuOVBzcURzUkR5T2tLWjBHa3hYTkhPbnhlV0JCMFE?oc=5" target="_blank" class="source-btn">Google News Pune ↗</a>
@@ -335,11 +368,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games 2026 live, September 25: Know India scores, updates and results from Day 6 - olympics.com</span>
-              <span class="time-badge">22m ago</span>
+              <span class="summary-text">Asian Games 2026 live, September 25: Know India scores, updates and results from Day 6</span>
+              <span class="time-badge">29m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxPaWY1Z1Utam5IRzNLaFhfZ2RKYUNONGhqY2NnSmhIa19PTjZ0V0F5LVFVak1fWFhHZWgtMUN3NW9yUTJpdUtBVDdJVHF4UHVYRmZoVUtGRFh1R1FqbHlJN2REY0NQYmVMSWw0MzdzMHBKdlNDUFlGd3M4aXZHNk9zUnZKWVY2cktwbGdLSUZKUnVMOUFqUkFib0I0bko?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -352,11 +387,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games 2026 Day 6 Live Updates: Kamaljeet-Suruchi eye gold in 10m air pistol final - The Times of India</span>
-              <span class="time-badge">22m ago</span>
+              <span class="summary-text">Asian Games 2026 Day 6 Live Updates: Kamaljeet</span>
+              <span class="time-badge">29m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMi-gFBVV95cUxOZi16LUFZTHVUUXhLVzRqZW1QLTJ0dkctN050Nlp4UEdWamxaZmdVbGVGOEdiWllPQjF5LXRxVFhiN3hGUDVOZExWNzFOSFdCY29zTjRhNzZ3ZS04NjlHS2U2ZVRYdTlsMzRxcnFqenRqV1JDcEp5NmRwZHU5NUdCZzhYTjVpOVdERHdWcjFVNGQwWFd6RlZiOG9YdFJod2owcW5xQ3Z2d3d4RUhic2g0Uzc1Q2V0VkFEOGlVRVoyRlpua3VyMUVUWEJVaFBwNmV1dHlIN2Q5bFFna1RHMHM4T0NNRmJRcDZZVFd3QjR2b2dlVjFBcjBpVnVB0gH_AUFVX3lxTE9TLWdzSHRHb0dJcGhQWVUzTTVPODBvanN1bWJiWWpQN1NNR2pkdDBfaHhKV0NFc3llQkhVM3lLbDMtV2RUUlh2SjFYM09jcVN1cXhsSkppYk5LOF84cXBSTFBTLXNJQkRnT2ljazJDUHI1b1lyUHZ1dXhoVy1ac3JFQVBOdzA2Uzc3LXdMWGRxVkNHdl8zQ3RLeHY0MUR3V0hTbzhEd2haVmxjcHE1REFwR2p4ZG9HLTJCZjR0dEh5Wm9YcmlxOWNGZ0JLMndxWVFsMFdGa2h2SEo5OTJ1aEE4dXNnM0dLcVo5QTFLeHJtUGdjQlZtdUk4VjFUbVByWQ?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -369,11 +406,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - newsonair.gov.in</span>
-              <span class="time-badge">10h ago</span>
+              <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m</span>
+              <span class="time-badge">11h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNaDR4b0tMNThWLXdnX1JEWGlNRVJQMFdfNWdEZmxkbVBLZVY1ZExjN1pPNWpNLXFOV0pCem44bFMtWEtkWmpZMzBHNm5LaHpWa2J2eXBwZ2lqOGVSdnhDYUtCTTNrQWZJQWF2N3d1TTRRVjBjTUlnUlFteEZMeTZNNjdRVG84SnlKU3A4Tmw1X3lBUVlPWkJQZzgweC1SLUdtbTJRQXROa0Y5bTk1eVNvaldtQlJob1BlN3NqZGdRYkxFMkYxTU42MTJBZFQ4MmFWLXc?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -386,11 +425,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Union Minister Piyush Goyal highlights India’s expanding engagement with global economy at 13th PAFI Annual Forum 2026 in New Delhi - newsonair.gov.in</span>
+              <span class="summary-text">Union Minister Piyush Goyal highlights India’s expanding engagement with global economy at 13th PAFI Annual Forum 2026 in New Delhi</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxPajhNQ3dGQUNXNVJqNzBsUUxDMVFrZ1pFOHM3aEJUSngzRFd4S2d1NGxUQ0dScEZBVWJMRUxhZWlpOTA1ekY5ZEltX2MxRTkwUzh3Rl9EOEY5MEMxZlJQbkV1b0NlTmF2b3FfMTF6aFVKdkVvekdkdTVJbEl4MnBNY3hkQnduWFF1RjMzSkhGQ2hnWjBKeld2bFNtTm1XNm9OX2NJd3kxMlhQYVJOdGtJNFJVZE50TDdfN3FUNXNMZFFLLURYakFScHd0TEhVTlVLQVRMQnV0LXFvU0ZiUXNaVVh5dVdocGRkNnNQdQ?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -403,11 +444,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Breaking news live updates, September 25: Nepal PM Shah thanks India, China for disaster aid at UNGA - The Times of India</span>
+              <span class="summary-text">Breaking news live updates, September 25: Nepal PM Shah thanks India, China for disaster aid at UNGA</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxNWE96UjZnUTlwZ0FIQm56WHlxUDdQeDlweXljR2s5ZzdsWS1KWWRUWHU4ejFmalYzRG55Z0l6YXp4Z09DV1ZEYlJGaEZpWWktQVl2OV9yU0RUSTlxVlhBZk1IQjNLbWh6S3VGQUlPY1JFWkN2Mzh4aEgxRXY1X25aeEpSQjgyeTdFSGlkV1dnTWxSZkRJMXgtRjkwbnBnb05ORTE3c0ktSdIBrAFBVV95cUxNbWVSNDcySVZ0MHRodk0wQVQzeklya3RpeG9BM3Fxcjd2WlB1Nk9faUwwZ084aG1icFoyb3ZzMmgta1p0a0VpSTk3dmhScTZEX2xTTE55TmNHejVobktqLWo2VFRQYU5DYVlwVHl0UktnUlU2UEx5RXJkOVRpMFU1WUNtZTM0QW5tUXQydU1UR1djcEc2aUQxU0VUN0lacU5zUnpGSTdOS3RUazlh?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -420,11 +463,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">CEC Gyanesh Kumar: Why India's Election Commission is in the eye of a storm - again - BBC</span>
-              <span class="time-badge">18h ago</span>
+              <span class="summary-text">CEC Gyanesh Kumar: Why India's Election Commission is in the eye of a storm</span>
+              <span class="time-badge">19h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFBKNEFqamZyMkFXQjBaMFFFQVpRTTMyXzE2OWhoR2l1S1MwSFlWeXJOSzBTdGViQjB4S1NDQnRxY2V5WG9abWRjR2R1RWM2aWczTWZ3UFdqZjZDOXc?oc=5" target="_blank" class="source-btn">Google News India ↗</a>
@@ -441,7 +486,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The Israeli leader labels those who left his speech at the UN General Assembly as "moral cowards".</div>
+              <ul class="takeaways-list">
+                <li>The Israeli leader labels those who left his speech at the UN General Assembly as &quot;moral cowards&quot;.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/c3y0z7kxlegdo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -458,7 +505,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</div>
+              <ul class="takeaways-list">
+                <li>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -475,7 +524,9 @@
               <span class="time-badge">4h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</div>
+              <ul class="takeaways-list">
+                <li>The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cmq8j904212po?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -492,7 +543,9 @@
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</div>
+              <ul class="takeaways-list">
+                <li>Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cr3eqk15ld14o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -509,7 +562,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Pakistan says it struck 10 targets, adding the strikes were "strictly limited to identified military objectives".</div>
+              <ul class="takeaways-list">
+                <li>Pakistan says it struck 10 targets, adding the strikes were &quot;strictly limited to identified military objectives&quot;.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cm86xn0nnw58o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -526,7 +581,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</div>
+              <ul class="takeaways-list">
+                <li>A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/c607lrvm41l3o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
@@ -543,7 +600,9 @@
               <span class="time-badge">5h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The Haitian government hired Mr. Stone, a confidant of President Trump, weeks after hundreds of thousands of Haitians lost deportation protection. The contract is worth nearly $800,000, a document shows.</div>
+              <ul class="takeaways-list">
+                <li>The Haitian government hired Mr. Stone, a confidant of President Trump, weeks after hundreds of thousands of Haitians lost deportation protection. The contract is worth nearly $800,000, a document shows.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/world/americas/haiti-roger-stone-migration.html" target="_blank" class="source-btn">NYT ↗</a>
@@ -560,7 +619,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">In a combative speech, the prime minister defended Israeli military action across the Middle East, and attacked Mayor Zohran Mamdani of New York. Dozens of delegates walked out of the hall as he took the podium.</div>
+              <ul class="takeaways-list">
+                <li>In a combative speech, the prime minister defended Israeli military action across the Middle East, and attacked Mayor Zohran Mamdani of New York. Dozens of delegates walked out of the hall as he took the podium.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/live/2026/09/24/world/un-general-assembly-news" target="_blank" class="source-btn">NYT ↗</a>
@@ -573,11 +634,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">CDC opens state ordering for COVID-19 vaccines after unexplained delay</span>
+              <span class="summary-text">CDC opens state ordering for COVID</span>
               <span class="time-badge">4h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Health department previously blamed delay on "not yet finalized procurement decisions."</div>
+              <ul class="takeaways-list">
+                <li>Health department previously blamed delay on &quot;not yet finalized procurement decisions.&quot;</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/health/2026/09/cdc-opens-state-ordering-for-covid-19-vaccines-after-unexplained-delay/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -594,7 +657,9 @@
               <span class="time-badge">5h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Introducing the "world-famous authority on outer space..."</div>
+              <ul class="takeaways-list">
+                <li>Introducing the &quot;world-famous authority on outer space...&quot;</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/space/2026/09/disneys-ludwig-von-drake-was-inspired-by-rocket-scientists-65-years-ago/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -607,11 +672,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">F-Droid gets its biggest update in a decade with new UI and smoother app installs</span>
+              <span class="summary-text">F</span>
               <span class="time-badge">7h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">F-Droid's Android app store has been rebuilt from the ground up.</div>
+              <ul class="takeaways-list">
+                <li>F-Droid&#x27;s Android app store has been rebuilt from the ground up.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/gadgets/2026/09/f-droid-gets-its-biggest-update-in-a-decade-with-new-ui-and-smoother-app-installs/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -628,7 +695,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">New York sues Polymarket as Trump admin tries to override state gambling laws.</div>
+              <ul class="takeaways-list">
+                <li>New York sues Polymarket as Trump admin tries to override state gambling laws.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/tech-policy/2026/09/new-york-asks-court-to-shut-down-polymarkets-illegal-gambling-operation/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -645,7 +714,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Oscar-winning documentarian Alex Gibney focuses on the world's wealthiest man.</div>
+              <ul class="takeaways-list">
+                <li>Oscar-winning documentarian Alex Gibney focuses on the world&#x27;s wealthiest man.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/culture/2026/09/we-have-a-trailer-for-musk-documentary-elon-called-a-hit-piece/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -662,7 +733,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Ukraine’s Operation Vivaldi has erased Russian gains with the help of robots.</div>
+              <ul class="takeaways-list">
+                <li>Ukraine’s Operation Vivaldi has erased Russian gains with the help of robots.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/gadgets/2026/09/robots-make-combat-airdrops-clear-mines-as-ukraine-defeats-russian-pincer/" target="_blank" class="source-btn">Ars Technica ↗</a>
@@ -679,7 +752,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Prominent executives attended a dinner at the White House Thursday night, as the countries wrangled over tariffs, trade and potential A.I. regulation.</div>
+              <ul class="takeaways-list">
+                <li>Prominent executives attended a dinner at the White House Thursday night, as the countries wrangled over tariffs, trade and potential A.I. regulation.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/economy/tech-executives-state-dinner-xi-trump.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -696,7 +771,9 @@
               <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">In response to a New York Times report on DraftKings, the state’s gaming commission said it would evaluate how each company deployed the technology.</div>
+              <ul class="takeaways-list">
+                <li>In response to a New York Times report on DraftKings, the state’s gaming commission said it would evaluate how each company deployed the technology.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/massachusetts-draftkings-ai-gambling.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -713,7 +790,9 @@
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Real America’s Voice and LindellTV have teamed up to provide a feed of daily presidential events.</div>
+              <ul class="takeaways-list">
+                <li>Real America’s Voice and LindellTV have teamed up to provide a feed of daily presidential events.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/media/trump-white-house-press-ban-tv-pool-conservative-news.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -730,7 +809,9 @@
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The Trump administration, like its predecessors, has struggled to deal with China’s excess industrial capacity.</div>
+              <ul class="takeaways-list">
+                <li>The Trump administration, like its predecessors, has struggled to deal with China’s excess industrial capacity.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/trump-xi-china-exports.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -747,7 +828,9 @@
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">A24, Sony and The New York Times Company all registered their interest in acquiring the cinephile’s paradise.</div>
+              <ul class="takeaways-list">
+                <li>A24, Sony and The New York Times Company all registered their interest in acquiring the cinephile’s paradise.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/media/letterboxd-sale-sony-a24-nyt.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -764,7 +847,9 @@
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The company said the affected cafes did not meet financial or customer service expectations.</div>
+              <ul class="takeaways-list">
+                <li>The company said the affected cafes did not meet financial or customer service expectations.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.nytimes.com/2026/09/24/business/starbucks-store-closures.html" target="_blank" class="source-btn">NYT Business ↗</a>
@@ -777,14 +862,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Nithin Kamath’s warning after IRDAI shock</span>
-              <span class="time-badge">12h ago</span>
+              <span class="summary-text">Delhi SIR: Advani, EAM cleared after verification</span>
+              <span class="time-badge">35m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/markets/stocks/news/what-nithin-kamath-sees-as-the-biggest-risk-for-broking-after-irdai-shock/articleshow/134464882.cms" target="_blank" class="source-btn">Economic Times ↗</a>
+                <a href="https://economictimes.indiatimes.com/news/politics-and-nation/advani-dhankhar-jaishankar-kejriwal-names-cleared-after-verification-under-delhi-sir-notice/articleshow/134473397.cms" target="_blank" class="source-btn">Economic Times ↗</a>
               </div>
             </div>
           </details>
@@ -794,14 +881,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Ambani, Adani spot a Rs 25,500 cr liquidity bonanza</span>
-              <span class="time-badge">9h ago</span>
+              <span class="summary-text">Govt eyes Rs 20,000 cr fund to power up frontier AI</span>
+              <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/industry/banking/finance/banking/reliance-to-raise-rs-10000-crore-next-week-as-companies-rush-to-tap-surplus-bank-liquidity/articleshow/134468414.cms" target="_blank" class="source-btn">Economic Times ↗</a>
+                <a href="https://economictimes.indiatimes.com/tech/artificial-intelligence/govt-eyes-rs-20000-crore-fund-to-power-up-frontier-ai-and-compute-ecosystem/articleshow/134466929.cms" target="_blank" class="source-btn">Economic Times ↗</a>
               </div>
             </div>
           </details>
@@ -812,10 +901,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Taking a look at 20 years of the Hyundai Verna in India</span>
-              <span class="time-badge">49m ago</span>
+              <span class="time-badge">56m ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/auto-features/taking-a-look-at-20-years-of-the-hyundai-verna-in-india-441086" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -832,7 +923,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/auto-features/5-things-to-know-before-buying-the-2026-triumph-daytona-660-441102" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -849,7 +942,9 @@
               <span class="time-badge">14h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/auto-features/2025-mahindra-thar-facelift-price-and-specs-compared-with-rivals-437616" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -866,7 +961,9 @@
               <span class="time-badge">16h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/car-news/nissan-reveals-the-pixo-for-europe-with-up-to-259km-range-440847" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -883,7 +980,9 @@
               <span class="time-badge">17h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/motor-sports-news/2026-f1-azerbaijan-gp-schedule-india-timings-440846" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -900,7 +999,9 @@
               <span class="time-badge">19h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/car-reviews/bmw-i7-50-xdrive-review-all-the-luxury-you-need-440578" target="_blank" class="source-btn">Autocar India ↗</a>
@@ -913,11 +1014,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games 2026: India's full schedule on September 25; medal events, and timings - The Times of India</span>
+              <span class="summary-text">Asian Games 2026: India's full schedule on September 25; medal events, and timings</span>
               <span class="time-badge">10h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMi9wFBVV95cUxNbWtsTkl4X2c1Qlo2Mm5ELU5xLW9WTjdHV0ozTTV5R1V6ZDNxNzFwTUNVQVlmS3JJcjNiZG0xQmVrTUtLOVBRdnpPTE01OV9HcEZlTjFmdF9UeS1TRy1pLXdmT2ZqQmVYbGtVMGxkZWM1Qy1rd1N4Z0Z6WGRQOWtfN3FvUTBLekxzUE53YjktMnlLeDhBTFJmTDI2NVNsWmNuaDFwMXVRUGVnQXBPX1VYNlFKLUxYSmtwOWctMVlKYnhkaTlFZkV5SFVVNDhQMDFZMnU5Z290M0hSb1RUYndpLXJoRmJpQUNFb1VWTFNIUnZHc3hGSkM00gH8AUFVX3lxTE43UTA3Tkt5aUtydWdyZ1ZhREl5WWw4OW5LenZkZDRuTzRCWG14cGhtUVdiMkpHUEJ0SXc3d05MTGp3TUdlOThCWUNZd20yd3Aza1BJZWxDS3N6NEZ2aU1ZbUc4NEt1LUQ3aUx5WkRCU2I1aTQzbGtadTdOSjZidG91YUVMSExSYVc3R1B5cFRqZS1hS3E2YW5QMTU3Zi1YRmlaeEt2X1NnZjNGeWQ0UWhmZHVicklJYW5TYjI3U3NfN3FfcUkzcmk3YW05ekh5QVNxdTJManpXNHVWT1ViREN4eFpBejN6ZXJZbnZFUlFZQVFaMDA4dEpvR2NHZg?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
@@ -930,28 +1033,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games PIX: India's medal tally swells after athletics, wushu success - Rediff</span>
-              <span class="time-badge">12h ago</span>
+              <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m</span>
+              <span class="time-badge">11h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxOTldDUUNieHVvZzFySDNWdzlWYkp5NDZXNlUxTnd1UTVnYnBqT0RTQjQwV1E3RVU1TktlYUg1eE5iRklORW04Z0ZWdlMySnRJaGNRcjVwS1hRVzU1Y0s1ZTFqdTdsdU5JVk5NQmFrME9BeUcwZkVudlZGbW0wSUtYNi1qTTdzcWIwbEtmMHFFeC1hdDN0UDNqRkt5R1VTVVh2NHRHOW5RZEJ3RFRBX3l4LdIBswFBVV95cUxOWGIyS0ZhbTdQX2VKRllOWVpNVThhWElKRER4MWlVdWFFY2pKRUhWalhic2p1SG9QZHgzNkxlbmJjYzBaQURvNEpxQWE3Qmd1cWdFX0o0YS1LR0dXV3haWUlZdmJqal9qYnhhbXlxdTJ1TmQ5YXBvLTdVaXd1NGljNDExRFVtMlhMQk9OUnNjZGF0SW9CUm5FaGFBVE9rZmlFYkVpRXBVYVg4alNrOWVqNzdHdw?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Asian Games: India wins silver medals in mixed relay race and Wushu; Seema Kumari bags historic Bronze in 10,000m - newsonair.gov.in</span>
-              <span class="time-badge">10h ago</span>
-            </summary>
-            <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNaDR4b0tMNThWLXdnX1JEWGlNRVJQMFdfNWdEZmxkbVBLZVY1ZExjN1pPNWpNLXFOV0pCem44bFMtWEtkWmpZMzBHNm5LaHpWa2J2eXBwZ2lqOGVSdnhDYUtCTTNrQWZJQWF2N3d1TTRRVjBjTUlnUlFteEZMeTZNNjdRVG84SnlKU3A4Tmw1X3lBUVlPWkJQZzgweC1SLUdtbTJRQXROa0Y5bTk1eVNvaldtQlJob1BlN3NqZGdRYkxFMkYxTU42MTJBZFQ4MmFWLXc?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
@@ -964,11 +1052,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Vithya Ramaraj turns on the afterburners, holds off Vietnam by 0.08 seconds as India storm to mixed 4x400 - The Times of India</span>
+              <span class="summary-text">Vithya Ramaraj turns on the afterburners, holds off Vietnam by 0.08 seconds as India storm to mixed 4x400</span>
               <span class="time-badge">13h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiowJBVV95cUxNWk1UeExqNDZTbjduVVFhTjZ3MUYyb2hxQXhBNkJIeTdMYVRadXNsa3oyaFl2Znhxdk9kTUZkZnAzSVpIaV9uNlRyZHJQeDFSM3FKdi1iZGdXTHcxWjlVQzNqVk9rLUtWZEZiQXBBNE0yODNVcXJjT0djNER5bmNHLXhRTUZuMFR1Z1p0NVBUWTk4WHZmZzJtdGhkZWtnQVJmZVQ2dXJxTzNRdVViZWRneXNZNGpVREhtUVVDRzlVSVV6S3UtaFFqMFVPYTYxWldFa2gyNXZ1ZUpWT0ZsSjNaTVlLemdLWHYtMUg0WW01b1daOGhqMkxuTTBoR1I0Zmc5Sjk1NWFHTGdhcXFvUng5SnVfU2tOQTEzc3BJOEprekFnd2_SAagCQVVfeXFMT2VYeWtSMFM5TnU0MDI1QWdxb1JFRTJxQ0syTnVhQmlaN0xTQ2loMTFPN0RsM205ZF8tRmpHaGlXbTUyakFJekNCaGRpbXViWDlBRDRRUEp1cGF1RldpUVNNdk9PSVd5UjRMdkFoc1RrZFFiVEZwSW5kQUpTZ1ZWUW04NXNtREN3QjVDdkVWWXctSUNITVpSdzhnVUFFc2swWHdfUGFwVU12dGY1OGF4U2xXXzJBRWZFdWQ1RTByV0NtUEVfZWhnWUtHbi1saV8zNUFJYzlSaTBtVlB5bk1tQ1RQc1pvRjlTb0xsWjc1Tkt2X3NCbGVzWG0tQlhBbG1weTF3Zjl5UXVjZzlEY25lckZwZWxXZzF2RHFCVGN6b2pWQ19pN2VJLWU?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
@@ -981,11 +1071,13 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Asian Games Athletics: India Secures Mixed Relay Silver, Seema Wins 10,000m Bronze - Rediff</span>
+              <span class="summary-text">Asian Games Athletics: India Secures Mixed Relay Silver, Seema Wins 10,000m Bronze</span>
               <span class="time-badge">12h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxQUnRaYnFXdzFKMDdoLWNmN0hHS1FkUGlTNjQxQS1JY0kxY3dmRzlXcEtMaDc3V3dqSGNERVJWUlJYTG9DSzZCMk16U2dHYk5CUTlJT2xLWDRBaURKOXlKWjViWWtPS2ktNzFmUGZNeDhONXFMb3hacU9ZRDdNSmMyY3lCNjZmNVRJbkhITWd5TnR5d0I2dUNmalVDVUppZ19SaDdTRFZISE95UWNOQWNNczkxUzd1dGpmQkE?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
@@ -1002,10 +1094,31 @@
               <span class="time-badge">16h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text"></div>
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxOaHJmZDVIbGdzR0Zicnk0UUV3M2t5LXlsS0lXbXUzWnl2RE5tbUU5c0pLSWk3WDZKUm03TG9DLUFDSVBscDBZeExiQTFCQTExcEdmQkk0ZmV6TVFVWmtKVndKb2xqaHpFTXJZUFBsaWM1YXVUSDFhNndWMmNVSk5McFhaY1RlVk11VEFQSWVNX05tZk5TQnRlaE8zbVIxblJ6ZXprZkxjUHliQWM?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Panama Coach Offers Blueprint For India's Football Future</span>
+              <span class="time-badge">13h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>No additional context provided by source.</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxOdjczWjhvLUQwTDAzd2NkVlhHLTNsX21BbDhhR1VZSmpiVTVvUDRUcjBhc3U0RXUwemJZU2RvbjZpYl93X2NBemk1Nkw4OVRnd09ZNjRnZ042UWVXRXpVa2oyWmozb1NpVHZYUnltYmR3QjVZR3MwcFI4S0JMakRRQUNkOVdBUFBYX0pBMlpSMTFCeU9IT05aXzN5Y0RrTHdnQ0pUdnp0c9IBqgFBVV95cUxOUm1tckNhQW4zOW9IM0xNcVhlOTdwMWhIaHltaW9zNzItVEJXY1NBeERlZ1V2ckVMckh2ajdTa2JYeS1NaUJoWFNZYkhnQzB6NmtFc2Z4MklMTnpZQ3dyNzJWdWE2ZXlWVWx5WnpLZ2o0Tllick9GZXh6WWlobXRlODEyaFRPd3VKOFk5TkJSLVR6bG1zTkFFeklQb2pYZWoxSHphSkNRWlhiUQ?oc=5" target="_blank" class="source-btn">Google Sports ↗</a>
               </div>
             </div>
           </details>
@@ -1019,7 +1132,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protesting alongside Sarah Sherman, Susan Sarandon and others, posted on her</div>
+              <ul class="takeaways-list">
+                <li>Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protesting alongside Sarah Sherman, Susan Sarandon and others, posted on her Instagram story asking her followers to focus on</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/2026/politics/news/hannah-einbinder-speaks-out-arrested-netanyahu-protest-1236875306/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1036,7 +1151,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary Special Presentation screening of “Lagaan: Once Upon a Time in India” </div>
+              <ul class="takeaways-list">
+                <li>The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary Special Presentation screening of “Lagaan: Once Upon a Time in India” alongside director Ashutosh Gowariker. The festiva</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/2026/film/festivals/aamir-khan-singapore-film-festival-hur-jin-ho-the-assassins-1236873907/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1053,7 +1170,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and other artifacts from the most iconic horror films throughout the history</div>
+              <ul class="takeaways-list">
+                <li>Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and other artifacts from the most iconic horror films throughout the history of cinema. The exhibit opens Saturday. From Bela</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/gallery/horror-show-academy-museum-halloween-saw/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1070,7 +1189,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances from Jennifer Hudson and Normani), attendees were gifted with a curated</div>
+              <ul class="takeaways-list">
+                <li>Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances from Jennifer Hudson and Normani), attendees were gifted with a curated bag of over 90 products, including skincare items</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/2026/shopping/news/power-of-women-gift-bag-2026-shop-online-1236875113/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1084,10 +1205,12 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</span>
-              <span class="time-badge">1h ago</span>
+              <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and the East-West Award for Hong Kong director Ann Hui. The ceremony took </div>
+              <ul class="takeaways-list">
+                <li>The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and the East-West Award for Hong Kong director Ann Hui. The ceremony took place at the Platform, the festival’s signature op</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/2026/film/festivals/ai-robots-ann-hui-pingyao-film-festival-10th-edition-1236875276/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1104,7 +1227,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chapek, in recounting his 30-year career at the Mouse House, offers a numb</div>
+              <ul class="takeaways-list">
+                <li>Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chapek, in recounting his 30-year career at the Mouse House, offers a number of other revelations in the memoir. Variety obt</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://variety.com/2026/film/news/takeaways-bob-chapek-book-ousted-disney-ceo-1236875084/" target="_blank" class="source-btn">Variety ↗</a>
@@ -1121,7 +1246,9 @@
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Elon Musk, Sam Altman, Tim Cook, Jensen Huang, Jesse Watters and Laura Ingraham were among the attendees of the dinner, hosted by President Trump.</div>
+              <ul class="takeaways-list">
+                <li>Elon Musk, Sam Altman, Tim Cook, Jensen Huang, Jesse Watters and Laura Ingraham were among the attendees of the dinner, hosted by President Trump.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hollywoodreporter.com/news/politics-news/david-ellison-elon-musk-fox-news-hosts-white-house-dinner-1236709831/" target="_blank" class="source-btn">Hollywood Reporter ↗</a>
@@ -1138,7 +1265,9 @@
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">Music producer Leland speaks with The Hollywood Reporter about his Hollywood home studio, his collaborator Troye Sivan's new album and making queer art.</div>
+              <ul class="takeaways-list">
+                <li>Music producer Leland speaks with The Hollywood Reporter about his Hollywood home studio, his collaborator Troye Sivan&#x27;s new album and making queer art.</li>
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hollywoodreporter.com/music/music-features/leland-home-studio-interview-troye-sivan-the-shards-1236707280/" target="_blank" class="source-btn">Hollywood Reporter ↗</a>

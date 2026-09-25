@@ -1,6 +1,6 @@
-import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime
+import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime, re
 
-# Configure Gemini API with JSON Output Mode
+# Configure Gemini API
 api_key = os.environ.get("GEMINI_API_KEY")
 model = None
 if api_key:
@@ -16,7 +16,6 @@ if api_key:
 now_ts = time.time()
 build_time_str = datetime.datetime.now(datetime.timezone.utc).strftime("%b %d, %H:%M UTC")
 
-# Multi-source feeds per category for deduplication
 FEEDS = {
     "ALL TOP STORIES": [
         ("Google News", "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"),
@@ -57,6 +56,12 @@ FEEDS = {
 }
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+def clean_raw_title(title):
+    """Strip publisher suffixes (- NDTV, - Reuters) and prefixes (BREAKING |)."""
+    title = re.sub(r'\s*-\s*[A-Za-z0-9\s\.\&\'-]+$', '', title)
+    title = re.sub(r'^(BREAKING|WATCH|LIVE|EXCLUSIVE|JUST IN)\s*[\|\:]\s*', '', title, flags=re.IGNORECASE)
+    return title.strip()
 
 def parse_time_info(parsed_time):
     if not parsed_time:
@@ -123,8 +128,9 @@ html_out = f"""<!DOCTYPE html>
   .time-badge {{ background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }}
   .summary-text {{ flex-grow: 1; }}
   
-  .details-content {{ padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.25); }}
-  .gist-text {{ margin-bottom: 10px; font-weight: 400; }}
+  .details-content {{ padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.25); }}
+  .takeaways-list {{ margin: 4px 0 10px 16px; padding: 0; }}
+  .takeaways-list li {{ margin-bottom: 6px; color: #e2e8f0; font-size: 12.5px; line-height: 1.4; }}
   .sources-container {{ margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
   .sources-label {{ font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }}
   .source-btn {{ display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }}
@@ -152,7 +158,6 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 for tag, feed_list in FEEDS.items():
     raw_articles = []
 
-    # 1. Fetch raw items from all feeds in category
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url, agent=USER_AGENT)
         for entry in parsed.entries[:6]:
@@ -160,15 +165,16 @@ for tag, feed_list in FEEDS.items():
             if group_key == "discard":
                 continue
                 
-            title = html.unescape(entry.get('title', ''))
+            raw_title = html.unescape(entry.get('title', ''))
+            clean_title = clean_raw_title(raw_title)
             desc = html.unescape(entry.get('summary', entry.get('description', '')))
             clean_desc = desc.split('<')[0] if '<' in desc else desc
             link = entry.get('link', '#')
             
             raw_articles.append({
                 "source": source_name,
-                "title": title,
-                "desc": clean_desc[:250],
+                "title": clean_title,
+                "desc": clean_desc[:300].strip(),
                 "link": link,
                 "pub_ts": pub_ts,
                 "group_key": group_key,
@@ -178,23 +184,21 @@ for tag, feed_list in FEEDS.items():
     if not raw_articles:
         continue
 
-    # 2. Process & Deduplicate using Gemini
     processed_groups = []
     
     if model:
         try:
-            # Prepare minimal JSON list for AI processing
-            input_items = [{"id": i, "title": a["title"], "desc": a["desc"], "source": a["source"]} for i, a in enumerate(raw_articles[:12])]
+            input_items = [{"id": i, "title": a["title"], "desc": a["desc"]} for i, a in enumerate(raw_articles[:10])]
             
             prompt = (
-                f"You are a news deduplication and summarization engine. Here is a JSON array of news items for category '{tag}':\n"
-                f"{json.dumps(input_items)}\n\n"
-                f"Task:\n"
-                f"1. Group articles that report on the EXACT same news event or topic into a single story.\n"
-                f"2. For each story, provide:\n"
-                f"   - 'micro_headline': STRICT 10-12 word factual sentence. ZERO clickbait, hooks, or fluff. ONLY hard numbers, entities, actions.\n"
-                f"   - 'detailed_gist': A thorough 2-4 sentence summary containing all key facts, context, figures, and background so the reader does NOT need to click the source link.\n"
-                f"   - 'source_ids': Array of integer IDs from input list belonging to this story.\n"
+                f"You are an objective news editor for category '{tag}'.\n"
+                f"Analyze these articles: {json.dumps(input_items)}\n\n"
+                f"Instructions:\n"
+                f"1. Group articles reporting on the exact same news topic together.\n"
+                f"2. For each story group, generate:\n"
+                f"   - 'headline': A neutral, non-clickbait headline (10-14 words max). Pure factual statement. No hooks or publisher names.\n"
+                f"   - 'takeaways': Array of 3 to 4 dense bullet points summarizing core facts, figures, dates, or decisions.\n"
+                f"   - 'source_ids': Array of integer IDs included in this group.\n"
                 f"Return JSON array of story objects."
             )
             
@@ -205,15 +209,14 @@ for tag, feed_list in FEEDS.items():
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
-    # Fallback if AI grouping fails
+    # Fallback if Gemini is unavailable
     if not processed_groups:
         processed_groups = [{
-            "micro_headline": a["title"],
-            "detailed_gist": a["desc"],
+            "headline": a["title"],
+            "takeaways": [a["desc"]] if a["desc"] else ["No additional context provided by source."],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
-    # 3. Render Cards into Time Tabs
     cat_tab_html = {"today": "", "yesterday": "", "older": ""}
 
     for group in processed_groups:
@@ -225,15 +228,19 @@ for tag, feed_list in FEEDS.items():
         if not matched_articles:
             continue
 
-        # Use the newest timestamp among grouped articles
         newest_article = max(matched_articles, key=lambda x: x["pub_ts"])
         group_key = newest_article["group_key"]
         time_ago = newest_article["time_ago"]
 
-        headline = group.get("micro_headline", newest_article["title"])
-        gist = group.get("detailed_gist", newest_article["desc"])
+        headline = group.get("headline") or newest_article["title"]
+        takeaways = group.get("takeaways", [])
 
-        # Render unique source buttons
+        # Ensure takeaways are never blank
+        if not takeaways or not isinstance(takeaways, list):
+            takeaways = [newest_article["desc"]] if newest_article["desc"] else ["No further details available."]
+
+        takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in takeaways if t])
+
         sources_html = ""
         seen_sources = set()
         for a in matched_articles:
@@ -250,7 +257,9 @@ for tag, feed_list in FEEDS.items():
               <span class="time-badge">{time_ago}</span>
             </summary>
             <div class="details-content">
-              <div class="gist-text">{gist}</div>
+              <ul class="takeaways-list">
+                {takeaways_html}
+              </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 {sources_html}
@@ -265,7 +274,6 @@ for tag, feed_list in FEEDS.items():
         if cat_tab_html[gk]:
             tab_data[gk] += f"<h2>{tag}</h2>" + cat_tab_html[gk]
 
-# Assemble Document
 html_out += tab_data["today"] if tab_data["today"] else "<div class='no-news'>No news published today yet.</div>"
 html_out += '</div><div id="tab-yesterday" class="tab-content">'
 html_out += tab_data["yesterday"] if tab_data["yesterday"] else "<div class='no-news'>No articles from yesterday.</div>"
