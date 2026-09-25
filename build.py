@@ -81,7 +81,6 @@ def clean_text(raw_html):
     return text
 
 def is_junk_live_blog(title, content):
-    """Filters out routine market noise, daily opening/closing tickers, and live blog clutter."""
     t_lower = title.lower()
     junk_patterns = [
         "stock market live", "sensex", "nifty", "trade flat", "traded flat",
@@ -120,7 +119,6 @@ def get_full_article_content(entry, url):
                     return scraped_text[:2500]
         except Exception:
             pass
-
     return summary
 
 def parse_time_info(parsed_time):
@@ -149,7 +147,6 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# HTML Layout Setup
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,14 +168,11 @@ html_out = f"""<!DOCTYPE html>
   .header-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }}
   h1 {{ font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }}
   .refresh-badge {{ font-size: 11px; color: var(--text-muted); background: #1a1d26; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }}
-  
   .tabs {{ display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }}
   .tab-btn {{ flex: 1; padding: 8px 12px; background: #13151c; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center; }}
   .tab-btn.active {{ background: var(--accent); color: #000; border-color: var(--accent); }}
-  
   .tab-content {{ display: none; }}
   .tab-content.active {{ display: block; }}
-
   h2 {{ color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 22px 4px 10px; }}
   .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }}
   details {{ width: 100%; }}
@@ -187,7 +181,6 @@ html_out = f"""<!DOCTYPE html>
   .bullet {{ color: var(--accent); font-weight: bold; font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 2px; }}
   .time-badge {{ background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }}
   .summary-text {{ flex-grow: 1; }}
-  
   .details-content {{ padding: 14px 16px 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.2); }}
   .takeaways-list {{ margin: 0 0 12px 0; padding-left: 18px; list-style-type: disc; }}
   .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 13px; line-height: 1.5; }}
@@ -209,7 +202,6 @@ html_out = f"""<!DOCTYPE html>
     <button class="tab-btn" onclick="switchTab('older')">2-3 Days Ago</button>
   </div>
 </header>
-
 <div id="tab-today" class="tab-content active">
 """
 
@@ -217,22 +209,17 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 
 for tag, feed_list in FEEDS.items():
     raw_articles = []
-
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
         for entry in parsed.entries[:6]:
             group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
             if group_key == "discard":
                 continue
-                
             raw_title = clean_text(entry.get('title', ''))
             link = entry.get('link', '#')
-            
             full_content = get_full_article_content(entry, link)
-
             if is_junk_live_blog(raw_title, full_content):
                 continue
-
             raw_articles.append({
                 "source": source_name,
                 "title": raw_title,
@@ -247,67 +234,58 @@ for tag, feed_list in FEEDS.items():
         continue
 
     processed_groups = []
-    
     if model:
         try:
-            input_items = [
-                {"id": i, "title": a["title"], "full_text": a["content"]}
-                for i, a in enumerate(raw_articles[:10])
-            ]
+            input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
             
-            prompt = f"""You are a senior news editor compiling an executive intelligence brief for category '{tag}'.
+            prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
 
-ANALYZE THESE RAW ARTICLES:
+RAW ARTICLES:
 {json.dumps(input_items)}
 
----
-EXAMPLES OF WHAT TO DO vs. WHAT NOT TO DO:
+STRICT JSON OUTPUT EXAMPLES:
 
-[EXAMPLE 1: FIXING TRUNCATION & LAZY DUMPS]
-BAD OUTPUT:
-"headline": "UP Businessman Killed"
-"takeaways": [
-  "Vineet Manocha's son and daughter-in-law have been arrested for his murder..."
+[BAD OUTPUT - DO NOT DO THIS]
+[
+  {{
+    "headline": "The world's two most powerful men just met. How did it go?",
+    "takeaways": [
+      "The world's two most powerful men – Xi Jinping and Donald Trump – met in Washington.",
+      "BBC's Laura Bicker unpacks the trip...",
+      "They committed to a tariff truce."
+    ],
+    "source_ids": [0]
+  }}
 ]
-Reason it fails: Cuts off with an ellipsis (...), incomplete sentence, lazy dump of raw text.
+Why it fails: Uses clickbait headline, includes journalist name ("BBC's Laura Bicker"), and ends a thought with an ellipsis (...).
 
-GOOD OUTPUT:
-"headline": "Son Arrested in Murder of UP Businessman Vineet Manocha"
-"takeaways": [
-  "Police arrested the son and daughter-in-law of 63-year-old UP businessman Vineet Manocha in connection with his murder.",
-  "Investigators state the suspects acted over fears that Manocha planned to transfer property rights to his partner."
+[GOOD OUTPUT - DO THIS EXACTLY]
+[
+  {{
+    "headline": "US and China Agree to 6-Month Tariff Truce During Washington Summit",
+    "takeaways": [
+      "US President Donald Trump and Chinese President Xi Jinping concluded a diplomatic summit in Washington.",
+      "The two leaders committed to a six-month extension of the existing tariff truce, delaying further economic escalations."
+    ],
+    "source_ids": [0, 2]
+  }},
+  {{
+    "headline": "Son Arrested in Murder of UP Businessman Vineet Manocha",
+    "takeaways": [
+      "Police arrested the son and daughter-in-law of 63-year-old UP businessman Vineet Manocha in connection with his murder.",
+      "Investigators state the suspects acted over fears that Manocha planned to transfer property rights to his partner."
+    ],
+    "source_ids": [1]
+  }}
 ]
-Reason it succeeds: Every bullet is a 100% complete, standalone sentence with full context and no fluff.
 
-[EXAMPLE 2: FIXING RAMBLING BLOBS & META-TEXT]
-BAD OUTPUT:
-"headline": "The world's two most powerful men just met. How did it go?"
-"takeaways": [
-  "The world's two most powerful men – Xi Jinping and Donald Trump – have just met in Washington after days of pomp and pageantry.",
-  "While there were many symbolic gestures, there were few big movements – although they committed to a six month extension of the tariff truce.",
-  "The BBC's China correspondent Laura Bicker unpacks how the trip panned out for Beijing and Washington."
-]
-Reason it fails: Uses a clickbait rhetorical question for a headline, includes useless fluff ("pomp and pageantry"), and wastes space on meta-text ("BBC's China correspondent Laura Bicker unpacks").
-
-GOOD OUTPUT:
-"headline": "US and China Agree to 6-Month Tariff Truce During Washington Summit"
-"takeaways": [
-  "US President Donald Trump and Chinese President Xi Jinping concluded a diplomatic summit in Washington.",
-  "The two leaders committed to a six-month extension of the existing tariff truce, delaying further economic escalations.",
-  "During the meetings, President Xi emphasized that the two nations should act as 'partners, not rivals'."
-]
-Reason it succeeds: The headline is factual. It extracts the actual news (the tariff truce) and completely deletes the journalist's name, the clickbait phrasing, and the rambling fluff.
-
----
-STRICT GENERATION RULES:
-1. NO TRUNCATION / NO ELLIPSES: Never use '...' or leave a sentence unfinished. If you state a fact, complete the sentence cleanly.
-2. 2 TO 4 COMPLETE SENTENCES: Transform the raw text into 2 to 4 crisp, standalone factual sentences per story object.
-3. EXTRACT THE HARD NEWS: Delete all rhetorical questions, mentions of pageantry, or vague scene-setting. Find the actual policy, agreement, or event and state it.
-4. ZERO MEDIA ATTRIBUTION: Remove all journalistic framing like 'BBC reports', 'LIVE Updates', or 'According to correspondents'. State raw facts directly.
-5. DEDUPLICATION (CRITICAL): If multiple articles cover the exact same event (e.g., a US-China summit), combine them into ONE single JSON object with a consolidated list of facts.
-6. OUTPUT FORMAT: Return ONLY a valid JSON array of objects with keys: "headline", "takeaways" (array of complete sentence strings), and "source_ids" (array of integer IDs).
+STRICT RULES:
+1. OUTPUT FORMAT: You must return a valid JSON array of objects. Do not use Markdown formatting outside the JSON array.
+2. NO TRUNCATION: Never use '...' or leave a sentence unfinished.
+3. 2 TO 4 COMPLETE SENTENCES: Transform the raw text into 2 to 4 crisp, standalone sentences per story. 
+4. EXTRACT THE HARD NEWS: Delete all rhetorical questions, mentions of pageantry, or journalist names. Find the actual policy, agreement, or event and state it cleanly.
+5. DEDUPLICATION: If multiple articles cover the exact same event, combine them into ONE single JSON object with a combined list of source_ids.
 """
-            
             res = model.generate_content(prompt)
             if res and res.text:
                 resp_text = res.text.strip()
@@ -319,46 +297,40 @@ STRICT GENERATION RULES:
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
+    # Fallback if API fails or returns invalid JSON
     if not processed_groups:
         processed_groups = [{
-            "headline": a["title"],
-            "takeaways": [a["content"]] if a["content"] else [a["title"]],
+            "headline": f"[RAW] {a['title']}",
+            "takeaways": [a["content"][:200] + "... (AI Formatting Failed)"] if a["content"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
     cat_tab_html = {"today": "", "yesterday": "", "older": ""}
-
     for group in processed_groups:
         source_ids = group.get("source_ids", [])
-        if not source_ids:
-            continue
-            
+        if not source_ids: continue
         matched_articles = [raw_articles[idx] for idx in source_ids if idx < len(raw_articles)]
-        if not matched_articles:
-            continue
-
+        if not matched_articles: continue
+        
         newest_article = max(matched_articles, key=lambda x: x["pub_ts"])
         group_key = newest_article["group_key"]
         time_ago = newest_article["time_ago"]
-
+        
         headline = group.get("headline") or newest_article["title"]
         headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', headline, flags=re.IGNORECASE)
-        
         takeaways = group.get("takeaways", [])
-
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
             valid_takeaways = [newest_article["content"]]
-
+            
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
-
         sources_html = ""
         seen_sources = set()
         for a in matched_articles:
             if a["source"] not in seen_sources:
                 sources_html += f'<a href="{a["link"]}" target="_blank" class="source-btn">{a["source"]} ↗</a>'
                 seen_sources.add(a["source"])
-
+                
         card_html = f"""
         <div class="card">
           <details>
@@ -397,7 +369,6 @@ html_out += """
 function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  
   document.getElementById('tab-' + tabName).classList.add('active');
   event.target.classList.add('active');
 }
