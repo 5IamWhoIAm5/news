@@ -81,6 +81,7 @@ def clean_text(raw_html):
     return text
 
 def is_junk_live_blog(title, content):
+    """Filters out routine market noise, daily opening/closing tickers, and live blog clutter."""
     t_lower = title.lower()
     junk_patterns = [
         "stock market live", "sensex", "nifty", "trade flat", "traded flat",
@@ -254,16 +255,58 @@ for tag, feed_list in FEEDS.items():
                 for i, a in enumerate(raw_articles[:10])
             ]
             
-            prompt = (
-                f"You are a ruthless editor. Analyze these news items for category '{tag}':\n{json.dumps(input_items)}\n\n"
-                f"STRICT RULES:\n"
-                f"1. EXTREME BREVITY (CRITICAL): Each string in the 'takeaways' array MUST be a single, direct sentence (maximum 25 words). Break long articles into 2 to 4 separate, short bullet points. Strip all adjectives, quotes, and narrative fluff. Only output hard facts, numbers, and direct actions.\n"
-                f"2. DEDUPLICATION: Merge identical stories into 1 object.\n"
-                f"3. ZERO META: Never say 'Sources say', 'Watch:', or name journalists/news agencies (like AFP or BBC).\n"
-                f"4. ENTITY CONTEXT: Briefly define who/what an entity is within the short sentence (e.g., '63-year-old UP businessman Vineet Manocha').\n"
-                f"5. NO CLIFFHANGERS: State the final outcome directly. Do not end on unresolved statements.\n"
-                f"6. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of 1-4 short bullet strings), 'source_ids' (array of integer IDs).\n"
-            )
+            prompt = f"""You are a senior news editor compiling an executive intelligence brief for category '{tag}'.
+
+ANALYZE THESE RAW ARTICLES:
+{json.dumps(input_items)}
+
+---
+EXAMPLES OF WHAT TO DO vs. WHAT NOT TO DO:
+
+[EXAMPLE 1: FIXING TRUNCATION & LAZY DUMPS]
+BAD OUTPUT:
+"headline": "UP Businessman Killed"
+"takeaways": [
+  "Vineet Manocha's son and daughter-in-law have been arrested for his murder..."
+]
+Reason it fails: Cuts off with an ellipsis (...), incomplete sentence, lazy dump of raw text.
+
+GOOD OUTPUT:
+"headline": "Son Arrested in Murder of UP Businessman Vineet Manocha"
+"takeaways": [
+  "Police arrested the son and daughter-in-law of 63-year-old UP businessman Vineet Manocha in connection with his murder.",
+  "Investigators state the suspects acted over fears that Manocha planned to transfer property rights to his partner."
+]
+Reason it succeeds: Every bullet is a 100% complete, standalone sentence with full context and no fluff.
+
+[EXAMPLE 2: FIXING RAMBLING BLOBS & META-TEXT]
+BAD OUTPUT:
+"headline": "The world's two most powerful men just met. How did it go?"
+"takeaways": [
+  "The world's two most powerful men – Xi Jinping and Donald Trump – have just met in Washington after days of pomp and pageantry.",
+  "While there were many symbolic gestures, there were few big movements – although they committed to a six month extension of the tariff truce.",
+  "The BBC's China correspondent Laura Bicker unpacks how the trip panned out for Beijing and Washington."
+]
+Reason it fails: Uses a clickbait rhetorical question for a headline, includes useless fluff ("pomp and pageantry"), and wastes space on meta-text ("BBC's China correspondent Laura Bicker unpacks").
+
+GOOD OUTPUT:
+"headline": "US and China Agree to 6-Month Tariff Truce During Washington Summit"
+"takeaways": [
+  "US President Donald Trump and Chinese President Xi Jinping concluded a diplomatic summit in Washington.",
+  "The two leaders committed to a six-month extension of the existing tariff truce, delaying further economic escalations.",
+  "During the meetings, President Xi emphasized that the two nations should act as 'partners, not rivals'."
+]
+Reason it succeeds: The headline is factual. It extracts the actual news (the tariff truce) and completely deletes the journalist's name, the clickbait phrasing, and the rambling fluff.
+
+---
+STRICT GENERATION RULES:
+1. NO TRUNCATION / NO ELLIPSES: Never use '...' or leave a sentence unfinished. If you state a fact, complete the sentence cleanly.
+2. 2 TO 4 COMPLETE SENTENCES: Transform the raw text into 2 to 4 crisp, standalone factual sentences per story object.
+3. EXTRACT THE HARD NEWS: Delete all rhetorical questions, mentions of pageantry, or vague scene-setting. Find the actual policy, agreement, or event and state it.
+4. ZERO MEDIA ATTRIBUTION: Remove all journalistic framing like 'BBC reports', 'LIVE Updates', or 'According to correspondents'. State raw facts directly.
+5. DEDUPLICATION (CRITICAL): If multiple articles cover the exact same event (e.g., a US-China summit), combine them into ONE single JSON object with a consolidated list of facts.
+6. OUTPUT FORMAT: Return ONLY a valid JSON array of objects with keys: "headline", "takeaways" (array of complete sentence strings), and "source_ids" (array of integer IDs).
+"""
             
             res = model.generate_content(prompt)
             if res and res.text:
@@ -279,7 +322,7 @@ for tag, feed_list in FEEDS.items():
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
-            "takeaways": [a["content"][:100] + "..."] if a["content"] else [a["title"]],
+            "takeaways": [a["content"]] if a["content"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
@@ -305,7 +348,7 @@ for tag, feed_list in FEEDS.items():
 
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
-            valid_takeaways = [newest_article["content"][:100] + "..."]
+            valid_takeaways = [newest_article["content"]]
 
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
 
