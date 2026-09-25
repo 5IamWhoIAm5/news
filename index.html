@@ -1,8 +1,478 @@
-<!DOCTYPE html><html><head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Micro News</title>
 <style>
-  body { background:#0a0a0a; color:#e0e0e0; font-family:sans-serif; padding:16px; max-width:600px; margin:0 auto; }
-  h2 { color:#4da6ff; border-bottom:1px solid #333; margin-top:24px; font-size:14px; text-transform:uppercase; letter-spacing:1px; }
-  p { font-size:14px; line-height:1.5; margin:10px 0; padding-bottom:8px; border-bottom:1px solid #1e1e1e; }
+  :root {
+    --bg: #090a0f;
+    --card-bg: #13151c;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --border: #1e293b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 12px; max-width: 600px; margin: 0 auto; padding-bottom: 50px; }
+  header { padding: 16px 4px 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+  .tag-badge { background: #1e293b; color: var(--accent); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
+  h2 { color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 24px 4px 10px; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+  details { width: 100%; }
+  summary { padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 500; cursor: pointer; list-style: none; color: #f1f5f9; display: flex; gap: 8px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "•"; color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .details-content { padding: 10px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: var(--text-muted); line-height: 1.5; background: rgba(0,0,0,0.2); }
+  .original-title { font-weight: 600; color: #cbd5e1; margin-bottom: 4px; }
+  .source-btn { display: inline-block; margin-top: 10px; padding: 6px 12px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .source-btn:active { background: var(--accent); color: #000; }
 </style>
-</head><body><h1 style="font-size:20px;">Micro News</h1><h2>WORLD</h2><p>• Netanyahu defends Israeli military action as delegates walk out before UN speech</p><p>• Media outlets banned by Trump denied access to White House dinner despite judge's order</p><p>• Hundreds of thousands expected in Paris for Pope's visit</p><h2>TECH</h2><p>• Waymo is scaling fast. Here’s what the fleet data shows.</p><p>• Nexterity wants to automate the hard, dangerous part of pipefitting</p><p>• Bring your co-founder, partner, or colleague and get 50% off a second TechCrunch Disrupt 2026 pass</p><h2>FINANCE</h2><p>• Feed unavailable at the moment.</p><h2>AUTO</h2><p>• Feed unavailable at the moment.</p><h2>SCIENCE</h2><p>• ADHD and autism diagnoses have surged. A massive study may help explain why</p><p>• “We just need to go back” – Uranus’ moon Ariel may have hidden a 100-mile-deep ocean</p><p>• Scientists find two tiny new snails with shells that close like doors</p><h2>SPORTS</h2><p>• Feed unavailable at the moment.</p></body></html>
+</head>
+<body>
+<header>
+  <h1>Micro News</h1>
+  <span class="tag-badge">Live</span>
+</header>
+<h2>PUNE (LOCAL)</h2>
+        <div class="card">
+          <details>
+            <summary>IIT alumnus gets life term for strangling sister in 2010</summary>
+            <div class="details-content">
+              <div class="original-title">IIT alumnus gets life term for strangling sister in 2010</div>
+              <div>Pune Sessions Court sentenced IIT alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavdhan flat in 2010</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/iit-alumnus-gets-life-term-for-strangling-sister-in-2010-101790279218095.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Seven FIRs involving losses of  ₹1.87 crore registered</summary>
+            <div class="details-content">
+              <div class="original-title">Seven FIRs involving losses of  ₹1.87 crore registered</div>
+              <div>Pune police registered seven cheating-related FIRs involving financial losses of around  ₹1.8 crore, with cases ranging from alleged fake RTO challan application to misappropriatio...</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/seven-firs-involving-losses-of-1-87-crore-registered-101790279037940.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>PMC prepared for Ganesh Visarjan on Anant Chaturdashi</summary>
+            <div class="details-content">
+              <div class="original-title">PMC prepared for Ganesh Visarjan on Anant Chaturdashi</div>
+              <div>PMC is all set for immersion of Ganesh idols on Friday by deploying 120 lifeguards and 37 fire brigade personnel at 15 immersion ghats across the city for safety purposes</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/pmc-prepared-for-ganesh-visarjan-on-anant-chaturdashi-101790278737918.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>MPSC stir: Student leaders, Telegram admins served notices</summary>
+            <div class="details-content">
+              <div class="original-title">MPSC stir: Student leaders, Telegram admins served notices</div>
+              <div>Police said the proposed locations could see traffic and public-order issues, particularly during Ganeshotsav</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/mpsc-stir-student-leaders-telegram-admins-served-notices-101790278498943.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Police face heat after man dies during Ganpati immersion procession</summary>
+            <div class="details-content">
+              <div class="original-title">Police face heat after man dies during Ganpati immersion procession</div>
+              <div>The death of man during Ganpati immersion procession in Ahilyanagar has triggered a controversy, with NCP MLA Sangram Jagtap and residents alleging that he died following police la...</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Katraj SWaCH waste facility gets notice over fire safety lapses</summary>
+            <div class="details-content">
+              <div class="original-title">Katraj SWaCH waste facility gets notice over fire safety lapses</div>
+              <div>PMC fire brigade on Thursday issued notice to SWaCH waste facility at Garbage Ramp, Katraj, directing it to address fire-safety lapses within seven days</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>58% concerned about climate change but only 3% consider it political priority: Study</summary>
+            <div class="details-content">
+              <div class="original-title">58% concerned about climate change but only 3% consider it political priority: Study</div>
+              <div>The report, ‘State of Mind: Mapping Values and Climate Perceptions - Maharashtra Edition’, is based on responses from 6,160 people across Maharashtra</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/58-concerned-about-climate-change-but-only-3-consider-it-political-priority-study-101790273637990.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>PMC fire brigade serves notice to 18 hospitals</summary>
+            <div class="details-content">
+              <div class="original-title">PMC fire brigade serves notice to 18 hospitals</div>
+              <div>Pune's fire brigade expands inspections to hospitals and schools, issuing notices for safety violations as part of a citywide crackdown on fire regulations.</div>
+              <a href="https://www.hindustantimes.com/cities/pune-news/pmc-fire-brigade-serves-notice-to-18-hospitals-101790269135148.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        <h2>INDIA</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>WORLD</h2>
+        <div class="card">
+          <details>
+            <summary>Netanyahu defends Israeli military action as delegates walk out before UN speech</summary>
+            <div class="details-content">
+              <div class="original-title">Netanyahu defends Israeli military action as delegates walk out before UN speech</div>
+              <div>The Israeli leader labels those who left his speech at the UN General Assembly as "moral cowards".</div>
+              <a href="https://www.bbc.co.uk/news/articles/c3y0z7kxlegdo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Media outlets banned by Trump denied access to White House dinner despite judge's order</summary>
+            <div class="details-content">
+              <div class="original-title">Media outlets banned by Trump denied access to White House dinner despite judge's order</div>
+              <div>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</div>
+              <a href="https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Hundreds of thousands expected in Paris for Pope's visit</summary>
+            <div class="details-content">
+              <div class="original-title">Hundreds of thousands expected in Paris for Pope's visit</div>
+              <div>The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</div>
+              <a href="https://www.bbc.co.uk/news/articles/cmq8j904212po?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Why Australia chose the world's biggest political stage to reveal OpenAI hack</summary>
+            <div class="details-content">
+              <div class="original-title">Why Australia chose the world's biggest political stage to reveal OpenAI hack</div>
+              <div>Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</div>
+              <a href="https://www.bbc.co.uk/news/articles/cr3eqk15ld14o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</summary>
+            <div class="details-content">
+              <div class="original-title">Four civilians killed in Pakistani strikes in Afghanistan, Taliban says</div>
+              <div>Pakistan says it struck 10 targets, adding the strikes were "strictly limited to identified military objectives".</div>
+              <a href="https://www.bbc.co.uk/news/articles/cm86xn0nnw58o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Priest killed and four injured in knife attack at Polish abbey</summary>
+            <div class="details-content">
+              <div class="original-title">Priest killed and four injured in knife attack at Polish abbey</div>
+              <div>A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</div>
+              <a href="https://www.bbc.co.uk/news/articles/c607lrvm41l3o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</summary>
+            <div class="details-content">
+              <div class="original-title">Italy ministers agree to ban burqa and niqab in school and cap foreigners in class</div>
+              <div>Prime Minister Giorgia Meloni described the measures as "common-sense tools that do not divide but really help to integrate".</div>
+              <a href="https://www.bbc.co.uk/news/articles/cw99d8g48873o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</summary>
+            <div class="details-content">
+              <div class="original-title">Rapper Macklemore announces 'Free Palestine' tour after Ed Sheeran fallout</div>
+              <div>Proceeds from the tour, which begins in Dublin next month, will go to organisations supporting Palestinians, he says.</div>
+              <a href="https://www.bbc.co.uk/news/articles/cqzjzlve8jg7o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        <h2>TECH</h2>
+        <div class="card">
+          <details>
+            <summary>How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)</summary>
+            <div class="details-content">
+              <div class="original-title">How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2025/12/how-i-get-free-traffic-from-chatgpt-in.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Top 10 AI Tools That Will Transform Your Content Creation in 2025</summary>
+            <div class="details-content">
+              <div class="original-title">Top 10 AI Tools That Will Transform Your Content Creation in 2025</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2025/01/top-10-ai-tools-that-will-transform.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>LimeWire AI Studio Review 2023: Details, Pricing & Features</summary>
+            <div class="details-content">
+              <div class="original-title">LimeWire AI Studio Review 2023: Details, Pricing & Features</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2023/12/limewire-ai-studio-review-2023-details.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Top 10 AI Tools in 2023 That Will Make Your Life Easier</summary>
+            <div class="details-content">
+              <div class="original-title">Top 10 AI Tools in 2023 That Will Make Your Life Easier</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2023/01/top-10-ai-tools-in-2023-that-will-make.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Top 10 AI Content Generator & Writer Tools in 2022</summary>
+            <div class="details-content">
+              <div class="original-title">Top 10 AI Content Generator & Writer Tools in 2022</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2022/11/top-10-ai-content-generator-writer.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Beginner Guide to CJ Affiliate (Commission Junction) in 2022</summary>
+            <div class="details-content">
+              <div class="original-title">Beginner Guide to CJ Affiliate (Commission Junction) in 2022</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2022/09/cj-affiliate-ultimate-guide-to.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>TOP 11 AI MARKETING TOOLS YOU SHOULD USE (Updated 2022)</summary>
+            <div class="details-content">
+              <div class="original-title">TOP 11 AI MARKETING TOOLS YOU SHOULD USE (Updated 2022)</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2022/07/top-10-ai-marketing-tools-you-should-use.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Most Frequently Asked Questions About Affiliate Marketing</summary>
+            <div class="details-content">
+              <div class="original-title">Most Frequently Asked Questions About Affiliate Marketing</div>
+              <div></div>
+              <a href="https://techncruncher.blogspot.com/2022/06/most-frequently-asked-questions-about.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        <h2>FINANCE</h2>
+        <div class="card">
+          <details>
+            <summary>Tech Titans Mingle With Trump and Xi at State Dinner</summary>
+            <div class="details-content">
+              <div class="original-title">Tech Titans Mingle With Trump and Xi at State Dinner</div>
+              <div>Prominent executives attended a dinner at the White House Thursday night, as the countries wrangled over tariffs, trade and potential A.I. regulation.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/economy/tech-executives-state-dinner-xi-trump.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Massachusetts Is Investigating Gambling Companies’ Use of A.I.</summary>
+            <div class="details-content">
+              <div class="original-title">Massachusetts Is Investigating Gambling Companies’ Use of A.I.</div>
+              <div>In response to a New York Times report on DraftKings, the state’s gaming commission said it would evaluate how each company deployed the technology.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/massachusetts-draftkings-ai-gambling.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</summary>
+            <div class="details-content">
+              <div class="original-title">Conservative Outlets Offer Trump Feed While White House TV Pool Is Suspended</div>
+              <div>Real America’s Voice and LindellTV have teamed up to provide a feed of daily presidential events.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/media/trump-white-house-press-ban-tv-pool-conservative-news.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Trump Struggles to Find Leverage With Xi Over Chinese Exports</summary>
+            <div class="details-content">
+              <div class="original-title">Trump Struggles to Find Leverage With Xi Over Chinese Exports</div>
+              <div>The Trump administration, like its predecessors, has struggled to deal with China’s excess industrial capacity.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/trump-xi-china-exports.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</summary>
+            <div class="details-content">
+              <div class="original-title">Letterboxd Sees Acquisition Interest From A24, Sony and the New York Times</div>
+              <div>A24, Sony and The New York Times Company all registered their interest in acquiring the cinephile’s paradise.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/media/letterboxd-sale-sony-a24-nyt.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Starbucks to Close 250 Stores in the US</summary>
+            <div class="details-content">
+              <div class="original-title">Starbucks to Close 250 Stores in the US</div>
+              <div>The company said the affected cafes did not meet financial or customer service expectations.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/starbucks-store-closures.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</summary>
+            <div class="details-content">
+              <div class="original-title">More Than 167,000 Pounds of Meat With False Inspection Mark Are Recalled</div>
+              <div>The raw pork, beef and goat products from Star Meat Delivery Inc. of North Carolina were distributed across the United States.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/meat-recall-usda-star-ad-foods.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</summary>
+            <div class="details-content">
+              <div class="original-title">Mortgage Rates Hit 7% as Iran War Fallout Crushes a Weak Housing Market</div>
+              <div>The average rate on a 30-year mortgage in the United States jumped to 7.03 percent, putting pressure on housing affordability.</div>
+              <a href="https://www.nytimes.com/2026/09/24/business/mortgage-rates-7-percent.html" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        <h2>AUTO</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>SPORTS</h2><div class='card'><summary>Feed temporarily offline.</summary></div><h2>CULTURE & MOVIES</h2>
+        <div class="card">
+          <details>
+            <summary>Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</summary>
+            <div class="details-content">
+              <div class="original-title">Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</div>
+              <div>Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protes...</div>
+              <a href="https://variety.com/2026/politics/news/hannah-einbinder-speaks-out-arrested-netanyahu-protest-1236875306/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</summary>
+            <div class="details-content">
+              <div class="original-title">Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</div>
+              <div>The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary ...</div>
+              <a href="https://variety.com/2026/film/festivals/aamir-khan-singapore-film-festival-hur-jin-ho-the-assassins-1236873907/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</summary>
+            <div class="details-content">
+              <div class="original-title">The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</div>
+              <div>Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and ot...</div>
+              <a href="https://variety.com/gallery/horror-show-academy-museum-halloween-saw/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</summary>
+            <div class="details-content">
+              <div class="original-title">Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</div>
+              <div>Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances f...</div>
+              <a href="https://variety.com/2026/shopping/news/power-of-women-gift-bag-2026-shop-online-1236875113/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</summary>
+            <div class="details-content">
+              <div class="original-title">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</div>
+              <div>The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and ...</div>
+              <a href="https://variety.com/2026/film/festivals/ai-robots-ann-hui-pingyao-film-festival-10th-edition-1236875276/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</summary>
+            <div class="details-content">
+              <div class="original-title">12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</div>
+              <div>Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chap...</div>
+              <a href="https://variety.com/2026/film/news/takeaways-bob-chapek-book-ousted-disney-ceo-1236875084/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</summary>
+            <div class="details-content">
+              <div class="original-title">Dakota Johnson on Being in Taylor Swift’s ‘Patient Zero’ Music Video: ‘We Respect Each Other’s Creative Minds’</div>
+              <div>New, mysterious and cryptic clips of Dakota Johnson flanked by another woman and man have taken rhe internet by storm, but this time, they aren’t part of her latest movie, “Verity”...</div>
+              <a href="https://variety.com/2026/film/news/dakota-johnson-taylor-swift-music-video-1236875221/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</summary>
+            <div class="details-content">
+              <div class="original-title">‘Star Trek: Strange New Worlds’ Star Celia Rose Gooding Breaks Down That Time-Jumping Season 4 Finale</div>
+              <div>SPOILER ALERT: This article contains spoilers for “Tomorrow’s Enterprise,” the Season 4 finale of “Star Trek: Strange New Worlds,“ now streaming on Paramount+. “Star Trek: Strange ...</div>
+              <a href="https://variety.com/2026/tv/news/star-trek-strange-new-worlds-finale-celia-rose-gooding-timejump-1236873713/" target="_blank" class="source-btn">Open Source ↗</a>
+            </div>
+          </details>
+        </div>
+        </body></html>
