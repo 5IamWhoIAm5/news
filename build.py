@@ -84,7 +84,6 @@ def is_junk_live_blog(title, content):
     """Filters out routine market noise, daily opening/closing tickers, and live blog clutter."""
     t_lower = title.lower()
     
-    # Block routine daily market fluctuation titles
     junk_patterns = [
         "stock market live", "sensex", "nifty", "trade flat", "traded flat",
         "opening bell", "share market live", "market live updates",
@@ -234,7 +233,6 @@ for tag, feed_list in FEEDS.items():
             
             full_content = get_full_article_content(entry, link)
 
-            # Drop generic routine market noise & live tickers
             if is_junk_live_blog(raw_title, full_content):
                 continue
 
@@ -265,10 +263,12 @@ for tag, feed_list in FEEDS.items():
                 f"Analyze these news items:\n{json.dumps(input_items)}\n\n"
                 f"STRICT RULES:\n"
                 f"1. DEDUPLICATION: Merge ALL items covering the same event/meeting/topic into EXACTLY 1 story object.\n"
-                f"2. ZERO META-TALK: NEVER mention journalists, correspondents, or publications (e.g. DO NOT write 'Laura Bicker unpacks...', 'Watch as X discusses...'). State the raw facts directly.\n"
-                f"3. HARD FACTS ONLY: Provide 3 to 5 bullet points with complete, standalone facts (names, numbers, policy decisions, agreements, legal charges, locations). The reader must NEVER need to click the original article.\n"
-                f"4. NO JUNK: Exclude routine market chatter, stock ticker updates, or non-news.\n"
-                f"5. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs).\n"
+                f"2. ZERO META-TALK: NEVER mention journalists, correspondents, or publications. State the raw facts directly.\n"
+                f"3. NO CLIFFHANGERS: Never end on a teaser, open question, or unresolved statement. If a rule, situation, or event is mentioned, you must explicitly state the outcome or what it changed to.\n"
+                f"4. ENTITY CONTEXT: Whenever a specific person, business, or location is mentioned, insert a brief 3-5 word appositive explaining who or what they are (e.g., 'a local pharmaceutical executive', 'a multinational tech firm', 'a major pilgrimage site').\n"
+                f"5. COMPLETE THE STORY: Do not just regurgitate the provided text. Enhance the summary by pulling in relevant, factual background data (e.g., baseline statistics, efficiency ratios, historical context) to provide a complete, self-contained brief. The reader must NEVER need to click the original article.\n"
+                f"6. NO JUNK: Exclude routine market chatter, stock ticker updates, or non-news.\n"
+                f"7. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs).\n"
             )
             
             res = model.generate_content(prompt)
