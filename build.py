@@ -7,13 +7,7 @@ model = None
 if api_key:
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel(
-            'gemini-1.5-flash',
-            generation_config={
-                "response_mime_type": "application/json",
-                "temperature": 0.1
-            }
-        )
+        model = genai.GenerativeModel('gemini-1.5-flash')
     except Exception as e:
         print(f"Gemini init error: {e}")
 
@@ -88,9 +82,7 @@ def is_junk_live_blog(title, content):
         "rupee opens", "rupee open", "equity benchmarks", "stocks to watch",
         "gainers and losers", "market opening", "bse sensex", "nifty 50"
     ]
-    if any(k in t_lower for k in junk_patterns):
-        return True
-    return False
+    return any(k in t_lower for k in junk_patterns)
 
 def get_full_article_content(entry, url):
     if hasattr(entry, 'content') and entry.content:
@@ -154,14 +146,7 @@ html_out = f"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Micro News</title>
 <style>
-  :root {{
-    --bg: #090a0f;
-    --card-bg: #13151c;
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --accent: #38bdf8;
-    --border: #1e293b;
-  }}
+  :root {{ --bg: #090a0f; --card-bg: #13151c; --text: #e2e8f0; --text-muted: #94a3b8; --accent: #38bdf8; --border: #1e293b; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }}
   body {{ background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 12px; max-width: 650px; margin: 0 auto; padding-bottom: 60px; }}
   header {{ padding: 12px 4px 8px; margin-bottom: 12px; }}
@@ -238,62 +223,57 @@ for tag, feed_list in FEEDS.items():
         try:
             input_items = [{"id": i, "title": a["title"], "full_text": a["content"]} for i, a in enumerate(raw_articles[:10])]
             
+            # Simplified prompt that gets straight to the point
             prompt = f"""You are an elite news editor. Summarize these raw articles for the '{tag}' category.
 
 RAW ARTICLES:
 {json.dumps(input_items)}
 
-STRICT JSON OUTPUT EXAMPLES:
+OUTPUT FORMAT:
+You MUST return ONLY a valid JSON array of objects. No markdown, no explanations, no other text.
 
-[BAD OUTPUT - DO NOT DO THIS]
 [
   {{
-    "headline": "The world's two most powerful men just met. How did it go?",
+    "headline": "Clean, Factual Headline Here",
     "takeaways": [
-      "The world's two most powerful men – Xi Jinping and Donald Trump – met in Washington.",
-      "BBC's Laura Bicker unpacks the trip...",
-      "They committed to a tariff truce."
+      "First standalone factual sentence goes here.",
+      "Second standalone factual sentence goes here."
     ],
-    "source_ids": [0]
-  }}
-]
-Why it fails: Uses clickbait headline, includes journalist name ("BBC's Laura Bicker"), and ends a thought with an ellipsis (...).
-
-[GOOD OUTPUT - DO THIS EXACTLY]
-[
-  {{
-    "headline": "US and China Agree to 6-Month Tariff Truce During Washington Summit",
-    "takeaways": [
-      "US President Donald Trump and Chinese President Xi Jinping concluded a diplomatic summit in Washington.",
-      "The two leaders committed to a six-month extension of the existing tariff truce, delaying further economic escalations."
-    ],
-    "source_ids": [0, 2]
-  }},
-  {{
-    "headline": "Son Arrested in Murder of UP Businessman Vineet Manocha",
-    "takeaways": [
-      "Police arrested the son and daughter-in-law of 63-year-old UP businessman Vineet Manocha in connection with his murder.",
-      "Investigators state the suspects acted over fears that Manocha planned to transfer property rights to his partner."
-    ],
-    "source_ids": [1]
+    "source_ids": [0, 1]
   }}
 ]
 
 STRICT RULES:
-1. OUTPUT FORMAT: You must return a valid JSON array of objects. Do not use Markdown formatting outside the JSON array.
-2. NO TRUNCATION: Never use '...' or leave a sentence unfinished.
-3. 2 TO 4 COMPLETE SENTENCES: Transform the raw text into 2 to 4 crisp, standalone sentences per story. 
-4. EXTRACT THE HARD NEWS: Delete all rhetorical questions, mentions of pageantry, or journalist names. Find the actual policy, agreement, or event and state it cleanly.
-5. DEDUPLICATION: If multiple articles cover the exact same event, combine them into ONE single JSON object with a combined list of source_ids.
+1. 2 TO 4 COMPLETE SENTENCES: Write 2 to 4 crisp, standalone sentences per story. Do not truncate or use '...'.
+2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
+3. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
 """
-            res = model.generate_content(prompt)
-            if res and res.text:
+            # MUST disable safety filters to prevent news about violence/crime from crashing the API
+            safety_settings = [
+                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+            ]
+
+            res = model.generate_content(
+                prompt, 
+                safety_settings=safety_settings,
+                generation_config={"temperature": 0.1}
+            )
+            
+            # Bulletproof JSON extraction
+            try:
                 resp_text = res.text.strip()
-                if resp_text.startswith("```"):
-                    resp_text = re.sub(r"^```[a-z]*\n?", "", resp_text)
-                    resp_text = re.sub(r"\n?```$", "", resp_text)
+                # Use regex to find everything between the first [ and the last ]
+                match = re.search(r'\[\s*\{.*\}\s*\]', resp_text, re.DOTALL)
+                if match:
+                    resp_text = match.group(0)
                 processed_groups = json.loads(resp_text)
-            time.sleep(1)
+            except ValueError:
+                print(f"Safety filter blocked response for {tag}.")
+                
+            time.sleep(1.5) # Prevent rate limits
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
