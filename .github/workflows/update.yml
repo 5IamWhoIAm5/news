@@ -2,7 +2,7 @@ name: Update News Feed
 
 on:
   schedule:
-    - cron: '0 * * * *' # Auto-runs every hour
+    - cron: '0 */2 * * *'
   workflow_dispatch:     # Allows you to trigger it manually anytime
 
 jobs:
