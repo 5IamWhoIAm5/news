@@ -11,7 +11,7 @@ if api_key:
             'gemini-1.5-flash',
             generation_config={
                 "response_mime_type": "application/json",
-                "temperature": 0.2
+                "temperature": 0.1
             }
         )
     except Exception as e:
@@ -60,7 +60,6 @@ FEEDS = {
 }
 
 def fix_encoding(text):
-    """Fix double-encoded UTF-8 / Latin-1 characters like â€™ -> ' """
     if not text:
         return ""
     try:
@@ -68,10 +67,7 @@ def fix_encoding(text):
     except Exception:
         pass
     text = html.unescape(text)
-    # Common replacements for leftover artifacts
-    replacements = {
-        'â€™': "'", 'â€œ': '"', 'â€': '"', 'â€”': '—', 'â€“': '–', 'Â': ''
-    }
+    replacements = {'â€™': "'", 'â€œ': '"', 'â€': '"', 'â€”': '—', 'â€“': '–', 'Â': ''}
     for bad, good in replacements.items():
         text = text.replace(bad, good)
     return text
@@ -84,9 +80,24 @@ def clean_text(raw_html):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+def is_junk_live_blog(title, content):
+    """Filters out routine market noise, daily opening/closing tickers, and live blog clutter."""
+    t_lower = title.lower()
+    
+    # Block routine daily market fluctuation titles
+    junk_patterns = [
+        "stock market live", "sensex", "nifty", "trade flat", "traded flat",
+        "opening bell", "share market live", "market live updates",
+        "rupee opens", "rupee open", "equity benchmarks", "stocks to watch",
+        "gainers and losers", "market opening", "bse sensex", "nifty 50"
+    ]
+    
+    if any(k in t_lower for k in junk_patterns):
+        return True
+            
+    return False
+
 def get_full_article_content(entry, url):
-    """Extract full content from RSS content field or scrape the source URL."""
-    # 1. Try RSS content:encoded / full content tag first
     if hasattr(entry, 'content') and entry.content:
         for c in entry.content:
             val = clean_text(c.get('value', ''))
@@ -95,12 +106,10 @@ def get_full_article_content(entry, url):
 
     summary = clean_text(entry.get('summary', entry.get('description', '')))
     
-    # 2. Scrape full article if summary is too short
     if url and url != '#' and len(summary) < 400:
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
             }
             resp = requests.get(url, headers=headers, timeout=5)
             if resp.status_code == 200:
@@ -215,7 +224,7 @@ for tag, feed_list in FEEDS.items():
 
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
-        for entry in parsed.entries[:5]:
+        for entry in parsed.entries[:6]:
             group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
             if group_key == "discard":
                 continue
@@ -224,6 +233,10 @@ for tag, feed_list in FEEDS.items():
             link = entry.get('link', '#')
             
             full_content = get_full_article_content(entry, link)
+
+            # Drop generic routine market noise & live tickers
+            if is_junk_live_blog(raw_title, full_content):
+                continue
 
             raw_articles.append({
                 "source": source_name,
@@ -250,12 +263,12 @@ for tag, feed_list in FEEDS.items():
             prompt = (
                 f"You are an executive intelligence briefer for category '{tag}'. "
                 f"Analyze these news items:\n{json.dumps(input_items)}\n\n"
-                f"PHILOSOPHY: The reader should NEVER have to click the source link to understand what happened. Provide dense, complete, fully-formed information.\n\n"
-                f"RULES:\n"
-                f"1. DEDUPLICATION: Merge ALL items covering the same event/meeting/topic (e.g., Trump-Xi summit, elections, market updates, court decisions) into EXACTLY 1 story object.\n"
-                f"2. HEADLINE: Write a factual, complete, non-clickbait headline (8-14 words).\n"
-                f"3. DENSE EXECUTIVE BULLETS: Provide 3 to 6 detailed bullet points per story. Include exact names, figures, official quotes, background reasons, legal status, and next steps. NEVER cut off mid-sentence, NEVER use '...' or teaser summaries.\n"
-                f"4. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of string bullets), 'source_ids' (array of integer IDs merged).\n"
+                f"STRICT RULES:\n"
+                f"1. DEDUPLICATION: Merge ALL items covering the same event/meeting/topic into EXACTLY 1 story object.\n"
+                f"2. ZERO META-TALK: NEVER mention journalists, correspondents, or publications (e.g. DO NOT write 'Laura Bicker unpacks...', 'Watch as X discusses...'). State the raw facts directly.\n"
+                f"3. HARD FACTS ONLY: Provide 3 to 5 bullet points with complete, standalone facts (names, numbers, policy decisions, agreements, legal charges, locations). The reader must NEVER need to click the original article.\n"
+                f"4. NO JUNK: Exclude routine market chatter, stock ticker updates, or non-news.\n"
+                f"5. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs).\n"
             )
             
             res = model.generate_content(prompt)
@@ -269,7 +282,6 @@ for tag, feed_list in FEEDS.items():
         except Exception as e:
             print(f"Gemini API Error for {tag}: {e}")
 
-    # Fallback if Gemini fails
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
@@ -293,6 +305,8 @@ for tag, feed_list in FEEDS.items():
         time_ago = newest_article["time_ago"]
 
         headline = group.get("headline") or newest_article["title"]
+        headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', headline, flags=re.IGNORECASE)
+        
         takeaways = group.get("takeaways", [])
 
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
