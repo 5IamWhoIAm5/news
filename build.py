@@ -9,7 +9,10 @@ if api_key:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(
             'gemini-1.5-flash',
-            generation_config={"response_mime_type": "application/json"}
+            generation_config={
+                "response_mime_type": "application/json",
+                "temperature": 0.2
+            }
         )
     except Exception as e:
         print(f"Gemini init error: {e}")
@@ -56,35 +59,64 @@ FEEDS = {
     ]
 }
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-}
+def fix_encoding(text):
+    """Fix double-encoded UTF-8 / Latin-1 characters like â€™ -> ' """
+    if not text:
+        return ""
+    try:
+        text = text.encode('latin-1').decode('utf-8')
+    except Exception:
+        pass
+    text = html.unescape(text)
+    # Common replacements for leftover artifacts
+    replacements = {
+        'â€™': "'", 'â€œ': '"', 'â€': '"', 'â€”': '—', 'â€“': '–', 'Â': ''
+    }
+    for bad, good in replacements.items():
+        text = text.replace(bad, good)
+    return text
 
 def clean_text(raw_html):
     if not raw_html:
         return ""
     text = re.sub(r'<[^>]+>', ' ', raw_html)
-    text = html.unescape(text)
+    text = fix_encoding(text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-def scrape_full_article(url):
-    """Scrapes the main paragraph text from the actual article URL."""
-    if not url or url == '#':
-        return ""
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=4)
-        if resp.status_code != 200:
-            return ""
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        # Pull text from paragraph tags
-        paragraphs = soup.find_all('p')
-        text_list = [p.get_text().strip() for p in paragraphs if len(p.get_text().strip()) > 40]
-        full_text = " ".join(text_list[:6])  # Grab first 6 substantial paragraphs
-        return clean_text(full_text)[:1200]  # Cap at 1200 chars per article
-    except Exception:
-        return ""
+def get_full_article_content(entry, url):
+    """Extract full content from RSS content field or scrape the source URL."""
+    # 1. Try RSS content:encoded / full content tag first
+    if hasattr(entry, 'content') and entry.content:
+        for c in entry.content:
+            val = clean_text(c.get('value', ''))
+            if len(val) > 250:
+                return val[:2500]
+
+    summary = clean_text(entry.get('summary', entry.get('description', '')))
+    
+    # 2. Scrape full article if summary is too short
+    if url and url != '#' and len(summary) < 400:
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            }
+            resp = requests.get(url, headers=headers, timeout=5)
+            if resp.status_code == 200:
+                resp.encoding = 'utf-8'
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                for s in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form']):
+                    s.decompose()
+                paragraphs = soup.find_all('p')
+                p_texts = [clean_text(p.get_text()) for p in paragraphs if len(clean_text(p.get_text())) > 30]
+                scraped_text = " ".join(p_texts[:8])
+                if len(scraped_text) > len(summary):
+                    return scraped_text[:2500]
+        except Exception:
+            pass
+
+    return summary
 
 def parse_time_info(parsed_time):
     if not parsed_time:
@@ -129,7 +161,7 @@ html_out = f"""<!DOCTYPE html>
     --border: #1e293b;
   }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }}
-  body {{ background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 12px; max-width: 600px; margin: 0 auto; padding-bottom: 50px; }}
+  body {{ background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 12px; max-width: 650px; margin: 0 auto; padding-bottom: 60px; }}
   header {{ padding: 12px 4px 8px; margin-bottom: 12px; }}
   .header-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }}
   h1 {{ font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }}
@@ -142,19 +174,19 @@ html_out = f"""<!DOCTYPE html>
   .tab-content {{ display: none; }}
   .tab-content.active {{ display: block; }}
 
-  h2 {{ color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 20px 4px 8px; }}
-  .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }}
+  h2 {{ color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 22px 4px 10px; }}
+  .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }}
   details {{ width: 100%; }}
-  summary {{ padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 700; cursor: pointer; list-style: none; color: #f8fafc; display: flex; align-items: flex-start; gap: 8px; }}
+  summary {{ padding: 12px 14px; font-size: 14.5px; line-height: 1.4; font-weight: 700; cursor: pointer; list-style: none; color: #f8fafc; display: flex; align-items: flex-start; gap: 10px; }}
   summary::-webkit-details-marker {{ display: none; }}
-  .bullet {{ color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1.2; flex-shrink: 0; }}
+  .bullet {{ color: var(--accent); font-weight: bold; font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 2px; }}
   .time-badge {{ background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }}
   .summary-text {{ flex-grow: 1; }}
   
-  .details-content {{ padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.25); }}
-  .takeaways-list {{ margin: 4px 0 10px 14px; padding: 0; }}
-  .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 12.5px; line-height: 1.45; position: relative; }}
-  .sources-container {{ margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
+  .details-content {{ padding: 14px 16px 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.2); }}
+  .takeaways-list {{ margin: 0 0 12px 0; padding-left: 18px; list-style-type: disc; }}
+  .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 13px; line-height: 1.5; }}
+  .sources-container {{ margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
   .sources-label {{ font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }}
   .source-btn {{ display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }}
   .no-news {{ color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }}
@@ -191,10 +223,7 @@ for tag, feed_list in FEEDS.items():
             raw_title = clean_text(entry.get('title', ''))
             link = entry.get('link', '#')
             
-            # Scrape full text from the article link
-            full_content = scrape_full_article(link)
-            if not full_content:
-                full_content = clean_text(entry.get('summary', entry.get('description', '')))
+            full_content = get_full_article_content(entry, link)
 
             raw_articles.append({
                 "source": source_name,
@@ -219,13 +248,14 @@ for tag, feed_list in FEEDS.items():
             ]
             
             prompt = (
-                f"You are a executive news summarizer for category '{tag}'. Analyze these full article texts:\n"
-                f"{json.dumps(input_items)}\n\n"
-                f"STRICT INSTRUCTIONS:\n"
-                f"1. DEDUPLICATION: Any items covering the SAME event/topic (e.g. Trump-Xi summit, elections, stock market, Pune court cases) MUST be merged into 1 single story group.\n"
-                f"2. HEADLINE: Write a clear, informative 8-12 word headline summarizing the core event.\n"
-                f"3. DENSE FACTUAL SUMMARY: Write 3 to 5 bullet points containing HARD FACTS extracted from the text (names, exact quotes, figures, decisions, timelines, locations, context). NEVER use teaser lines or generic quotes like 'they discussed issues' or 'read more'. Give the actual substance!\n"
-                f"4. Output JSON array of objects with keys: 'headline', 'takeaways' (array of bullet strings), 'source_ids' (array of integer IDs merged).\n"
+                f"You are an executive intelligence briefer for category '{tag}'. "
+                f"Analyze these news items:\n{json.dumps(input_items)}\n\n"
+                f"PHILOSOPHY: The reader should NEVER have to click the source link to understand what happened. Provide dense, complete, fully-formed information.\n\n"
+                f"RULES:\n"
+                f"1. DEDUPLICATION: Merge ALL items covering the same event/meeting/topic (e.g., Trump-Xi summit, elections, market updates, court decisions) into EXACTLY 1 story object.\n"
+                f"2. HEADLINE: Write a factual, complete, non-clickbait headline (8-14 words).\n"
+                f"3. DENSE EXECUTIVE BULLETS: Provide 3 to 6 detailed bullet points per story. Include exact names, figures, official quotes, background reasons, legal status, and next steps. NEVER cut off mid-sentence, NEVER use '...' or teaser summaries.\n"
+                f"4. OUTPUT FORMAT: JSON array of objects with keys: 'headline', 'takeaways' (array of string bullets), 'source_ids' (array of integer IDs merged).\n"
             )
             
             res = model.generate_content(prompt)
@@ -243,7 +273,7 @@ for tag, feed_list in FEEDS.items():
     if not processed_groups:
         processed_groups = [{
             "headline": a["title"],
-            "takeaways": [a["content"][:200] + "..."] if a["content"] else [a["title"]],
+            "takeaways": [a["content"]] if a["content"] else [a["title"]],
             "source_ids": [i]
         } for i, a in enumerate(raw_articles[:8])]
 
@@ -267,7 +297,7 @@ for tag, feed_list in FEEDS.items():
 
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
-            valid_takeaways = [newest_article["content"][:250]]
+            valid_takeaways = [newest_article["content"]]
 
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
 
@@ -305,7 +335,7 @@ for tag, feed_list in FEEDS.items():
             tab_data[gk] += f"<h2>{tag}</h2>" + cat_tab_html[gk]
 
 html_out += tab_data["today"] if tab_data["today"] else "<div class='no-news'>No news published today yet.</div>"
-html_out += '0</div><div id="tab-yesterday" class="tab-content">'
+html_out += '</div><div id="tab-yesterday" class="tab-content">'
 html_out += tab_data["yesterday"] if tab_data["yesterday"] else "<div class='no-news'>No articles from yesterday.</div>"
 html_out += '</div><div id="tab-older" class="tab-content">'
 html_out += tab_data["older"] if tab_data["older"] else "<div class='no-news'>No articles from 2-3 days ago.</div>"
