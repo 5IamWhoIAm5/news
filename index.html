@@ -28,18 +28,18 @@
   .tab-content.active { display: block; }
 
   h2 { color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin: 20px 4px 8px; }
-  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
   details { width: 100%; }
-  summary { padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 600; cursor: pointer; list-style: none; color: #f1f5f9; display: flex; align-items: flex-start; gap: 8px; }
+  summary { padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 700; cursor: pointer; list-style: none; color: #f8fafc; display: flex; align-items: flex-start; gap: 8px; }
   summary::-webkit-details-marker { display: none; }
   .bullet { color: var(--accent); font-weight: bold; font-size: 16px; line-height: 1.2; flex-shrink: 0; }
   .time-badge { background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
   .summary-text { flex-grow: 1; }
   
   .details-content { padding: 12px 14px 14px 26px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.25); }
-  .takeaways-list { margin: 4px 0 10px 16px; padding: 0; }
-  .takeaways-list li { margin-bottom: 6px; color: #e2e8f0; font-size: 12.5px; line-height: 1.4; }
-  .sources-container { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .takeaways-list { margin: 4px 0 10px 14px; padding: 0; }
+  .takeaways-list li { margin-bottom: 8px; color: #e2e8f0; font-size: 12.5px; line-height: 1.45; position: relative; }
+  .sources-container { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .sources-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }
   .source-btn { display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }
   .no-news { color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }
@@ -49,7 +49,7 @@
 <header>
   <div class="header-top">
     <h1>Micro News</h1>
-    <span class="refresh-badge">Refreshed: Sep 25, 03:40 UTC</span>
+    <span class="refresh-badge">Refreshed: Sep 25, 03:48 UTC</span>
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('today')">Today</button>
@@ -64,69 +64,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Trump-Xi Jinping LIVE Updates: Trump Says He Had A "Great Meeting" With Xi Jinping</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Stock Market LIVE Updates, Sensex Today: Sensex, Nifty Trade Flat Amid Mixed Global Cues</span>
+              <span class="time-badge">1m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Trump-Xi Jinping Summit LIVE: China and the US should be &quot;partners, not rivals&quot;, Xi said</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/world-news/donald-trump-xi-jinping-live-updates-us-china-summit-white-house-state-visit-key-announcements-trade-ai-live-news-12092374#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Akhilesh Yadav Begins Samajwadi Party's UP Poll Campaign From Rahul Gandhi's Seat, BJP Reacts</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Akhilesh Yadav during a roadshow in Raebareli</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/india-news/akhilesh-yadav-begins-samajwadi-partys-2027-up-assembly-polls-campaign-from-rahul-gandhis-seat-with-pda-rath-bjp-reacts-12095174#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Trade, Taiwan And AI: Five Takeaways From Donald Trump, Xi Jinping Summit</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Xi noted in his own toast that &quot;President Trump has pledged to make America great again&quot;</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/world-news/trade-taiwan-and-ai-five-takeaways-from-donald-trump-xi-jinping-summit-12095107#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Stock Market LIVE Updates, Sensex Today: Markets Likely To Open Flat</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Sensex Today, Stock Market, Nifty, Share Market Live News Updates</li>
+                <li>Sensex Today, Stock Market, Nifty, Share Market Live News Updates...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -140,16 +83,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Elon Musk, Tim Cook, Sam Altman Among Guests At Trump's State Dinner For Xi Jinping</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">UP Businessman Was Killed Because Son Feared He Would Give Property To Lover</span>
+              <span class="time-badge">13m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Trump presented Xi with a gift of a custom-made statue of a bald eagle.</li>
+                <li>Vineet Manocha&#x27;s son and daughter-in-law have been arrested for his murder...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/world-news/elon-musk-tim-cook-sam-altman-among-guests-at-trumps-state-dinner-for-xi-jinping-12095161#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
+                <a href="https://www.ndtv.com/india-news/vineet-manocha-son-got-up-businessman-murdered-fearing-property-transfer-to-another-woman-12095296#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
               </div>
             </div>
           </details>
@@ -159,16 +102,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Varanasi, Bareilly Among 10 UP Districts Facing High Cyber Fraud Activity Risk: Survey</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Less Cost, More Choices: Decoding New Motor Insurance Plan For Vehicle Owners</span>
+              <span class="time-badge">14m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Fraud activity doesn&#x27;t disappear after enforcement action, it just shifts geographically, says survey.</li>
+                <li>IRDAI&#x27;s proposals seek to separate insurance sales from other dealer relationships....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/business-news/varanasi-bareilly-uttar-pradesh-districts-facing-high-fraud-activity-risk-kyc-12095124#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
+                <a href="https://www.ndtv.com/business-news/decoding-irdai-new-motor-insurance-plan-vehicle-owners-less-cost-more-choices-12095232#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
               </div>
             </div>
           </details>
@@ -178,12 +121,50 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">The world’s two most powerful men just met. How did it go?</span>
+              <span class="summary-text">Delhi To Get 20,000 Smart Street Lights By Diwali With Real-Time Monitoring</span>
+              <span class="time-badge">56m ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>The project will replace conventional sodium lights with energy-efficient smart LED lights....</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.ndtv.com/delhi-news/delhi-to-get-20-000-smart-street-lights-by-diwali-with-real-time-monitoring-12095252#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Expired Food, Poor Kitchen Hygiene: 8 Hyderabad Eateries Lose Licences</span>
+              <span class="time-badge">1h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>The latest drive comes amid an intensified food-safety campaign in Telangana....</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.ndtv.com/hyderabad-news/expired-food-poor-kitchen-hygiene-8-hyderabad-eateries-lose-licences-12095234#publisher=newsstand" target="_blank" class="source-btn">NDTV ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Watch: The world’s two most powerful men just met. How did it go?</span>
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The BBC’s China correspondent Laura Bicker unpacks how the trip panned out for Beijing and Washington.</li>
+                <li>The worldâs two most powerful men â Xi Jinping and Donald Trump â have just met in Washington after days of pomp and pageantry. While there were many symbolic gestures, including Chinese pandas ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -197,16 +178,35 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Anti</span>
+              <span class="summary-text">Anti-migrant activist charged after dinghy slashed in Channel</span>
               <span class="time-badge">5h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Activist Daniel Thomas is charged in connection with an incident in the English Channel on Tuesday.</li>
+                <li>The police had been examining live-stream footage appearing to show Daniel Thomas slashing at a migrant boat Anti-migrant activist Daniel Thomas has been charged with criminal damage after a video app...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/crkgwe3egpzgo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">From weeks to hours - the rapid new test transforming brain tumour diagnosis</span>
+              <span class="time-badge">4h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>The test means patients can be diagnosed within hours rather than weeks, like Steve Palmer whose case the BBC followed A rapid new test for brain tumours that the NHS has started using can slash the t...</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.bbc.co.uk/news/articles/cr3wj04d88ywo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC ↗</a>
               </div>
             </div>
           </details>
@@ -221,7 +221,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Pune Sessions Court sentenced IIT alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavdhan flat in 2010</li>
+                <li>PUNE: The Pune Sessions Court on Thursday sentenced businessman and IIT-Kharagpur alumnus Subojit Sadan Basu to life imprisonment for strangling his 23-year-old sister Priyadarshini Basu at their Bavd...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -240,7 +240,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Pune police registered seven cheating-related FIRs involving financial losses of around ₹1.8 crore, with cases ranging from alleged fake RTO challan application to misappropriation of company funds</li>
+                <li>PUNE: The Pune police on September 23 registered seven cheating-related FIRs involving financial losses of around ₹1.8766 crore, with the cases ranging from an alleged fake RTO challan application to ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -259,7 +259,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>PMC is all set for immersion of Ganesh idols on Friday by deploying 120 lifeguards and 37 fire brigade personnel at 15 immersion ghats across the city for safety purposes</li>
+                <li>PUNE: The Pune Municipal Corporation (PMC) is all set for the immersion (visarjan) of Lord Ganesh idols on Anant Chaturdashi day on Friday; deploying 120 lifeguards and 37 fire brigade personnel at 15...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -278,7 +278,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Police said the proposed locations could see traffic and public-order issues, particularly during Ganeshotsav</li>
+                <li>Ahead of the proposed September 27 agitation by Maharashtra Public Service Commission (MPSC) aspirants in Pune, the police have issued notices to student representatives, including Rishikesh Gangurde,...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -297,30 +297,11 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The death of man during Ganpati immersion procession in Ahilyanagar has triggered a controversy, with NCP MLA Sangram Jagtap and residents alleging that he died following police lathi-charge</li>
+                <li>PUNE: The death of Deepak Wagaskar, 50, president of Sukhleshwar Mitra Mandal, during a Ganpati immersion procession in the Bhingar Camp area of Ahilyanagar on Wednesday night has triggered a controve...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Katraj SWaCH waste facility gets notice over fire safety lapses</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>PMC fire brigade on Thursday issued notice to SWaCH waste facility at Garbage Ramp, Katraj, directing it to address fire-safety lapses within seven days</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
               </div>
             </div>
           </details>
@@ -330,12 +311,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Akhilesh Yadav Begins Samajwadi Party's UP Poll Campaign From Rahul Gandhi's Seat, BJP Reacts</span>
+              <span class="summary-text">Akhilesh Yadav Begins Samajwadi Party&#x27;s UP Poll Campaign From Rahul Gandhi&#x27;s Seat, BJP Reacts</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Akhilesh Yadav during a roadshow in Raebareli</li>
+                <li>Akhilesh Yadav during a roadshow in Raebareli...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -354,7 +335,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The IBPS PO Mains exam is scheduled to be held on October 4, 2026.</li>
+                <li>The IBPS PO Mains exam is scheduled to be held on October 4, 2026....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -373,7 +354,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>It showed that Kedarnath has generated approximately 20 metric tonnes of plastic waste so far in 2026.</li>
+                <li>It showed that Kedarnath has generated approximately 20 metric tonnes of plastic waste so far in 2026....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -387,12 +368,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Drive Through Tollgates: New Rules For High</span>
-              <span class="time-badge">7h ago</span>
+              <span class="summary-text">Drive Through Tollgates: New Rules For High-Speed Highways</span>
+              <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Plantation and landscaping will no longer be treated only as additions after a highway is built.</li>
+                <li>Plantation and landscaping will no longer be treated only as additions after a highway is built....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -411,7 +392,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Jharkhand is also under an orange alert for the next 24 hours</li>
+                <li>Jharkhand is also under an orange alert for the next 24 hours...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -425,31 +406,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">DMK Didn't Try To Shield Granite Baron Accused In Sex Abuse Case: MK Stalin</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">&#x27;Let&#x27;s race, not wrestle&#x27;: 5 takeaways as Trump-Xi navigate trade, Taiwan and AI</span>
+              <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Stalin said no order had been issued during the DMK government to protect anyone in the Veeramani case.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/india-news/no-orders-were-issued-to-shield-r-veeramani-under-dmk-mk-stalin-12094290#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">'Let's race, not wrestle': 5 takeaways as Trump-Xi navigate trade, Taiwan and AI</span>
-              <span class="time-badge">53m ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Donald Trump and Xi Jinping met at the White House to discuss key issues like trade and artificial intelligence. They agreed to extend their trade truce by two months while significant disputes remain unresolved. Taiwan and its security implications were also central to the discussions, as Xi urged caution regarding the island. Both leaders emphasi</li>
+                <li>Donald Trump and Xi Jinping met at the White House to discuss key issues like trade and artificial intelligence. They agreed to extend their trade truce by two months while significant disputes remain...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -464,15 +426,34 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Bihar: After Jamui, Samastipur, another girl harassed in public at tourist site</span>
-              <span class="time-badge">32m ago</span>
+              <span class="time-badge">40m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>A video reportedly showing a minor girl being harassed in Banka has emerged online. Following this incident, police registered a case against six unidentified youths for their actions. The video appears to have been recorded six months ago at Mandar Parvat tourist site, according to initial investigations. Similar incidents in Samastipur and Muzaff</li>
+                <li>A video reportedly showing a minor girl being harassed in Banka has emerged online. Following this incident, police registered a case against six unidentified youths for their actions. The video appea...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://timesofindia.indiatimes.com/city/patna/bihar-shocker-after-jamui-samastipur-another-girl-harassed-in-public-at-tourist-site/articleshow/134473904.cms" target="_blank" class="source-btn">Times of India ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">‘Extreme tail risk’: Mark Carney says Canada considered risk of military attack by US</span>
+              <span class="time-badge">27m ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>‘Extreme tail risk’: Mark Carney says Canada considered risk of military attack by US</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://timesofindia.indiatimes.com/world/rest-of-world/extreme-tail-risk-mark-carney-says-canada-considered-risk-of-military-attack-by-us/articleshow/134474081.cms" target="_blank" class="source-btn">Times of India ↗</a>
               </div>
             </div>
           </details>
@@ -483,11 +464,11 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Netanyahu defends Israeli military action as delegates walk out before UN speech</span>
-              <span class="time-badge">2h ago</span>
+              <span class="time-badge">3h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The Israeli leader labels those who left his speech at the UN General Assembly as &quot;moral cowards&quot;.</li>
+                <li>Watch: UN delegates walk out of Israeli PM Benjamin Netanyahu&#x27;s speech Israeli Prime Minister Benjamin Netanyahu has fiercely defended his country&#x27;s military campaigns in Iran, Gaza and elsewhere in t...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -501,12 +482,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Media outlets banned by Trump denied access to White House dinner despite judge's order</span>
+              <span class="summary-text">Media outlets banned by Trump denied access to White House dinner despite judge&#x27;s order</span>
               <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>CNN and MS NOW said reporters were denied access to covering White House arrivals for a state dinner, despite a judge ruling their passes must be restored.</li>
+                <li>Watch: What&#x27;s the latest on the White House media ban? CNN and MS NOW reporters say they have been denied entry to cover a White House state dinner despite a judge ruling their access to the grounds m...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -520,12 +501,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Hundreds of thousands expected in Paris for Pope's visit</span>
+              <span class="summary-text">Hundreds of thousands expected in Paris for Pope&#x27;s visit</span>
               <span class="time-badge">4h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The highpoint of his time in Paris will be a giant Mass attended by more than half a million people.</li>
+                <li>Pope Leo begins his visit in the French capital, before moving on to Lourdes and Metz Pope Leo XIV embarks on a four-day visit to France on Friday, with the highpoint being a giant Mass attended by mo...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -539,12 +520,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Why Australia chose the world's biggest political stage to reveal OpenAI hack</span>
+              <span class="summary-text">Why Australia chose the world&#x27;s biggest political stage to reveal OpenAI hack</span>
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Australia, which has strict social media restrictions and has proposed controls on algorithms and smart glasses, announced the breach at the UN.</li>
+                <li>Australia made a dramatic revelation on Wednesday during the United Nations General Assembly. Rogue AI agents had hacked one of its government bodies - the first known incident of its kind in the worl...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -563,30 +544,11 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Pakistan says it struck 10 targets, adding the strikes were &quot;strictly limited to identified military objectives&quot;.</li>
+                <li>Flames and smoke rise from an area struck by an air strike in Kandahar on Thursday Afghanistan&#x27;s Taliban government said a wave of Pakistani air strikes had killed four civilians in the latest escalat...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cm86xn0nnw58o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Priest killed and four injured in knife attack at Polish abbey</span>
-              <span class="time-badge">8h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>A male suspect from Ukraine was arrested after the stabbings in the town of Jarosław, police say.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.bbc.co.uk/news/articles/c607lrvm41l3o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
             </div>
           </details>
@@ -601,7 +563,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Rights groups accuse UN of hosting a &#x27;war criminal&#x27; as delegations walk out during Israeli prime minister&#x27;s speech.</li>
+                <li>Rights groups accuse the UN of hosting a “war criminal” as delegations walked out during Netanyahu’s speech. Police arrested about 100 protesters, including actors and politicians, outside the United ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -620,11 +582,30 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Israel’s Prime Minister addressed the UN General Assembly in person, despite having an ICC arrest warrant.</li>
+                <li>Contrasting treatment of Israel and Palestine on display at the UN Israel’s Prime Minister addressed the UN General Assembly in person, despite having an International Criminal Court (ICC) arrest warr...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.aljazeera.com/video/newsfeed/2026/9/25/contrasting-treatment-of-israel-and-palestine-on-display-at-the-un?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">More than 100 arrested as New Yorkers protest Netanyahu’s UN visit</span>
+              <span class="time-badge">1h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>Demonstrators blocked streets and marched towards the UN headquarters as Netanyahu addressed world leaders at UNGA. Multiple protests against Israeli Prime Minister Benjamin Netanyahu took place in Ne...</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.aljazeera.com/news/2026/9/25/more-than-100-arrested-as-new-yorkers-protest-netanyahus-un-visit?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
               </div>
             </div>
           </details>
@@ -634,12 +615,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">CDC opens state ordering for COVID</span>
+              <span class="summary-text">CDC opens state ordering for COVID-19 vaccines after unexplained delay</span>
               <span class="time-badge">5h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Health department previously blamed delay on &quot;not yet finalized procurement decisions.&quot;</li>
+                <li>Health department previously blamed delay on “not yet finalized procurement decisions.” After a nearly monthlong delay, states are now able to order this season’s COVID-19 vaccines through a federal p...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -653,12 +634,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Donald Duck's uncle was partly based on Wernher von Braun</span>
+              <span class="summary-text">Donald Duck&#x27;s uncle was partly based on Wernher von Braun</span>
               <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Introducing the &quot;world-famous authority on outer space...&quot;</li>
+                <li>Introducing the “world-famous authority on outer space…” Did you know that the first character that Walt Disney created to specifically appear on television was inspired, in part, by early Space Age r...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -672,12 +653,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">F</span>
+              <span class="summary-text">F-Droid gets its biggest update in a decade with new UI and smoother app installs</span>
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>F-Droid&#x27;s Android app store has been rebuilt from the ground up.</li>
+                <li>F-Droid’s Android app store has been rebuilt from the ground up. Virtually every Android device comes with the Play Store preloaded, but there are other ways to get apps. F-Droid bills itself as a com...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -696,7 +677,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>New York sues Polymarket as Trump admin tries to override state gambling laws.</li>
+                <li>New York sues Polymarket as Trump admin tries to override state gambling laws. New York sued Polymarket today, alleging that it runs an “illegal gambling operation” through its prediction market. “By ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -710,35 +691,16 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">We have a trailer for Musk documentary Elon called a "hit piece"</span>
+              <span class="summary-text">We have a trailer for Musk documentary Elon called a &quot;hit piece&quot;</span>
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Oscar-winning documentarian Alex Gibney focuses on the world&#x27;s wealthiest man.</li>
+                <li>Oscar-winning documentarian Alex Gibney focuses on the world’s wealthiest man. Oscar-winning documentary filmmaker Alex Gibney has never been one to shy away from controversy. His latest feature, Musk...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/culture/2026/09/we-have-a-trailer-for-musk-documentary-elon-called-a-hit-piece/" target="_blank" class="source-btn">Ars Technica ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Robots make combat airdrops, clear mines as Ukraine defeats Russian pincer</span>
-              <span class="time-badge">9h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Ukraine’s Operation Vivaldi has erased Russian gains with the help of robots.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://arstechnica.com/gadgets/2026/09/robots-make-combat-airdrops-clear-mines-as-ukraine-defeats-russian-pincer/" target="_blank" class="source-btn">Ars Technica ↗</a>
               </div>
             </div>
           </details>
@@ -753,7 +715,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Remember the Tesla Semi? The long-gestating, heavy-duty truck first introduced in concept form in 2017 is finally in volume production as of April 2026 - nearly a decade after its initial introduction. On Thursday evening, the company held yet another event for the Semi to demonstrate to customers and investors that the long wait was […]</li>
+                <li>Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -772,11 +734,30 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Remember when Microsoft wanted everyone to know that &quot;Copilot Plus PCs&quot; were the ones to get, because those were the PCs that that&#x27;d have enough built-in AI muscle to get things done? Two and a half years later, Microsoft and Qualcomm seem to be admitting the brand is already dead. Windows Central&#x27;s Zac Bowden reports […]</li>
+                <li>Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.theverge.com/tech/1000495/microsoft-is-killing-off-the-copilot-plus-pc-brand" target="_blank" class="source-btn">Verge ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Meta employees ordered ‘attorney/client privilege’ hats while fighting child safety disclosures</span>
+              <span class="time-badge">3h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will be added to your daily email digest and your homepage feed. Posts from this topic will...</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.theverge.com/tech/1000370/meta-instagram-attorney-client-privilege-hats" target="_blank" class="source-btn">Verge ↗</a>
               </div>
             </div>
           </details>
@@ -791,7 +772,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Nithin Kamath’s warning after IRDAI shock</li>
+                <li>Zerodha co-founder Nithin Kamath said regulatory risk is the biggest threat for regulated financial businesses, citing IRDAI’s proposed insurance commission changes. He warned that regulatory shifts a...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -810,7 +791,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Ambani, Adani spot a Rs 25,500 cr liquidity bonanza</li>
+                <li>Reliance Industries Limited is planning to raise ₹10,000 crore next week through a ten-year maturity bond. Other firms, including Adani Airport Holdings, will raise significant funds as well this Frid...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -829,7 +810,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Houthis claim Riyadh attack, Aramco sites targeted</li>
+                <li>On Thursday, Yemen&#x27;s Iran-aligned Houthis claimed to have attacked sensitive targets in Saudi Arabia&#x27;s Riyadh and Yanbu. They reported missile and drone strikes targeting Saudi Aramco facilities and t...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -844,11 +825,11 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Trump woos Xi with glitz, light on talks</span>
-              <span class="time-badge">43m ago</span>
+              <span class="time-badge">51m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Trump woos Xi with glitz, light on talks</li>
+                <li>Presidents Donald Trump and Xi Jinping met for important discussions regarding trade relations and artificial intelligence advancements. Both leaders emphasized maintaining healthy competition to avoi...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -863,34 +844,15 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Delhi SIR: Advani, EAM cleared after verification</span>
-              <span class="time-badge">50m ago</span>
+              <span class="time-badge">57m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Delhi SIR: Advani, EAM cleared after verification</li>
+                <li>In a recent development, notable figures in Delhi, including LK Advani, Jagdeep Dhankhar, and S Jaishankar, received notices about inconsistencies in their voter registration forms. Field verification...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://economictimes.indiatimes.com/news/politics-and-nation/advani-dhankhar-jaishankar-kejriwal-names-cleared-after-verification-under-delhi-sir-notice/articleshow/134473397.cms" target="_blank" class="source-btn">Economic Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Govt eyes Rs 20,000 cr fund to power up frontier AI</span>
-              <span class="time-badge">3h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Govt eyes Rs 20,000 cr fund to power up frontier AI</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/tech/artificial-intelligence/govt-eyes-rs-20000-crore-fund-to-power-up-frontier-ai-and-compute-ecosystem/articleshow/134466929.cms" target="_blank" class="source-btn">Economic Times ↗</a>
               </div>
             </div>
           </details>
@@ -901,11 +863,11 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Royal Enfield Himalayan 440 Performance Tested And Explained</span>
-              <span class="time-badge">10m ago</span>
+              <span class="time-badge">18m ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The Royal Enfield Himalayan 440 shares the 443cc air/oil-cooled single-cylinder engine with the Scram 440 , on which it was first introduced in 2025. This engine is now paired with a 6-speed gear box. The major difference between the both is the front wheel size, the Himalayan gets a 21-incher whereas the Scram uses a 19-inch front wheel. Consideri</li>
+                <li>The Royal Enfield Himalayan 440 shares the 443cc air/oil-cooled single-cylinder engine with the Scram 440, on which it was first introduced in 2025. This engine is now paired with a 6-speed gear box. ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -924,7 +886,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Hyundai is currently all-in on SUVs thanks to the persistent success of the Creta and Venue , but not many people know that the Korean carmaker’s longest-running nameplate in India belongs to a sedan: the Verna . Launched on September 25, 2006 as the successor to the Accent, the Verna is the longest-standing rival to the venerable Honda City in the</li>
+                <li>Hyundai is currently all-in on SUVs thanks to the persistent success of the Creta and Venue, but not many people know that the Korean carmaker’s longest-running nameplate in India belongs to a sedan: ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -943,7 +905,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>The Triumph Daytona 660 is built on the same platform as the Trident 660, sharing its 660cc inline-triple engine but with sportier ergonomics, a full fairing and a more performance-oriented character. For 2026, Triumph has addressed some of the original bike&#x27;s shortcomings with meaningful hardware upgrades. Here are answers to some of the most comm</li>
+                <li>The Triumph Daytona 660 is built on the same platform as the Trident 660, sharing its 660cc inline-triple engine but with sportier ergonomics, a full fairing and a more performance-oriented character....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -962,7 +924,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Mahindra launched the Thar OG in September 2026 with several hardware, styling and safety upgrades over the outgoing model. The Mahindra Thar OG competes with the Maruti Suzuki Jimny and Force Gurkha 3-door in the relatively niche mass-market off-roader segment. Let us look at how the changes and improvements in the Thar OG help the model take on i</li>
+                <li>Mahindra launched the Thar OG in September 2026 with several hardware, styling and safety upgrades over the outgoing model. The Mahindra Thar OG competes with the Maruti Suzuki Jimny and Force Gurkha ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -981,30 +943,11 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Nissan has pulled the covers off the Pixo, an A-segment EV specifically meant for urban buyers in Europe, according to the automaker. The Pixo is the result of a collaboration between NDE (Nissan Design Europe) and alliance partner Renault and is manufactured at the latter’s Novo Mesto facility in Slovenia. Design highlights include pixel-inspired</li>
+                <li>Nissan has pulled the covers off the Pixo, an A-segment EV specifically meant for urban buyers in Europe, according to the automaker. The Pixo is the result of a collaboration between NDE (Nissan Desi...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/car-news/nissan-reveals-the-pixo-for-europe-with-up-to-259km-range-440847" target="_blank" class="source-btn">Autocar India ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">2026 F1 Azerbaijan GP schedule, India timings</span>
-              <span class="time-badge">17h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>F1 heads to Azerbaijan for Round 15 of the 2026 world championship. Action at the Baku City Circuit will take place a day early, which means the race itself will be held on Saturday instead of Sunday. The venue will also host a new format for F2 this week, which will feature three races. Over in the World Endurance Championship, the title battle wi</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.autocarindia.com/motor-sports-news/2026-f1-azerbaijan-gp-schedule-india-timings-440846" target="_blank" class="source-btn">Autocar India ↗</a>
               </div>
             </div>
           </details>
@@ -1019,7 +962,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Toyota is gearing up to launch the Innova Hycross facelift soon. We already know the Glanza facelift is coming on 14th October. Given how many camouflaged Innova prototypes have been spotted, we think Toyota could end the year with the Innova facelift launch. So, here’s what’s new.Attention Readers! Join us on our WhatsApp Community for daily auto</li>
+                <li>Toyota is gearing up to launch the Innova Hycross facelift soon. We already know the Glanza facelift is coming on 14th October. Given how many camouflaged Innova prototypes have been spotted, we think...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1038,11 +981,30 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>In India, mileage still drives many car choices, and Hyundai knows it. In fact, its next SUV, which will sit between the Venue and the Creta, is being built for buyers who want a bigger car without a big fuel bill. It’s the Hyundai Bayon, and the automaker has already commenced bookings. Here is how […] New Rs 10 Lakh Hyundai SUV To Give 22 KMPL Mi</li>
+                <li>In India, mileage still drives many car choices, and Hyundai knows it. In fact, its next SUV, which will sit between the Venue and the Creta, is being built for buyers who want a bigger car without a ...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://motoroctane.com/news/324210-new-rs-10-lakh-hyundai-suv-to-give-22-kmpl-mileage" target="_blank" class="source-btn">MotorOctane ↗</a>
+              </div>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details>
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Maruti’s Answer To Tata Punch Coming To India</span>
+              <span class="time-badge">19h ago</span>
+            </summary>
+            <div class="details-content">
+              <ul class="takeaways-list">
+                <li>The Tata Punch has ruled the micro SUV segment for years. It was even one of the best-selling SUVs in India a year ago. This is mainly due to very limited direct competition. But now, to take on its l...</li>
+              </ul>
+              <div class="sources-container">
+                <span class="sources-label">Sources:</span>
+                <a href="https://motoroctane.com/news/324209-marutis-answer-to-tata-punch-coming-to-india" target="_blank" class="source-btn">MotorOctane ↗</a>
               </div>
             </div>
           </details>
@@ -1057,7 +1019,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Buttler hamstring injury proves pivotal as England&#x27;s challenge collapses against spin and swing strangle</li>
+                <li>Buttler hamstring injury proves pivotal as England&#x27;s challenge collapses against spin and swing strangle...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1072,11 +1034,11 @@
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">Matt Milnes keeps Gloucestershire in check</span>
-              <span class="time-badge">8h ago</span>
+              <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>James Bracey top-scores with 86, Ollie Price makes 52</li>
+                <li>James Bracey top-scores with 86, Ollie Price makes 52...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1095,7 +1057,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>West Indies head coach views the three-match series as an important part of the team&#x27;s preparation for the ODI World Cup qualifiers</li>
+                <li>West Indies head coach views the three-match series as an important part of the team&#x27;s preparation for the ODI World Cup qualifiers...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1114,7 +1076,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Leicestershire technically relegated, pending appeal, after 14-wicket opening day</li>
+                <li>Leicestershire technically relegated, pending appeal, after 14-wicket opening day...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1133,30 +1095,11 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Allrounder comes to the rescue after Northamptonshire seamer Ben Sanderson reduces his side to 32 for 4</li>
+                <li>Allrounder comes to the rescue after Northamptonshire seamer Ben Sanderson reduces his side to 32 for 4...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.cricinfo.com/ci/content/story/1555601.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Ben Allison takes five as Derbyshire are bowled out for 88</span>
-              <span class="time-badge">9h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Five-for to Mohammed Abbas looked to have put visitors on top but Worcestershire claim ascendancy on 20-wicket day</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.cricinfo.com/ci/content/story/1555604.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
               </div>
             </div>
           </details>
@@ -1171,7 +1114,7 @@
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Asian Games 2026 Day 6 LIVE</li>
+                <li>Asian Games 2026 Day 6 LIVE...</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1185,12 +1128,12 @@
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Eli Manning Says Arch Manning Must 'Figure Out’ Media After Viral Incident</span>
+              <span class="summary-text">Eli Manning Says Arch Manning Must &#x27;Figure Out’ Media After Viral Incident</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Arch Manning of the Texas Longhorns faced media scrutiny after his AI video comments.</li>
+                <li>Arch Manning of the Texas Longhorns faced media scrutiny after his AI video comments....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
@@ -1199,121 +1142,26 @@
             </div>
           </details>
         </div>
-        <h2>CULTURE & MOVIES</h2>
+        
         <div class="card">
           <details>
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Hannah Einbinder Speaks Out After Being Arrested at Netanyahu Protest: ‘Let Us Not Mistake the Spectacle for the Story’</span>
+              <span class="summary-text">Patrick Mahomes Gets Big Praise After Kansas City Chiefs’ Surprising Moment With Indianapolis Colts</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
               <ul class="takeaways-list">
-                <li>Hannah Einbinder is speaking out after being arrested earlier Thursday while protesting an appearance by Israeli Prime Minister Benjamin Netanyahu. The “Hacks” star, who was protesting alongside Sarah Sherman, Susan Sarandon and others, posted on her Instagram story asking her followers to focus on “the devastating genocidal war Israel is waging ag</li>
+                <li>Patrick Mahomes helped the Kansas City Chiefs secure a 33-30 overtime win over the Indianapolis Colts....</li>
               </ul>
               <div class="sources-container">
                 <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/2026/politics/news/hannah-einbinder-speaks-out-arrested-netanyahu-protest-1236875306/" target="_blank" class="source-btn">Variety ↗</a>
+                <a href="https://sports.ndtv.com/us-nfl/patrick-mahomes-gets-big-praise-after-kansas-city-chiefs-surprising-moment-with-indianapolis-colts-12095114#publisher=newsstand" target="_blank" class="source-btn">NDTV Sports ↗</a>
               </div>
             </div>
           </details>
         </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Aamir Khan to Receive Screen Icon Award as Singapore Film Festival Opens With Hur Jin-ho’s ‘The Assassin(s)’</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The Singapore International Film Festival (SGIFF) will present its Screen Icon Award to Indian actor, director and producer Aamir Khan at its 37th edition, with a 25th-anniversary Special Presentation screening of “Lagaan: Once Upon a Time in India” alongside director Ashutosh Gowariker. The festival opens with South Korean thriller “The Assassin(s</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/2026/film/festivals/aamir-khan-singapore-film-festival-hur-jin-ho-the-assassins-1236873907/" target="_blank" class="source-btn">Variety ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">The Horror Show Launches at Academy Museum: Costumes and Props From ‘Halloween,’ ‘Saw,’ ‘Poltergeist’ and More</span>
-              <span class="time-badge">2h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Just in time for the scariest season, the Academy Museum of Motion Pictures in Los Angeles is unveiling The Horror Show, a major survey of costumes, props, drawings, posters and other artifacts from the most iconic horror films throughout the history of cinema. The exhibit opens Saturday. From Bela Lugosi’s original cape from the 1931 […]</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/gallery/horror-show-academy-museum-halloween-saw/" target="_blank" class="source-btn">Variety ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Inside Variety’s Power of Women 2026 Gift Bag: Goop Skincare, Tarte Beauty, Voluspa Candles and More</span>
-              <span class="time-badge">2h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Guests didn’t leave this year’s Variety Power of Women event empty-handed. After a glitzy evening at the Beverly Hills Hotel on Wednesday night (featuring powerhouse performances from Jennifer Hudson and Normani), attendees were gifted with a curated bag of over 90 products, including skincare items from Goop and Clarins, beauty products from Ilia</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/2026/shopping/news/power-of-women-gift-bag-2026-shop-online-1236875113/" target="_blank" class="source-btn">Variety ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">AI Robots Dance in the Rain as Pingyao Film Festival Turns 10, Honors Ann Hui</span>
-              <span class="time-badge">2h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The 10th Pingyao Crouching Tiger Hidden Dragon International Film Festival opened on Sept. 24 with an AI robot dance by Unitree, a tribute to four late friends of the festival and the East-West Award for Hong Kong director Ann Hui. The ceremony took place at the Platform, the festival’s signature open-air theater inside the ancient […]</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/2026/film/festivals/ai-robots-ann-hui-pingyao-film-festival-10th-edition-1236875276/" target="_blank" class="source-btn">Variety ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">12 Takeaways From Ousted Disney CEO Bob Chapek’s New Book</span>
-              <span class="time-badge">2h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Bob Chapek expounds at length about his termination from Disney and his belief that ex-CEO Bob Iger stabbed him in the back in his forthcoming book, “Behind the Castle Walls.” Chapek, in recounting his 30-year career at the Mouse House, offers a number of other revelations in the memoir. Variety obtained an advance copy of […]</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://variety.com/2026/film/news/takeaways-bob-chapek-book-ousted-disney-ceo-1236875084/" target="_blank" class="source-btn">Variety ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        </div><div id="tab-yesterday" class="tab-content"><div class='no-news'>No articles from yesterday.</div></div><div id="tab-older" class="tab-content"><div class='no-news'>No articles from 2-3 days ago.</div>
+        0</div><div id="tab-yesterday" class="tab-content"><div class='no-news'>No articles from yesterday.</div></div><div id="tab-older" class="tab-content"><div class='no-news'>No articles from 2-3 days ago.</div>
 </div>
 <script>
 function switchTab(tabName) {
