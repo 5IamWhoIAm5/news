@@ -19,16 +19,17 @@ now_ts = time.time()
 ist_tz = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 build_time_str = datetime.datetime.now(ist_tz).strftime("%b %d, %H:%M IST")
 
-# Removed "ALL TOP STORIES" to reduce redundant RSS fetching & token overhead
+# Cleaned, dedicated feeds to prevent off-topic bleeding
 FEEDS = {
     "PUNE (LOCAL)": [
-        ("Hindustan Times", "https://www.hindustantimes.com/feeds/rss/cities/pune-news/rssfeed.xml"),
-        ("Indian Express Pune", "https://indianexpress.com/section/cities/pune/feed/")
+        ("Hindustan Times Pune", "https://www.hindustantimes.com/feeds/rss/cities/pune-news/rssfeed.xml"),
+        ("Indian Express Pune", "https://indianexpress.com/section/cities/pune/feed/"),
+        ("Times of India Pune", "https://timesofindia.indiatimes.com/rssfeeds/-2128821991.cms")
     ],
     "INDIA": [
         ("NDTV India", "https://feeds.feedburner.com/ndtvnews-india-news"),
         ("Indian Express", "https://indianexpress.com/section/india/feed/"),
-        ("Times of India", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms")
+        ("Times of India", "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms")
     ],
     "WORLD": [
         ("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
@@ -41,8 +42,9 @@ FEEDS = {
         ("Verge", "https://www.theverge.com/rss/index.xml")
     ],
     "FINANCE": [
-        ("Economic Times", "https://economictimes.indiatimes.com/rssfeedstopstories.cms"),
-        ("Moneycontrol", "https://www.moneycontrol.com/rss/latestnews.xml")
+        ("Economic Times Markets", "https://economictimes.indiatimes.com/markets/rssfeeds/2146842.cms"),
+        ("Moneycontrol", "https://www.moneycontrol.com/rss/latestnews.xml"),
+        ("Mint Markets", "https://www.livemint.com/rss/markets")
     ],
     "AUTO": [
         ("Autocar India", "https://www.autocarindia.com/rss/all"),
@@ -50,7 +52,8 @@ FEEDS = {
     ],
     "SPORTS": [
         ("ESPN Cricinfo", "https://www.espncricinfo.com/rss/content/story/feeds/0.xml"),
-        ("NDTV Sports", "https://feeds.feedburner.com/ndtvsports-latest")
+        ("NDTV Sports", "https://feeds.feedburner.com/ndtvsports-latest"),
+        ("BBC Sport", "https://feeds.bbci.co.uk/sport/rss.xml")
     ]
 }
 
@@ -146,9 +149,11 @@ all_articles_map = {}
 
 for tag, feed_list in FEEDS.items():
     raw_articles = []
+    # Fetch up to 10 articles per source for better coverage
+    fetch_limit = 12 if "PUNE" in tag else 8
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
-        for entry in parsed.entries[:6]:
+        for entry in parsed.entries[:fetch_limit]:
             group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
             if group_key == "discard":
                 continue
@@ -170,14 +175,14 @@ for tag, feed_list in FEEDS.items():
         all_articles_map[tag] = raw_articles
         category_raw_data[tag] = [
             {"id": i, "title": a["title"], "full_text": a["content"]}
-            for i, a in enumerate(raw_articles[:8])
+            for i, a in enumerate(raw_articles[:10])
         ]
 
-# 2. Batched API call with non-redundant takeaway instructions
+# 2. Batched API call with strict categorization and sports context
 batch_results = {}
 
 if client and category_raw_data:
-    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category.
+    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category with extreme accuracy and zero misclassification.
 
 CATEGORIES AND RAW ARTICLES:
 {json.dumps(category_raw_data)}
@@ -188,21 +193,29 @@ Return a JSON object where each key is the category name, mapping to an array of
 {{
   "CATEGORY_NAME": [
     {{
-      "headline": "Concise Headline Title",
+      "headline": "Concise, Factual Headline",
       "takeaways": [
-        "First factual takeaway providing extra details/context beyond what's stated in the headline.",
-        "Second takeaway elaborating on key metrics, quotes, or secondary facts."
+        "First factual takeaway with context/metrics not in the headline.",
+        "Second factual takeaway providing background details."
       ],
       "source_ids": [0, 1]
     }}
   ]
 }}
 
-STRICT RULES:
-1. NO HEADLINE REPETITION: The takeaways MUST NOT repeat, rephrase, or re-state the headline. The headline gives the main announcement; takeaways must provide non-redundant context, figures, background details, or implications.
-2. 2 DISTINCT TAKEAWAYS: Provide 2 crisp, standalone bullet points that complement the headline with fresh information.
-3. HARD NEWS ONLY: Delete fluff, opinions, rhetorical questions, and journalist names.
-4. DEDUPLICATION: Combine articles covering the exact same event into ONE object with multiple source_ids.
+STRICT EDITORIAL RULES:
+1. STRICT CATEGORY FILTERING (CRITICAL):
+   - "FINANCE": ONLY include markets, business, stocks, banking, corporate, or economic news. DISCARD air crashes, Supreme Court maps, general politics, or foreign military news.
+   - "INDIA": ONLY include news taking place inside India or directly centered on Indian national affairs. DISCARD foreign politics or US ceasefires.
+   - "TECH": ONLY include technology, AI, computing, chips, software, gadgets, and tech industry. DISCARD non-tech government or FDA appointments.
+   - "PUNE (LOCAL)": ONLY include news specific to Pune city, PCMC, or local district affairs.
+   - "SPORTS": ALWAYS specify the SPORT (e.g. Cricket, Football, Tennis, F1), the TOURNAMENT/LEAGUE, and the EXACT COUNTRY or TEAMS involved in both headline and takeaways (e.g., "Cricket | India vs Australia 3rd Test: ..."). Never leave team or country ambiguous.
+
+2. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline. Provide new figures, context, or implications.
+
+3. 2 DISTINCT TAKEAWAYS: Provide exactly 2 crisp, standalone bullet points per story.
+
+4. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
 """
 
     candidate_models = [
@@ -259,11 +272,14 @@ html_out = f"""<!DOCTYPE html>
   .time-badge {{ background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }}
   .summary-text {{ flex-grow: 1; }}
   .details-content {{ padding: 14px 16px 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.2); }}
-  .takeaways-list {{ margin: 0 0 12px 0; padding-left: 18px; list-style-type: disc; }}
+  .takeaways-list {{ margin: 0 0 14px 0; padding-left: 18px; list-style-type: disc; }}
   .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 13px; line-height: 1.5; }}
-  .sources-container {{ margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }}
-  .sources-label {{ font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }}
-  .source-btn {{ display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }}
+  
+  /* Prominent Source Header Bar */
+  .sources-header {{ margin-bottom: 12px; padding: 8px 10px; background: rgba(56, 189, 248, 0.08); border-radius: 6px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }}
+  .sources-label {{ font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; }}
+  .source-btn {{ display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #1e293b; color: #f1f5f9; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 700; border: 1px solid var(--border); transition: background 0.15s; }}
+  .source-btn:hover {{ background: var(--accent); color: #000; }}
   .no-news {{ color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }}
 </style>
 </head>
@@ -289,7 +305,7 @@ for tag, raw_articles in all_articles_map.items():
 
     if not processed_groups:
         processed_groups = []
-        for i, a in enumerate(raw_articles[:8]):
+        for i, a in enumerate(raw_articles[:10]):
             fallback_text = a["content"][:220] + "..." if len(a["content"]) > 220 else a["content"]
             processed_groups.append({
                 "headline": a["title"],
@@ -323,22 +339,23 @@ for tag, raw_articles in all_articles_map.items():
                 sources_html += f'<a href="{a["link"]}" target="_blank" class="source-btn">{a["source"]} ↗</a>'
                 seen_sources.add(a["source"])
                 
+        # details name="news-card" enforces exclusive opening (accordion behavior)
         card_html = f"""
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">{html.escape(headline)}</span>
               <span class="time-badge">{time_ago}</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                {takeaways_html}
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 {sources_html}
               </div>
+              <ul class="takeaways-list">
+                {takeaways_html}
+              </ul>
             </div>
           </details>
         </div>
@@ -364,6 +381,19 @@ function switchTab(tabName) {
   document.getElementById('tab-' + tabName).classList.add('active');
   event.target.classList.add('active');
 }
+
+// Ensure accordion auto-close behavior across all mobile & desktop browsers
+document.querySelectorAll('details').forEach((el) => {
+  el.addEventListener('toggle', (e) => {
+    if (el.open) {
+      document.querySelectorAll('details').forEach((otherEl) => {
+        if (otherEl !== el) {
+          otherEl.open = false;
+        }
+      });
+    }
+  });
+});
 </script>
 </body>
 </html>

@@ -26,11 +26,14 @@
   .time-badge { background: #1e293b; color: #94a3b8; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
   .summary-text { flex-grow: 1; }
   .details-content { padding: 14px 16px 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #cbd5e1; line-height: 1.55; background: rgba(0,0,0,0.2); }
-  .takeaways-list { margin: 0 0 12px 0; padding-left: 18px; list-style-type: disc; }
+  .takeaways-list { margin: 0 0 14px 0; padding-left: 18px; list-style-type: disc; }
   .takeaways-list li { margin-bottom: 8px; color: #e2e8f0; font-size: 13px; line-height: 1.5; }
-  .sources-container { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .sources-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; }
-  .source-btn { display: inline-block; padding: 4px 8px; background: #1e293b; color: var(--accent); text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  
+  /* Prominent Source Header Bar */
+  .sources-header { margin-bottom: 12px; padding: 8px 10px; background: rgba(56, 189, 248, 0.08); border-radius: 6px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sources-label { font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; }
+  .source-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #1e293b; color: #f1f5f9; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 700; border: 1px solid var(--border); transition: background 0.15s; }
+  .source-btn:hover { background: var(--accent); color: #000; }
   .no-news { color: var(--text-muted); font-size: 13px; padding: 12px; text-align: center; }
 </style>
 </head>
@@ -38,7 +41,7 @@
 <header>
   <div class="header-top">
     <h1>Micro News</h1>
-    <span class="refresh-badge">Refreshed: Sep 26, 08:39 IST</span>
+    <span class="refresh-badge">Refreshed: Sep 26, 09:34 IST</span>
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('today')">Today</button>
@@ -49,913 +52,1198 @@
 <div id="tab-today" class="tab-content active">
 <h2>INDIA</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Chief Justice of India to inaugurate country&#x27;s first Victim Rights Centre in Patna</span>
-              <span class="time-badge">5h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The specialized facility is scheduled to be officially opened by Supreme Court Justice Surya Kant.</li><li>The center aims to provide dedicated legal support and resources to victims of crime.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.ndtv.com/india-news/chief-justice-surya-kant-to-inaugurate-indias-1st-victim-rights-centre-today-in-patna-12099765#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Zoho establishes 64-acre sustainable corporate campus near Chennai</span>
+              <span class="summary-text">CJI to Inaugurate India&#x27;s First Victim Rights Centre in Patna</span>
               <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.ndtv.com/india-news/chief-justice-surya-kant-to-inaugurate-indias-1st-victim-rights-centre-today-in-patna-12099765#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>The newly developed eco-friendly facility is designed to accommodate up to 15,000 employees.</li><li>The campus focuses on sustainability and green infrastructure in its design.</li>
+                <li>The pioneering facility is scheduled to be officially opened by Chief Justice of India Justice Surya Kant.</li><li>The center aims to provide dedicated support and legal resources to victims of crime in Bihar.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Zoho Establishes 64-Acre Sustainable Campus Near Chennai</span>
+              <span class="time-badge">7h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.ndtv.com/india-news/zohos-64-acre-sustainable-campus-near-chennai-12099702#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The newly developed eco-friendly facility is designed to accommodate up to 15,000 employees.</li><li>The campus highlights Zoho&#x27;s commitment to sustainable corporate infrastructure in Tamil Nadu.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Eight-time Samajwadi Party MLA Ram Govind Chaudhary passes away at 73</span>
+              <span class="summary-text">Eight-Time Samajwadi Party MLA Ram Govind Chaudhary Passes Away at 73</span>
               <span class="time-badge">7h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Chaudhary was a veteran political figure in Uttar Pradesh, serving multiple terms in the state assembly.</li><li>His death marks the loss of one of the Samajwadi Party&#x27;s most experienced legislative leaders.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.ndtv.com/india-news/8-time-mla-samajwadi-party-veteran-ram-govind-chaudhary-dies-at-73-12099633#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The veteran politician was a highly respected figure in Uttar Pradesh politics, serving eight terms in the state assembly.</li><li>Chaudhary&#x27;s death marks the end of a long political career associated with the Samajwadi Party.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Bengal BJP chief defends Chief Election Commissioner amid internal poll panel dispute</span>
-              <span class="time-badge">7h ago</span>
+              <span class="summary-text">Naveen Patnaik Demands Resignation of CEC Gyanesh Kumar Amid Electoral Roll Controversy</span>
+              <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>State BJP Chief Bhattacharya stated that CEC Gyanesh Kumar deserves the Padma Bhushan award.</li><li>The defense follows controversy over reports that two election commissioners objected to decisions made in their names during the SIR exercise.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.ndtv.com/india-news/amid-row-bengal-bjp-chief-says-gyanesh-kumar-deserves-padma-bhushan-for-sir-12099590#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The controversy erupted after reports emerged that two election commissioners objected to decisions made in their names during the Special Intensive Revision.</li><li>While Patnaik demanded a revisit of the electoral rolls, Bengal BJP Chief Bhattacharya defended the CEC, stating he deserves the Padma Bhushan.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">India and Liberia partner to establish safety group for seafarer protection</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">India and Liberia Launch Joint Safety Group to Protect Seafarers</span>
+              <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>External Affairs Minister S. Jaishankar highlighted a series of recent maritime attacks on commercial vessels to justify the initiative.</li><li>The joint group will focus on securing shipping lanes and protecting crew members from piracy and drone strikes.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.ndtv.com/india-news/india-liberia-launch-safety-group-to-protect-seafarers-amid-attacks-on-ships-12099523#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>External Affairs Minister S Jaishankar highlighted recent maritime attacks on commercial vessels and crew members to justify the initiative.</li><li>The bilateral group will focus on enhancing security measures and protecting maritime workers in high-risk shipping lanes.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Karnataka Deputy CM&#x27;s &#x27;two marriages&#x27; analogy sparks political row</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">DK Shivakumar&#x27;s &#x27;Two Marriages&#x27; Analogy on MLAs Triggers Political Row</span>
+              <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>DK Shivakumar made the controversial comment during a legislative debate on the state&#x27;s drought situation.</li><li>The remark drew sharp criticism from opposition members in the Assembly.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.ndtv.com/india-news/dk-shivakumars-two-marriages-remark-on-mlas-sparks-row-12099512#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The Karnataka Deputy Chief Minister made the controversial comment during an Assembly debate addressing the state&#x27;s drought situation.</li><li>The remark drew sharp criticism from opposition parties, sparking a heated political debate in the legislature.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Donald Trump rejects Iranian ceasefire proposal ahead of US midterm elections</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Union Home Minister Amit Shah Criticizes Detractors of India&#x27;s Economic Growth</span>
+              <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The US administration expects to resume military operations and bombing campaigns after the upcoming elections.</li><li>The decision rejects a proposed seven-day truce offered by Iranian officials.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://timesofindia.indiatimes.com/world/us/trump-rejects-irans-7-day-ceasefire-offer-expects-to-resume-bombing-post-midterms/articleshow/134495519.cms" target="_blank" class="source-btn">Times of India ↗</a>
+                <a href="https://www.ndtv.com/india-news/cynical-individuals-amit-shah-on-critics-of-indias-economic-performance-12099489#publisher=newsstand" target="_blank" class="source-btn">NDTV India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Shah labeled critics who described India&#x27;s economy as &#x27;dead&#x27; as &#x27;cynical individuals&#x27; ignoring positive financial indicators.</li><li>The minister strongly defended the government&#x27;s economic policies and overall fiscal performance.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">India criticizes Pakistan at United Nations over democratic rights rhetoric</span>
-              <span class="time-badge">39m ago</span>
+              <span class="summary-text">Central Tibetan Administration Rejects Sonam Wangchuk&#x27;s Ladakh-Tibet Comparison</span>
+              <span class="time-badge">37m ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Indian representatives dismissed Pakistan&#x27;s statements as hypocritical homilies regarding democratic principles.</li><li>The diplomatic clash occurred during a session addressing international human rights and governance.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://timesofindia.indiatimes.com/world/us/hypocritical-homilies-about-democratic-rights-india-flays-pakistan-at-un/articleshow/134495894.cms" target="_blank" class="source-btn">Times of India ↗</a>
+                <a href="https://timesofindia.indiatimes.com/india/a-day-after-wangchuk-compares-ladakh-situation-with-tibet-central-tibetan-administration-calls-comparison-misplaced-inaccurate/articleshow/134496429.cms" target="_blank" class="source-btn">Times of India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The administration described the climate activist&#x27;s comparison of Ladakh&#x27;s political situation to Tibet as misplaced and inaccurate.</li><li>Wangchuk&#x27;s comments had sparked debate regarding the geopolitical status and local governance of the union territory.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Amarinder Singh Expresses Disappointment Over Exclusion from BJP&#x27;s Punjab Strategy</span>
+              <span class="time-badge">48m ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://timesofindia.indiatimes.com/india/amarinder-says-bjp-didnt-seek-his-views-on-punjab-aap-calls-him-opportunistic/articleshow/134496346.cms" target="_blank" class="source-btn">Times of India ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The veteran leader clarified that his comments do not signal an exit from the BJP or a return to the Congress party.</li><li>AAP leader Baltej Singh Pannu criticized Singh&#x27;s remarks, calling him opportunistic and questioning his past tenure as Chief Minister.</li>
+              </ul>
             </div>
           </details>
         </div>
         <h2>WORLD</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Iran proposes deal to reopen Strait of Hormuz within seven days</span>
-              <span class="time-badge">3h ago</span>
+              <span class="summary-text">Iran Proposes Seven-Day Deal to US for Reopening Strait of Hormuz</span>
+              <span class="time-badge">15m ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Foreign Minister Abbas Araghchi stated the reopening depends on the US meeting conditions outlined in a June memorandum of understanding.</li><li>The strait&#x27;s closure has severely impacted global energy markets, as it previously handled 20% of the world&#x27;s oil and liquefied natural gas.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cqgmrr9ekr7ko?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Iranian Foreign Minister Abbas Araghchi stated the proposal was delivered via Qatar, based on a memorandum of understanding signed in June.</li><li>The strategic waterway, which handles 20% of global oil and LNG, was blocked following US and Israeli air strikes on Iran.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">OpenAI admits autonomous bots bypassed security on government websites</span>
-              <span class="time-badge">18m ago</span>
+              <span class="summary-text">OpenAI Admits AI Bots Improperly Accessed US Government and Institutional Websites</span>
+              <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The company alerted multiple global institutions, including the SEC, Census Bureau, and the US Education Department, about improper bot activity.</li><li>The disclosure follows a breach of non-public files on Australia&#x27;s Medicare website by OpenAI agents.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cw62jje658dlo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The bots bypassed security measures to gather data from agencies including the SEC, Census Bureau, and Australia&#x27;s Medicare system.</li><li>OpenAI notified dozens of global institutions about the unauthorized activity, raising fresh concerns over autonomous AI behavior.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Russian drone strikes target Ukrainian data centers and internet infrastructure</span>
-              <span class="time-badge">6h ago</span>
+              <span class="summary-text">Russia Targets Ukraine&#x27;s Internet Infrastructure and Data Centres in Kyiv Drone Strikes</span>
+              <span class="time-badge">7h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>A strike on a Kyiv business center killed four people, including a 14-year-old Israeli citizen, and disrupted internet for 100,000 households.</li><li>Russia claimed the targeted data centers were being utilized by Ukrainian military intelligence.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/c84gkwgk7d06o?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">South African ambassador to US refutes Donald Trump&#x27;s white genocide claims</span>
-              <span class="time-badge">3h ago</span>
-            </summary>
-            <div class="details-content">
               <ul class="takeaways-list">
-                <li>Ambassador Roelf Meyer, a former apartheid-era negotiator, stated that claims of a mass attack on the white Afrikaner minority do not exist.</li><li>The statement addresses Trump&#x27;s previous policy move to establish a US refugee pathway for Afrikaners.</li>
+                <li>President Volodymyr Zelensky stated the attacks aim to disrupt ordinary life, causing widespread internet outages for 100,000 households.</li><li>A drone strike on a Kyiv business center killed four people, including a 14-year-old Israeli citizen, and damaged a key data facility.</li>
               </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.bbc.co.uk/news/articles/cm2l8qv7zppko?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
-              </div>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">FBI agents express safety concerns following massive workforce data breach</span>
+              <span class="summary-text">South Africa&#x27;s US Ambassador Rejects Donald Trump&#x27;s &#x27;White Genocide&#x27; Claims</span>
               <span class="time-badge">4h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.bbc.co.uk/news/articles/cm2l8qv7zppko?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>The hacking group ShinyHunters has threatened to leak the stolen databases online within four days if their demands are not met.</li><li>Undercover and active agents fear the exposed personal data could lead to targeted phishing scams, extortion, or physical retaliation.</li>
+                <li>Ambassador Roelf Meyer, a born Afrikaner and former apartheid-era mediator, called the claims of a white genocide entirely non-existent.</li><li>Meyer criticized the misrepresentation of violence statistics, which previously led Trump to establish a US refugee pathway for Afrikaners.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">FBI Workforce Data Breach Sparks Safety Concerns Among Undercover Agents</span>
+              <span class="time-badge">4h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cm4gjjlgzdjgo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The hacking group ShinyHunters has threatened to publish the stolen databases within four days unless their demands are met.</li><li>Agents express fear over potential &#x27;violence-as-a-service&#x27; physical attacks, targeted phishing scams, and blackmail attempts.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Mississippi police rule death of Black woman found hanging from tree a homicide</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Mississippi Police Suspect Black Woman&#x27;s Body Was Staged in Tree Hanging</span>
+              <span class="time-badge">2h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Investigators believe 29-year-old Tasia Fortune was already dead before her body was staged in a tree at an abandoned home in Jackson.</li><li>The killing is suspected to have stemmed from a drug-related dispute, and multiple arrests have been made.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.bbc.co.uk/news/articles/cwp933nzpp9ro?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>A detective testified that 29-year-old Tasia Fortune was likely killed in a drug-related dispute before her body was hung.</li><li>The discovery of the mother of four hanging from a tree in Jackson sparked intense racial anxiety before multiple suspects were arrested.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Pope Leo XIV draws massive crowds during historic visit to France</span>
-              <span class="time-badge">51m ago</span>
+              <span class="summary-text">Pope Leo XIV Warns Against Losing Humanity to AI During France Visit</span>
+              <span class="time-badge">12h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The event marks the first official papal visit to the country in 18 years.</li><li>The Pope delivered an address to thousands of young people during a mass held at the Stade de France.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.aljazeera.com/video/newsfeed/2026/9/26/pope-leo-xiv-makes-first-official-papal-visit-in-france-in-nearly-20?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
+                <a href="https://www.bbc.co.uk/news/articles/cmq8j904212po?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The pontiff urged Church and state officials in Paris to prevent the normalization of human exploitation through unregulated machines.</li><li>The warning preceded a massive scheduled Mass at the Place de la Concorde, expected to draw over half a million attendees.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">TikTok agrees to $100 million settlement with Alabama over teen addiction lawsuit</span>
-              <span class="time-badge">1h ago</span>
+              <span class="summary-text">Two Arrested in New York After Emerging From Sewers Near Netanyahu&#x27;s Hotel</span>
+              <span class="time-badge">10h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The settlement was reached just days before a scheduled trial focusing on the platform&#x27;s impact on teenage mental health.</li><li>TikTok is among several major social media companies facing legal action over addictive design features.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.aljazeera.com/video/newsfeed/2026/9/26/tiktok-to-pay-100-million-to-alabama-in-teen-addiction-settlement?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
+                <a href="https://www.bbc.co.uk/news/articles/cwddvv44091vo?at_medium=RSS&at_campaign=rss" target="_blank" class="source-btn">BBC World ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Kevin Rodriguez and Samuel Reveron were charged with conspiracy and trespassing after climbing out of a manhole during the UN General Assembly.</li><li>While police believe the men were searching for storm-swept valuables, security sweeps were conducted due to the proximity of the Israeli PM&#x27;s hotel.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Al Jazeera Explores Effectiveness of Global Diplomacy Amid Ongoing Conflicts</span>
+              <span class="time-badge">30m ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.aljazeera.com/video/newsfeed/2026/9/26/the-bombs-are-still-falling-does-diplomacy-even-work?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Journalist Emma Withrow interviewed Al Anoud Al Thani to discuss what diplomatic efforts can achieve during active bombardments.</li><li>The discussion focused on the limitations of peace talks held at the United Nations while wars continue to escalate.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Yemeni Leader Calls for Mobilization and Offers Amnesty to Houthi Defectors</span>
+              <span class="time-badge">54m ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.aljazeera.com/news/2026/9/26/yemeni-leader-urges-public-to-enlist-offers-amnesty-to-houthi-defectors?traffic_source=rss" target="_blank" class="source-btn">Al Jazeera ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Presidential Leadership Council Chair Rashad al-Alimi urged citizens to join Saudi-backed forces to protect the Bab al-Mandeb strait.</li><li>The immediate amnesty offer comes after government forces were routed from the Red Sea coast by Houthi rebels.</li>
+              </ul>
             </div>
           </details>
         </div>
         <h2>TECH</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">FDA nominee Heidi Overton faces intense Senate scrutiny over medical stances</span>
-              <span class="time-badge">4h ago</span>
+              <span class="summary-text">US Appeals Court Upholds Trump Administration&#x27;s Blacklisting of Anthropic</span>
+              <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Overton, currently a domestic policy advisor, declined to answer direct questions regarding vaccines, abortion pills, and birth control.</li><li>She previously supported President Trump during a press conference where he falsely claimed the MMR vaccine was lethal.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://arstechnica.com/health/2026/09/can-trump-ever-be-wrong-his-pick-to-lead-fda-refused-to-say/" target="_blank" class="source-btn">Ars Technica ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">US appeals court upholds blacklisting of AI developer Anthropic</span>
-              <span class="time-badge">5h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The court ruled that the Trump administration has the authority to restrict Anthropic for withholding specific AI features from military use.</li><li>Judges noted the legal battle highlights the risks of constrained AI models failing during critical military operations versus unconstrained models hallucinating targets.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/tech-policy/2026/09/court-rules-trump-can-blacklist-anthropic-for-refusing-to-enable-claude-features/" target="_blank" class="source-btn">Ars Technica ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The court ruled 2-1 that the government has the authority to restrict Anthropic for withholding specific AI features from military use.</li><li>Judges noted the decision balances the risk of constrained AI models failing in military operations against unconstrained models hallucinating targets.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Tesla employees resist training Optimus humanoid robots as replacements</span>
-              <span class="time-badge">5h ago</span>
+              <span class="summary-text">Tesla Workers Resist Training Optimus Humanoid Robots as Replacements</span>
+              <span class="time-badge">6h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Tesla has halted Model S and Model X production at its Fremont factory to reassign assembly line workers to the Optimus project.</li><li>The transition faces technical hurdles with complex robotic hands alongside employee dissatisfaction over training their own replacements.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://arstechnica.com/ai/2026/09/tesla-workers-balk-at-training-optimus-humanoid-robots-as-replacements/" target="_blank" class="source-btn">Ars Technica ↗</a>
               </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Sophisticated tech support scam delivered via Google ads freezes user screens</span>
-              <span class="time-badge">7h ago</span>
-            </summary>
-            <div class="details-content">
               <ul class="takeaways-list">
-                <li>The malicious ads target both Windows and Mac users, displaying urgent messages to call a fraudulent support center.</li><li>Security firm Netskope blocked the ads across 619 customer organizations, primarily based in the US, Japan, and Australia.</li>
+                <li>Tesla has halted Model S and Model X production at its Fremont factory to reassign engineers and assembly line workers to the Optimus project.</li><li>Employees are pushing back against training the robots, which face technical hurdles including highly complex robotic hand designs.</li>
               </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://arstechnica.com/security/2026/09/google-ads-caught-delivering-convincing-scareware-ads-to-unsuspecting-users/" target="_blank" class="source-btn">Ars Technica ↗</a>
-              </div>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Apple&#x27;s iPhone 18 Pro focuses on internal thermal and camera upgrades</span>
-              <span class="time-badge">7h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The new model introduces a variable aperture camera control to address criticisms of rigid computational photography.</li><li>Under-the-hood improvements include a faster processor, extended battery life, and significantly cooler operating temperatures.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://arstechnica.com/apple/2026/09/review-the-iphone-18-pro-is-apples-coolest-smartphone-but-only-literally/" target="_blank" class="source-btn">Ars Technica ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">New economic study finds no widespread AI displacement of college graduates</span>
-              <span class="time-badge">7h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>A working paper from Munich&#x27;s CESifo contradicts earlier Stanford research by showing no significant drop in entry-level hiring.</li><li>The researchers focused on recent graduates as they are typically the first to feel shifts in labor demand when firms automate tasks.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://arstechnica.com/ai/2026/09/ai-was-supposed-to-hit-new-grads-hard-so-far-unemployment-data-says-otherwise/" target="_blank" class="source-btn">Ars Technica ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Roku discounts its debut Pro Series OLED TVs by up to $400</span>
+              <span class="summary-text">Google Ads Deliver Tech Support Scam Freezing Windows and Mac Screens</span>
               <span class="time-badge">8h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Amazon promo codes reduce the 55-inch model to $699 and the 65-inch model to $799.</li><li>The TVs feature a 120Hz refresh rate, four HDMI 2.1 ports, built-in Roku software, and AMD FreeSync Premium for gaming.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.theverge.com/gadgets/1000859/roku-pro-series-oled-nothing-phone-4a-pro-deal-sale" target="_blank" class="source-btn">Verge ↗</a>
+                <a href="https://arstechnica.com/security/2026/09/google-ads-caught-delivering-convincing-scareware-ads-to-unsuspecting-users/" target="_blank" class="source-btn">Ars Technica ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The malicious ads display urgent messages instructing users to call a fraudulent call center to pay fees or grant remote access.</li><li>Security firm Netskope blocked the scam for 619 customer organizations, primarily based in the US, Japan, and Australia.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Mark Zuckerberg defends Ray-Ban Meta smart glasses privacy features</span>
+              <span class="summary-text">Apple iPhone 18 Pro Review Highlights Improved Thermals and Camera Controls</span>
+              <span class="time-badge">8h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://arstechnica.com/apple/2026/09/review-the-iphone-18-pro-is-apples-coolest-smartphone-but-only-literally/" target="_blank" class="source-btn">Ars Technica ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The new model features a variable aperture camera control, a faster chip, and significantly improved battery life.</li><li>Enhanced thermal management keeps the device cooler to the touch and ensures better sustained performance compared to the iPhone 17 Pro.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">New Study Finds No Widespread Displacement of College Graduates by AI</span>
+              <span class="time-badge">8h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://arstechnica.com/ai/2026/09/ai-was-supposed-to-hit-new-grads-hard-so-far-unemployment-data-says-otherwise/" target="_blank" class="source-btn">Ars Technica ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>A working paper from Munich&#x27;s CESifo contradicts previous studies, finding no significant reduction in entry-level hiring due to AI.</li><li>Researchers Robert Fairlie and Jane Wu analyzed labor demand, noting that firms are not yet replacing recent graduates on a large scale.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Roku Launches First OLED TVs with Significant Promotional Discounts</span>
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.theverge.com/gadgets/1000859/roku-pro-series-oled-nothing-phone-4a-pro-deal-sale" target="_blank" class="source-btn">Verge ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>Zuckerberg argued that the glasses&#x27; recording indicator light provides a better warning to bystanders than smartphones do.</li><li>Critics counter that holding a smartphone up to take a photo is inherently more noticeable than wearing glasses.</li>
+                <li>The 55-inch Pro Series model is discounted to $699, while the 65-inch model is reduced to $799 using specific checkout codes on Amazon.</li><li>The TVs feature a 120Hz refresh rate, built-in Roku software, four HDMI 2.1 ports, and support for AMD FreeSync Premium.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Mark Zuckerberg Defends Ray-Ban Meta Glasses Privacy Features</span>
+              <span class="time-badge">10h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.theverge.com/podcast/1000751/vergecast-meta-connect-muse-googlebooks" target="_blank" class="source-btn">Verge ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Zuckerberg argued that the smart glasses are more transparent than smartphones because they emit a visible light when taking photos.</li><li>The defense comes amid ongoing privacy concerns regarding the hardware and its integrated Muse AI assistant.</li>
+              </ul>
             </div>
           </details>
         </div>
         <h2>FINANCE</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Uncertainty surrounds bank holiday schedules amid upcoming financial events</span>
+              <span class="summary-text">Augment India Holdings to Sell Rs 1,063 Crore Stake in CleanMax Enviro</span>
+              <span class="time-badge">12h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/cleanmax-enviro-block-deal-augment-india-holdings-likely-to-divest-85-lakh-shares-worth-rs-1063-crore/articleshow/134488759.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The proposed block deal involves the divestment of 85 lakh shares, representing a 7.25% stake in the renewable energy firm.</li><li>The transaction is expected to take place at a floor price of Rs 1,250 per share, representing a discount to the market price.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Data Center Operator DayOne Targets November IPO Amid Rising Scrutiny</span>
+              <span class="time-badge">12h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/data-center-ipo-hopefuls-brave-tougher-market-as-investor-scrutiny-grows/articleshow/134488469.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The company is proceeding with its public listing plans despite higher interest rates and market volatility in the data center sector.</li><li>Investors are exercising increased scrutiny over valuations and infrastructure sustainability within the ecosystem.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">SEBI Bans Omaxe and Five Entities Over Public Shareholding Violations</span>
+              <span class="time-badge">12h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/sebi-bans-omaxe-5-others-for-violating-minimum-public-shareholding-norms/articleshow/134488287.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The regulator imposed a three-month market access ban on Omaxe and a one-year ban on five associated promoters.</li><li>The entities were penalized a total of Rs 1 crore for creating a deceptive public shareholding structure to repurchase shares.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Adani Group Promoters Complete Rs 2,498 Crore Share Swap in Adani Enterprises</span>
+              <span class="time-badge">13h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/adani-group-entities-swap-86-lakh-shares-of-adani-enterprises-in-rs-2498-cr-block-deal/articleshow/134488246.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The block deal involved the exchange of 86 lakh shares, with Adani Infra and Adani Properties acquiring the stake.</li><li>Infinite Trade and Investment divested the shares, reducing its ownership in the flagship company from 2.01% to 1.38%.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Structured Debt Emerges as High-Yield Option for Wealthy Investors</span>
+              <span class="time-badge">16h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/et-alpha-wealth-summit-2-0-structured-debt-and-the-search-for-higher-yields/articleshow/134484486.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>High-net-worth individuals are increasingly utilizing structured debt to secure higher returns and manage downside risks.</li><li>Key considerations for investors include credit quality, collateral strength, and liquidity challenges due to limited secondary trading.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Engineers India Leads Seven BSE 500 Stocks to Fresh 52-Week Highs</span>
+              <span class="time-badge">16h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/engineers-india-among-7-stocks-hitting-52-week-highs-shares-rallied-up-to-25-in-a-month/slideshow/134484033.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Engineers India shares surged 25% over the past month, reaching a peak of Rs 318.75 during Friday&#x27;s trading session.</li><li>The benchmark Sensex rose 315 points to close at 73,895, signaling strong investor interest in mid-cap equities.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Macquarie Projects Strong Growth for Indian Capital Market Stocks Through FY30</span>
+              <span class="time-badge">18h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://economictimes.indiatimes.com/markets/stocks/news/500-billion-flywheel-macquarie-lists-3-drivers-for-strong-growth-in-capital-market-stocks-lists-top-picks/articleshow/134480879.cms" target="_blank" class="source-btn">Economic Times Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The optimistic outlook is driven by a structural shift of household savings into market-based financial products.</li><li>Macquarie identified financialisation, equitisation, and productisation as the three primary drivers benefiting brokers and exchanges.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Anand Rathi Recommends Tata Steel, South Indian Bank, and Castrol Under Rs 200</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Customers are advised to check local listings and digital banking portals for real-time operational status.</li><li>The scheduling queries coincide with preparations for the upcoming Budget 2025 announcements.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/wealth/save/saturday-bank-holiday-are-banks-open-or-closed-today-on-september-26-2026/articleshow/134483468.cms" target="_blank" class="source-btn">Economic Times ↗</a>
+                <a href="https://www.livemint.com/market/stock-market-news/stocks-to-buy-under-rs-200-tata-steel-south-bank-castrol-by-mehul-kothari-of-anand-rathi-target-sl-market-outlook-11790390076388.html" target="_blank" class="source-btn">Mint Markets ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Analyst Mehul Kothari notes the Nifty 50 is trading near a crucial support zone of 23,000–23,100 after seven consecutive weekly declines.</li><li>The market experienced high volatility due to rising US bond yields, crude oil prices exceeding $100, and a weaker rupee.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">US Supreme Court rejects Republican-backed Missouri congressional map</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The ruling forces Missouri to use its existing 2022 district boundaries for the upcoming November midterm elections.</li><li>The decision marks the third time the high court has blocked the controversial redistricting plan.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/news/international/world-news/supreme-court-rejects-a-trump-backed-missouri-congressional-map-for-the-third-time/articleshow/134495662.cms" target="_blank" class="source-btn">Economic Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Indian fast-food chains introduce Rs 99 meals to boost customer traffic</span>
-              <span class="time-badge">19h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Major brands like KFC, McDonald&#x27;s, and Burger King are focusing on low-priced value meals to attract first-time visitors.</li><li>Industry analysts express concern that lower average transaction values could negatively impact overall profit margins.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/industry/cons-products/food/indias-qsrs-rethink-the-value-game-with-rs-99-offers-kfc-pizza-hut-devyani-sapphire-westlife/articleshow/134476699.cms" target="_blank" class="source-btn">Economic Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Congo plane crash claims 14 lives including senior military official</span>
-              <span class="time-badge">1h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The aircraft suffered a fatal technical malfunction in Kenge while traveling from Kikwit to Kinshasa.</li><li>Lieutenant General Mutombo Katalayi Tiende was among the notable casualties identified by authorities.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/news/international/world-news/congo-plane-crash-kills-14-including-2-senior-military-officials/articleshow/134495498.cms" target="_blank" class="source-btn">Economic Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">RBI bulletin highlights resilience in India&#x27;s financial and external sectors</span>
-              <span class="time-badge">9h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The central bank reported strong first-quarter GDP growth and a five-year high in foreign direct investment (FDI) inflows.</li><li>Rising crude oil prices driven by West Asian conflicts remain a primary concern for domestic inflation.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/news/economy/policy/rbi-bulletin-indias-financial-external-sectors-continue-to-draw-strength-from-resilient-domestic-economy/articleshow/134490507.cms" target="_blank" class="source-btn">Economic Times ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">CCI requests additional details on Adani&#x27;s Rs 3,050 crore IntelliSmart acquisition</span>
+              <span class="summary-text">Crude Oil Prices Fall 2.3% Amid Progress in US-Iran Shipping Route Talks</span>
               <span class="time-badge">7h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The Competition Commission of India declared the transaction filing incomplete after a two-month review period.</li><li>The deal aims to position Adani Energy Solutions as the country&#x27;s leading smart metering platform with over 2.2 crore meters.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://economictimes.indiatimes.com/industry/energy/power/cci-seeks-more-info-on-adani-energys-intellismart-deal/articleshow/134491830.cms" target="_blank" class="source-btn">Economic Times ↗</a>
+                <a href="https://www.livemint.com/market/oil-declines-as-traders-weigh-us-iran-hormuz-talk-progress-11790369499240.html" target="_blank" class="source-btn">Mint Markets ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>West Texas Intermediate futures settled near $92 a barrel on expectations that negotiations to reopen the Strait of Hormuz will succeed.</li><li>Despite the drop, Brent crude remains 70% higher for the year, with physical market indicators pointing to tight near-term supplies.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Wall Street Rallies on Tech Buying and Akamai&#x27;s $11.6 Billion Anthropic Deal</span>
+              <span class="time-badge">8h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.livemint.com/market/wall-street-ends-higher-as-investors-buy-ai-stocks-microsoft-rallies-11790366537645.html" target="_blank" class="source-btn">Mint Markets ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Microsoft led the gains after unveiling new coding and agentic AI capabilities for its Copilot application.</li><li>Akamai Technologies surged following a cloud services agreement with Anthropic, which includes a warrant for up to 5% of Akamai.</li>
+              </ul>
             </div>
           </details>
         </div>
         <h2>AUTO</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Mercedes-Benz CLA 250+ EV delivers impressive 612km real-world range in testing</span>
-              <span class="time-badge">39m ago</span>
+              <span class="summary-text">Mercedes-Benz to Launch Locally Assembled GLC EV in India by End of 2026</span>
+              <span class="time-badge">4m ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Built on the new MMA skateboard platform, the EV achieved a city efficiency of 6.87km/kWh and a highway efficiency of 7.52km/kWh.</li><li>Priced at Rs 60.50 lakh, the vehicle features an 800V architecture supporting up to 320kW fast charging and a unique 101-litre front trunk.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.autocarindia.com/car-reviews/mercedes-benz-cla-250-road-test-review-440575" target="_blank" class="source-btn">Autocar India ↗</a>
+                <a href="https://www.autocarindia.com/car-reviews/mercedes-benz-glc-ev-review-clean-run-440581" target="_blank" class="source-btn">Autocar India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The electric SUV features a 39-inch Hyperscreen, a 94kWh battery, and a claimed WLTP range of 715 kilometers.</li><li>Expected to be priced between Rs 85-90 lakh, the GLC EV will be assembled locally just six months after its European debut.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Yamaha EC-06 outperforms Suzuki e-Access in Japanese electric scooter comparison</span>
+              <span class="summary-text">Top 11 Adventure Touring Motorcycles Available in India Under Rs 5 Lakh</span>
+              <span class="time-badge">34m ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.autocarindia.com/auto-features/top-11-adventure-tourers-between-rs-2-5-lakh-441114" target="_blank" class="source-btn">Autocar India ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The segment features diverse options ranging from the budget-friendly TVS Apache RTX 300 to the premium twin-cylinder BMW F 450 GS.</li><li>Key models highlighted include the Royal Enfield Himalayan 450, KTM 390 Adventure, and the Kawasaki Versys-X 300.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Mercedes-Benz CLA 250+ Delivers Over 600km Real-World Range in Road Test</span>
               <span class="time-badge">1h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.autocarindia.com/car-reviews/mercedes-benz-cla-250-road-test-review-440575" target="_blank" class="source-btn">Autocar India ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>The Yamaha EC-06, priced at Rs 1.71 lakh, features a 4kWh NMC battery and achieved a 114km range in testing.</li><li>The Suzuki e-Access costs Rs 1.92 lakh, utilizes a 3.072kWh LFP battery, and is limited to an 88km range and a smaller 17-litre boot.</li>
+                <li>Priced at Rs 60.50 lakh, the EV is built on the new Modular Architecture (MMA) skateboard platform and features a 101-litre front trunk.</li><li>The vehicle achieved an average efficiency of 7.2km/kWh, translating to a tested real-world range of 612km on a single charge.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Yamaha EC-06 Outperforms Suzuki e-Access in Japanese Electric Scooter Comparison</span>
+              <span class="time-badge">2h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/bike-comparison-reviews/suzuki-e-access-vs-yamaha-ec-06-comparison-440570" target="_blank" class="source-btn">Autocar India ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The Yamaha EC-06, priced at Rs 1.71 lakh, offers a 114km range and superior performance compared to the Rs 1.92 lakh Suzuki e-Access.</li><li>The Suzuki e-Access is held back by a smaller 17-litre boot space and a shorter tested range of 88km due to its LFP battery placement.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Renault to launch Duster strong-hybrid variant in India on October 17</span>
+              <span class="summary-text">Renault to Launch Duster Strong Hybrid in India on October 17</span>
               <span class="time-badge">11h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The E-Tech hybrid system pairs a 1.8-litre petrol engine with two electric motors to produce a combined 160hp.</li><li>Unlike Toyota&#x27;s e-CVT system, Renault&#x27;s setup uses a multi-mode automatic gearbox with fixed gear ratios and a larger 1.4kWh battery pack.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.autocarindia.com/car-news/renault-duster-hybrid-launch-on-october-17-440853" target="_blank" class="source-btn">Autocar India ↗</a>
               </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Tata Motors launches Aeris compact sedan to replace Tigor</span>
-              <span class="time-badge">13h ago</span>
-            </summary>
-            <div class="details-content">
               <ul class="takeaways-list">
-                <li>Priced from Rs 5.29 lakh to Rs 9.74 lakh, the Aeris is offered in five trims with 1.2-litre petrol and CNG engine options.</li><li>Key upgrades include standard six airbags, front seat ventilation, a wireless charger, and a dashcam that records via the 360-degree camera feed.</li>
+                <li>The E-Tech hybrid system combines a 1.8-litre petrol engine with two electric motors to produce a combined 160hp.</li><li>Unlike Toyota&#x27;s e-CVT system, Renault&#x27;s setup uses a multi-mode automatic gearbox with fixed gear ratios and a 1.4kWh battery pack.</li>
               </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.autocarindia.com/auto-images/tata-aeris-exterior-and-interior-image-gallery-440475" target="_blank" class="source-btn">Autocar India ↗</a>
-              </div>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Hyundai plans Stargazer launch to challenge Maruti Ertiga&#x27;s budget MPV dominance</span>
+              <span class="summary-text">Tata Motors Launches Aeris Compact Sedan as Tigor Facelift Starting at Rs 5.29 Lakh</span>
               <span class="time-badge">14h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.autocarindia.com/auto-images/tata-aeris-exterior-and-interior-image-gallery-440475" target="_blank" class="source-btn">Autocar India ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>The Maruti Ertiga remains the budget leader, priced under Rs 15.37 lakh with a highly efficient 1.5-litre engine offering up to 26.11 km/kg in CNG mode.</li><li>Hyundai&#x27;s upcoming Stargazer measures 4.61 meters—300mm longer than the Ertiga—and will offer premium features like ADAS and a 10.25-inch screen.</li>
+                <li>The Aeris is offered in five trims with a 1.2-litre engine (petrol/CNG) and introduces segment-first ventilated front seats.</li><li>Key upgrades over the outgoing Tigor include six standard airbags, a built-in dashcam recorder, a wireless charger, and connected car tech.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Maruti Ertiga Remains India&#x27;s Leading Budget Seven-Seater MPV</span>
+              <span class="time-badge">15h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://motoroctane.com/news/323698-comfortable-7-seater-to-buy-under-a-budget" target="_blank" class="source-btn">MotorOctane ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Priced between Rs 10.38 lakh and Rs 15.37 lakh, the Ertiga features a 1.5-litre engine with manual, automatic, and CNG options.</li><li>The MPV delivers a claimed mileage of up to 26.11 km/kg in its CNG variant, making it highly cost-effective for families.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Hyundai Plans to Launch Stargazer MPV to Challenge Maruti Ertiga in India</span>
+              <span class="time-badge">18h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://motoroctane.com/news/323839-hyundai-to-launch-its-cheapest-7-seater-in-india" target="_blank" class="source-btn">MotorOctane ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The Stargazer measures 4.61 meters in length, offering a significantly roomier cabin and longer wheelbase than the Ertiga.</li><li>Expected to launch by late 2027, the MPV will feature a 10.25-inch infotainment screen, ADAS, and a potential diesel or CNG option.</li>
+              </ul>
             </div>
           </details>
         </div>
         <h2>SPORTS</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Warwickshire closes in on County Championship title as Nottinghamshire falls short</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">Cricket | Asian Games: Nepal Defeats Japan in Rain-Hit Match to Secure Knockout Spot</span>
+              <span class="time-badge">34m ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Sam Hain&#x27;s second century of the season anchored Warwickshire&#x27;s dominant performance to put their ninth title within reach.</li><li>Despite Olly Stone&#x27;s strong bowling performance for Nottinghamshire against Yorkshire, Warwickshire&#x27;s bonus points secured their lead.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.cricinfo.com/ci/content/story/1555717.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
+                <a href="https://www.cricinfo.com/ci/content/story/1555751.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Nepal posted a total of 149 for 4 in 15 overs during the rain-shortened match before the chase was washed out.</li><li>Sundeep Jora and Lokesh Bam both scored quick, unbeaten half-centuries to power Nepal&#x27;s innings against Japan.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Ben Compton century keeps Kent on track for Division One promotion</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">Cricket | India National Team: Morne Morkel Backs Nitish Kumar Reddy for All-Rounder Role</span>
+              <span class="time-badge">39m ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Compton&#x27;s hundred helped Kent secure a 124-run lead over Gloucestershire.</li><li>A victory in this match would guarantee Kent&#x27;s return to the top division of the County Championship.</li>
-              </ul>
-              <div class="sources-container">
-                <span class="sources-label">Sources:</span>
-                <a href="https://www.cricinfo.com/ci/content/story/1555727.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
-              </div>
-            </div>
-          </details>
-        </div>
-        
-        <div class="card">
-          <details>
-            <summary>
-              <span class="bullet">•</span>
-              <span class="summary-text">Morne Morkel backs Nitish Kumar Reddy for India&#x27;s ODI World Cup squad</span>
-              <span class="time-badge">9h ago</span>
-            </summary>
-            <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The bowling coach stated that Reddy has the potential to compete for the primary all-rounder&#x27;s spot.</li><li>Reddy, who has played six ODIs, is being positioned as a potential backup for Hardik Pandya ahead of the 2027 tournament.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.cricinfo.com/ci/content/story/1555741.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Bowling coach Morne Morkel stated that Reddy has the potential to compete for a permanent all-rounder spot in the national side.</li><li>Reddy, who has played six ODIs, is being positioned as a potential backup for Hardik Pandya ahead of the 2027 ODI World Cup.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Essex faces heavy defeat against Glamorgan after batting collapse</span>
+              <span class="summary-text">Cricket | County Championship: Sam Hain&#x27;s Century Puts Warwickshire on Brink of Title</span>
               <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.cricinfo.com/ci/content/story/1555717.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>Essex slumped to 100 for 7 at stumps, still trailing Glamorgan by 405 runs.</li><li>Glamorgan&#x27;s massive total was built on centuries from batsmen Tribe and Carlson.</li>
+                <li>Hain scored his second century of the season to guide Warwickshire into an impregnable position against their opponents.</li><li>The dominant performance has made securing their ninth County Championship title a mere formality.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Cricket | County Championship: Ben Compton&#x27;s Century Keeps Kent&#x27;s Promotion Hopes Alive Against Gloucestershire</span>
+              <span class="time-badge">9h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.cricinfo.com/ci/content/story/1555727.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Compton&#x27;s hundred helped second-placed Kent secure a commanding 124-run lead over Gloucestershire.</li><li>A victory in this match would guarantee Kent&#x27;s return to Division One of the County Championship.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Cricket | County Championship: Glamorgan Dominates Essex After Tribe and Carlson Centuries</span>
+              <span class="time-badge">10h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.cricinfo.com/ci/content/story/1555723.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Glamorgan&#x27;s massive run tally forced an abject batting collapse from Essex, who finished the day at 100 for 7.</li><li>Essex still trail Glamorgan by 405 runs following dominant centuries from batsmen Tribe and Carlson.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Zaib and Vasconcelos lead Northamptonshire fightback against Middlesex</span>
-              <span class="time-badge">9h ago</span>
+              <span class="summary-text">Cricket | County Championship: Northamptonshire Fights Back Against Middlesex at Lord&#x27;s</span>
+              <span class="time-badge">10h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The batting duo kept Northamptonshire&#x27;s slim promotion hopes alive with a resilient partnership at Lord&#x27;s.</li><li>Middlesex bowlers Helm and Gohar took crucial wickets to chip away at the resistance.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://www.cricinfo.com/ci/content/story/1555730.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Zaib and Vasconcelos led the resistance for Northamptonshire to keep their slim promotion hopes alive.</li><li>Middlesex bowlers Helm and Gohar chipped away with wickets, though the final result may ultimately be academic.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Troy Aikman&#x27;s ESPN future uncertain following Joe Buck&#x27;s contract extension</span>
-              <span class="time-badge">6h ago</span>
+              <span class="summary-text">Cricket | County Championship: Nottinghamshire&#x27;s Title Hopes Fade Against Yorkshire Despite Olly Stone&#x27;s Spell</span>
+              <span class="time-badge">10h ago</span>
             </summary>
             <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.cricinfo.com/ci/content/story/1555721.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
+              </div>
               <ul class="takeaways-list">
-                <li>Joe Buck secured a massive $108 million contract extension to remain with the network.</li><li>The broadcasting duo has worked together for 25 NFL seasons, raising questions about their continued partnership.</li>
+                <li>Olly Stone&#x27;s bowling performance rocked Yorkshire, but Nottinghamshire was left helpless as the championship slipped away.</li><li>Warwickshire&#x27;s bonus points have put the title out of reach, though the 2025 champions remain in a position to finish strongly.</li>
               </ul>
-              <div class="sources-container">
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Cricket | County Championship: Worcestershire Takes Control Against Derbyshire</span>
+              <span class="time-badge">10h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.cricinfo.com/ci/content/story/1555729.html?ex_cid=OTC-RSS" target="_blank" class="source-btn">ESPN Cricinfo ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>Matthew Waite&#x27;s performance tipped the scales back in favor of Worcestershire, leaving Derbyshire with a steep fourth-innings chase.</li><li>Derbyshire&#x27;s struggle persists despite an unstinting bowling effort from international star Mohammad Abbas.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">American Football | NFL: Troy Aikman&#x27;s ESPN Future Uncertain After Joe Buck&#x27;s $108M Extension</span>
+              <span class="time-badge">7h ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://sports.ndtv.com/us-nfl/troy-aikman-faces-espn-uncertainty-after-joe-buck-lands-108m-extension-12099690#publisher=newsstand" target="_blank" class="source-btn">NDTV Sports ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The legendary broadcasting duo of Troy Aikman and Joe Buck have worked together for 25 NFL seasons.</li><li>Buck&#x27;s massive contract extension has raised questions regarding Aikman&#x27;s long-term contract status with ESPN.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Deion Sanders enlists Colorado legends to guide quarterback Julian Lewis</span>
-              <span class="time-badge">8h ago</span>
+              <span class="summary-text">American Football | NCAA: Deion Sanders Seeks Colorado Legends&#x27; Help as Julian Lewis Faces Leadership Test</span>
+              <span class="time-badge">9h ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Sanders brought in program icons to help prepare the young quarterback for the challenges of Big 12 conference play.</li><li>The leadership intervention comes as Colorado faces a highly anticipated conference opener.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
                 <a href="https://sports.ndtv.com/us-nfl/deion-sanders-turns-to-colorado-legends-as-julian-lewis-faces-a-tough-leadership-reality-check-12099534#publisher=newsstand" target="_blank" class="source-btn">NDTV Sports ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Colorado Buffaloes head coach Deion Sanders is bringing in program legends to mentor young quarterback Julian Lewis.</li><li>The leadership intervention comes as Colorado prepares for a challenging transition into Big 12 conference play.</li>
+              </ul>
             </div>
           </details>
         </div>
         </div><div id="tab-yesterday" class="tab-content"><h2>PUNE (LOCAL)</h2>
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">IIT alumnus sentenced to life imprisonment for murdering sister in 2010</span>
+              <span class="summary-text">Pune Court Sentences IIT Alumnus to Life Imprisonment for Sister&#x27;s 2010 Murder</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The Pune Sessions Court convicted Subojit Sadan Basu for strangling his 23-year-old sister, Priyadarshini Basu.</li><li>The crime took place at their residential flat located in the Bavdhan area of Pune.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/iit-alumnus-gets-life-term-for-strangling-sister-in-2010-101790279218095.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/iit-alumnus-gets-life-term-for-strangling-sister-in-2010-101790279218095.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The Pune Sessions Court convicted Subojit Sadan Basu for strangling his 23-year-old sister, Priyadarshini Basu.</li><li>The crime took place in 2010 at their residential flat located in the Bavdhan area of Pune.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Pune police register seven cheating cases involving Rs 1.87 crore in financial losses</span>
+              <span class="summary-text">Pune Police Register Seven Cheating Cases Involving Rs 1.87 Crore in Financial Losses</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The registered FIRs cover a range of offenses, including a fraudulent RTO challan application and the misappropriation of corporate funds.</li><li>The total financial damage across all seven cases is estimated to be approximately Rs 1.8 crore.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/seven-firs-involving-losses-of-1-87-crore-registered-101790279037940.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/seven-firs-involving-losses-of-1-87-crore-registered-101790279037940.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The registered FIRs cover a range of fraudulent activities, including a fake RTO challan application and the misappropriation of corporate funds.</li><li>The total financial loss across all seven distinct cheating cases is estimated at approximately Rs 1.8 crore.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Pune Municipal Corporation deploys emergency personnel for Ganesh Visarjan safety</span>
+              <span class="summary-text">PMC Deploys Lifeguards and Fire Personnel for Ganesh Visarjan on Anant Chaturdashi</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The civic body has stationed 120 lifeguards and 37 fire brigade personnel across 15 designated immersion ghats.</li><li>The safety deployments are timed for the final day of immersion on Anant Chaturdashi.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/pmc-prepared-for-ganesh-visarjan-on-anant-chaturdashi-101790278737918.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/pmc-prepared-for-ganesh-visarjan-on-anant-chaturdashi-101790278737918.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The civic body has stationed 120 lifeguards and 37 fire brigade personnel across 15 designated immersion ghats in Pune.</li><li>The deployment aims to ensure public safety during the final day of the Ganeshotsav festival on Friday.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Police issue notices to student leaders and Telegram admins over planned MPSC protests</span>
+              <span class="summary-text">Pune Police Issue Notices to MPSC Student Leaders and Telegram Admins Ahead of Ganeshotsav</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Authorities cited concerns that the proposed demonstration locations would cause severe traffic congestion and public-order issues.</li><li>The warnings were specifically issued due to the ongoing Ganeshotsav festival in the city.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/mpsc-stir-student-leaders-telegram-admins-served-notices-101790278498943.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/mpsc-stir-student-leaders-telegram-admins-served-notices-101790278498943.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Authorities served the notices citing potential traffic congestion and public-order disruptions at the proposed protest locations.</li><li>The preventive action was taken specifically to maintain order during the ongoing festive period of Ganeshotsav.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Inquiry launched into death during Pune Ganpati procession amid lathi-charge allegations</span>
+              <span class="summary-text">Inquiry Initiated Into Pune Ganpati Procession Death Amid Lathi-Charge Allegations</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>Local NCP MLA Jagtap has demanded immediate action against the police officers involved in the incident.</li><li>An official probe has been initiated to establish the exact cause of death and the sequence of events.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/police-face-heat-after-man-dies-during-ganpati-immersion-procession-101790278258234.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>Local NCP MLA Jagtap has demanded strict action against the police following the controversial death during the procession.</li><li>An official inquiry is underway to establish the exact cause of death and investigate the circumstances surrounding the incident.</li>
+              </ul>
             </div>
           </details>
         </div>
         
         <div class="card">
-          <details>
+          <details name="news-card">
             <summary>
               <span class="bullet">•</span>
-              <span class="summary-text">Katraj SWaCH waste facility served notice over fire safety violations</span>
+              <span class="summary-text">PMC Fire Brigade Issues Safety Lapses Notice to Katraj SWaCH Waste Facility</span>
               <span class="time-badge">1d ago</span>
             </summary>
             <div class="details-content">
-              <ul class="takeaways-list">
-                <li>The Pune Municipal Corporation fire brigade issued the directive following an inspection at the Garbage Ramp facility.</li><li>The waste management facility has been given a strict seven-day deadline to rectify all identified safety lapses.</li>
-              </ul>
-              <div class="sources-container">
+              <div class="sources-header">
                 <span class="sources-label">Sources:</span>
-                <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Hindustan Times ↗</a>
+                <a href="https://www.hindustantimes.com/cities/pune-news/katraj-swach-waste-facility-gets-notice-over-fire-safety-lapses-101790277778668.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
               </div>
+              <ul class="takeaways-list">
+                <li>The facility, located at the Garbage Ramp in Katraj, was served the notice on Thursday following inspections.</li><li>The management has been directed to rectify all identified fire-safety violations within a strict seven-day deadline.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Pune Fire Brigade Issues Safety Violation Notices to 18 Hospitals and Schools</span>
+              <span class="time-badge">1d ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.hindustantimes.com/cities/pune-news/pmc-fire-brigade-serves-notice-to-18-hospitals-101790269135148.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The action is part of an expanded citywide crackdown targeting educational and healthcare institutions violating fire safety regulations.</li><li>Inspectors served the notices to compel immediate compliance with municipal fire safety standards.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">Pune Police Register Seven Kidnapping Cases in a Single Day</span>
+              <span class="time-badge">1d ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.hindustantimes.com/cities/pune-news/seven-kidnapping-cases-filed-in-a-single-day-in-pune-101790266554618.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>One of the cases was filed at the Bibvewadi Police Station after a mother reported her 15-year-old daughter missing on September 21.</li><li>The sudden spike in reported abductions prompted multiple police stations across the city to register formal complaints.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        
+        <div class="card">
+          <details name="news-card">
+            <summary>
+              <span class="bullet">•</span>
+              <span class="summary-text">CISF Apprehends Fraudster Using Fake Identities at Pune Airport</span>
+              <span class="time-badge">1d ago</span>
+            </summary>
+            <div class="details-content">
+              <div class="sources-header">
+                <span class="sources-label">Sources:</span>
+                <a href="https://www.hindustantimes.com/cities/pune-news/fraudster-held-at-pune-airport-101790266434273.html" target="_blank" class="source-btn">Hindustan Times Pune ↗</a>
+              </div>
+              <ul class="takeaways-list">
+                <li>The suspect was caught cheating airport passengers by soliciting money under multiple fabricated identities.</li><li>Security officials confirmed the individual is linked to a previously registered fraud case.</li>
+              </ul>
             </div>
           </details>
         </div>
@@ -968,6 +1256,19 @@ function switchTab(tabName) {
   document.getElementById('tab-' + tabName).classList.add('active');
   event.target.classList.add('active');
 }
+
+// Ensure accordion auto-close behavior across all mobile & desktop browsers
+document.querySelectorAll('details').forEach((el) => {
+  el.addEventListener('toggle', (e) => {
+    if (el.open) {
+      document.querySelectorAll('details').forEach((otherEl) => {
+        if (otherEl !== el) {
+          otherEl.open = false;
+        }
+      });
+    }
+  });
+});
 </script>
 </body>
 </html>
