@@ -177,7 +177,7 @@ for tag, feed_list in FEEDS.items():
             for i, a in enumerate(raw_articles[:8])
         ]
 
-# 2. Batched API call with model fallback
+# 2. Batched API call trying multiple Flash models
 batch_results = {}
 
 if client and category_raw_data:
@@ -208,8 +208,13 @@ STRICT RULES:
 3. DEDUPLICATION: Combine articles covering the exact same event into ONE object within that category.
 """
 
-    # List of models to try in priority order
-    candidate_models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.8-flash"]
+    # Active model candidates array
+    candidate_models = [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.8-flash-lite",
+        "gemini-3.8-flash"
+    ]
 
     for model_name in candidate_models:
         try:
@@ -218,7 +223,8 @@ STRICT RULES:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.1,
-                    response_mime_type="application/json"
+                    response_mime_type="application/json",
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
                 )
             )
             if res and res.text:
@@ -285,7 +291,7 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 for tag, raw_articles in all_articles_map.items():
     processed_groups = batch_results.get(tag, [])
 
-    # Clean fallback without debug tags or raw error labels
+    # Fallback if API fails across all models
     if not processed_groups:
         processed_groups = []
         for i, a in enumerate(raw_articles[:8]):
