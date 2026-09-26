@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from google import genai
 from google.genai import types
 
-# Configure Gemini API using the modern google.genai SDK
+# Configure Gemini API using modern google.genai SDK
 api_key = os.environ.get("GEMINI_API_KEY")
 client = None
 
@@ -17,9 +17,9 @@ else:
 
 now_ts = time.time()
 ist_tz = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
-build_time_str = datetime.datetime.now(ist_tz).strftime("%b %d, %H:%M IST")
+now_dt_ist = datetime.datetime.now(ist_tz)
+build_time_str = now_dt_ist.strftime("%b %d, %H:%M IST")
 
-# Cleaned, dedicated feeds to prevent off-topic bleeding
 FEEDS = {
     "PUNE (LOCAL)": [
         ("Hindustan Times Pune", "https://www.hindustantimes.com/feeds/rss/cities/pune-news/rssfeed.xml"),
@@ -41,10 +41,10 @@ FEEDS = {
         ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
         ("Verge", "https://www.theverge.com/rss/index.xml")
     ],
-    "FINANCE": [
-        ("Economic Times Markets", "https://economictimes.indiatimes.com/markets/rssfeeds/2146842.cms"),
-        ("Moneycontrol", "https://www.moneycontrol.com/rss/latestnews.xml"),
-        ("Mint Markets", "https://www.livemint.com/rss/markets")
+    "BUSINESS": [
+        ("Economic Times Corporate", "https://economictimes.indiatimes.com/news/company/rssfeeds/2143429.cms"),
+        ("Moneycontrol Business", "https://www.moneycontrol.com/rss/business.xml"),
+        ("Livemint Companies", "https://www.livemint.com/rss/companies")
     ],
     "AUTO": [
         ("Autocar India", "https://www.autocarindia.com/rss/all"),
@@ -78,15 +78,19 @@ def clean_text(raw_html):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-def is_junk_live_blog(title, content):
-    t_lower = title.lower()
-    junk_patterns = [
-        "stock market live", "sensex", "nifty", "trade flat", "traded flat",
-        "opening bell", "share market live", "market live updates",
-        "rupee opens", "rupee open", "equity benchmarks", "stocks to watch",
-        "gainers and losers", "market opening", "bse sensex", "nifty 50"
+def is_unwanted_article(title, content):
+    """Filters out live blogs, opinion pieces, reviews, and personal recommendations."""
+    combined = f"{title} {content}".lower()
+    unwanted_patterns = [
+        # Live blogs / intraday noise
+        "stock market live", "sensex", "nifty", "trade flat", "opening bell",
+        "market live updates", "rupee opens", "equity benchmarks", "stocks to watch",
+        # Opinion & recommendations
+        "opinion:", "editorial:", "my take:", "buying guide", "should you buy",
+        "top 10", "best deals", "hands-on review", "our verdict", "why you should",
+        "perspective:", "viewpoint:", "review:"
     ]
-    return any(k in t_lower for k in junk_patterns)
+    return any(p in combined for p in unwanted_patterns)
 
 def get_full_article_content(entry, url):
     if hasattr(entry, 'content') and entry.content:
@@ -118,28 +122,35 @@ def get_full_article_content(entry, url):
     return summary
 
 def parse_time_info(parsed_time):
+    """Uses IST calendar date boundaries so local news isn't pushed into 'Yesterday' due to UTC offsets."""
     if not parsed_time:
         return ("today", "Today", 0, now_ts)
     try:
         pub_ts = calendar.timegm(parsed_time)
-        diff = max(0, int(now_ts - pub_ts))
-        days_old = diff / 86400.0
+        pub_dt_ist = datetime.datetime.fromtimestamp(pub_ts, tz=datetime.timezone.utc).astimezone(ist_tz)
         
-        if diff < 3600:
-            time_ago = f"{max(1, diff // 60)}m ago"
-        elif diff < 86400:
-            time_ago = f"{diff // 3600}h ago"
+        diff_sec = max(0, int(now_ts - pub_ts))
+        if diff_sec < 3600:
+            time_ago = f"{max(1, diff_sec // 60)}m ago"
+        elif diff_sec < 86400:
+            time_ago = f"{diff_sec // 3600}h ago"
         else:
-            time_ago = f"{int(days_old)}d ago"
-            
-        if days_old < 1.0:
-            return ("today", time_ago, days_old, pub_ts)
-        elif days_old < 2.0:
-            return ("yesterday", time_ago, days_old, pub_ts)
-        elif days_old <= 3.5:
-            return ("older", time_ago, days_old, pub_ts)
+            days = diff_sec // 86400
+            time_ago = f"{days}d ago"
+
+        # Compare calendar dates in IST
+        pub_date = pub_dt_ist.date()
+        today_date = now_dt_ist.date()
+        day_diff = (today_date - pub_date).days
+
+        if day_diff <= 0:
+            return ("today", time_ago, day_diff, pub_ts)
+        elif day_diff == 1:
+            return ("yesterday", time_ago, day_diff, pub_ts)
+        elif day_diff in [2, 3]:
+            return ("older", time_ago, day_diff, pub_ts)
         else:
-            return ("discard", time_ago, days_old, pub_ts)
+            return ("discard", time_ago, day_diff, pub_ts)
     except Exception:
         return ("today", "Today", 0, now_ts)
 
@@ -149,7 +160,6 @@ all_articles_map = {}
 
 for tag, feed_list in FEEDS.items():
     raw_articles = []
-    # Fetch up to 10 articles per source for better coverage
     fetch_limit = 12 if "PUNE" in tag else 8
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
@@ -160,8 +170,10 @@ for tag, feed_list in FEEDS.items():
             raw_title = clean_text(entry.get('title', ''))
             link = entry.get('link', '#')
             full_content = get_full_article_content(entry, link)
-            if is_junk_live_blog(raw_title, full_content):
+            
+            if is_unwanted_article(raw_title, full_content):
                 continue
+                
             raw_articles.append({
                 "source": source_name,
                 "title": raw_title,
@@ -175,14 +187,14 @@ for tag, feed_list in FEEDS.items():
         all_articles_map[tag] = raw_articles
         category_raw_data[tag] = [
             {"id": i, "title": a["title"], "full_text": a["content"]}
-            for i, a in enumerate(raw_articles[:10])
+            for i, a in enumerate(raw_articles[:12])
         ]
 
-# 2. Batched API call with strict categorization and sports context
+# 2. Batched API call with strict business focus & sports topic balancing
 batch_results = {}
 
 if client and category_raw_data:
-    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category with extreme accuracy and zero misclassification.
+    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category with absolute factual accuracy.
 
 CATEGORIES AND RAW ARTICLES:
 {json.dumps(category_raw_data)}
@@ -195,8 +207,8 @@ Return a JSON object where each key is the category name, mapping to an array of
     {{
       "headline": "Concise, Factual Headline",
       "takeaways": [
-        "First factual takeaway with context/metrics not in the headline.",
-        "Second factual takeaway providing background details."
+        "First factual takeaway with details/metrics not in the headline.",
+        "Second factual takeaway providing essential background."
       ],
       "source_ids": [0, 1]
     }}
@@ -204,18 +216,24 @@ Return a JSON object where each key is the category name, mapping to an array of
 }}
 
 STRICT EDITORIAL RULES:
-1. STRICT CATEGORY FILTERING (CRITICAL):
-   - "FINANCE": ONLY include markets, business, stocks, banking, corporate, or economic news. DISCARD air crashes, Supreme Court maps, general politics, or foreign military news.
-   - "INDIA": ONLY include news taking place inside India or directly centered on Indian national affairs. DISCARD foreign politics or US ceasefires.
-   - "TECH": ONLY include technology, AI, computing, chips, software, gadgets, and tech industry. DISCARD non-tech government or FDA appointments.
-   - "PUNE (LOCAL)": ONLY include news specific to Pune city, PCMC, or local district affairs.
-   - "SPORTS": ALWAYS specify the SPORT (e.g. Cricket, Football, Tennis, F1), the TOURNAMENT/LEAGUE, and the EXACT COUNTRY or TEAMS involved in both headline and takeaways (e.g., "Cricket | India vs Australia 3rd Test: ..."). Never leave team or country ambiguous.
+1. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS: Exclude reviews, buying advice, personal opinions, editorials, and predictions. State ONLY verifiable, established facts.
 
-2. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline. Provide new figures, context, or implications.
+2. "BUSINESS" CATEGORY REQUIREMENTS:
+   - ONLY include company acquisitions, mergers, corporate policies, quarterly financial earnings, leadership changes, and strategic business deals.
+   - EXCLUDE general politics, air crashes, or stock market ticker recommendations.
 
-3. 2 DISTINCT TAKEAWAYS: Provide exactly 2 crisp, standalone bullet points per story.
+3. "SPORTS" CATEGORY DIVERSITY RULE (CRITICAL):
+   - Sports news is vast. You MUST NOT allow one sport (like Cricket or Football) to dominate.
+   - Select AT MOST 2 stories per sport (e.g. max 2 Cricket, max 2 Football, max 1 Tennis, max 1 Chess, max 1 F1).
+   - ALWAYS prefix the sport name to the headline (e.g., "[Cricket] India Defeats Australia in 3rd Test", "[Chess] Gukesh Advances to Candidates Final", "[F1] Ferrari Announces New Engine Specs").
+   - Explicitly mention tournament names, team names, and country context so identity is never ambiguous.
 
-4. DEDUPLICATION: Combine articles covering the exact same event into ONE object.
+4. "PUNE (LOCAL)" CATEGORY:
+   - Include only events taking place in Pune city, PCMC, or local Pune district.
+
+5. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline. Provide new figures, context, or implications.
+
+6. DEDUPLICATION: Combine articles covering the exact same event into ONE object with multiple source_ids.
 """
 
     candidate_models = [
@@ -275,7 +293,6 @@ html_out = f"""<!DOCTYPE html>
   .takeaways-list {{ margin: 0 0 14px 0; padding-left: 18px; list-style-type: disc; }}
   .takeaways-list li {{ margin-bottom: 8px; color: #e2e8f0; font-size: 13px; line-height: 1.5; }}
   
-  /* Prominent Source Header Bar */
   .sources-header {{ margin-bottom: 12px; padding: 8px 10px; background: rgba(56, 189, 248, 0.08); border-radius: 6px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }}
   .sources-label {{ font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; }}
   .source-btn {{ display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #1e293b; color: #f1f5f9; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: 700; border: 1px solid var(--border); transition: background 0.15s; }}
@@ -339,7 +356,6 @@ for tag, raw_articles in all_articles_map.items():
                 sources_html += f'<a href="{a["link"]}" target="_blank" class="source-btn">{a["source"]} ↗</a>'
                 seen_sources.add(a["source"])
                 
-        # details name="news-card" enforces exclusive opening (accordion behavior)
         card_html = f"""
         <div class="card">
           <details name="news-card">
@@ -382,7 +398,7 @@ function switchTab(tabName) {
   event.target.classList.add('active');
 }
 
-// Ensure accordion auto-close behavior across all mobile & desktop browsers
+// Auto-close open cards when a new card is opened
 document.querySelectorAll('details').forEach((el) => {
   el.addEventListener('toggle', (e) => {
     if (el.open) {
