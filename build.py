@@ -1,7 +1,7 @@
 import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime, re, requests
 from bs4 import BeautifulSoup
 
-# Configure Gemini API
+# Configure Gemini API using gemini-2.5-flash for 1,500 RPD quota
 api_key = os.environ.get("GEMINI_API_KEY")
 model = None
 
@@ -10,7 +10,7 @@ if not api_key:
 else:
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-3.8-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
     except Exception as e:
         print(f"Gemini init error: {e}")
 
@@ -143,7 +143,7 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# 1. Fetch all articles across all categories first
+# 1. Fetch articles across categories
 category_raw_data = {}
 all_articles_map = {}
 
@@ -176,7 +176,7 @@ for tag, feed_list in FEEDS.items():
             for i, a in enumerate(raw_articles[:8])
         ]
 
-# 2. Perform a single batched Gemini API call for all categories
+# 2. Batched API call
 batch_results = {}
 
 if model and category_raw_data:
@@ -228,13 +228,13 @@ STRICT RULES:
     except Exception as e:
         print(f"Batched Gemini API Error: {e}")
 
-# 3. Construct HTML
+# 3. Construct HTML output
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NEWS</title>
+<title>Micro News</title>
 <style>
   :root {{ --bg: #090a0f; --card-bg: #13151c; --text: #e2e8f0; --text-muted: #94a3b8; --accent: #38bdf8; --border: #1e293b; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }}
@@ -268,7 +268,7 @@ html_out = f"""<!DOCTYPE html>
 <body>
 <header>
   <div class="header-top">
-    <h1>News</h1>
+    <h1>Micro News</h1>
     <span class="refresh-badge">Refreshed: {build_time_str}</span>
   </div>
   <div class="tabs">
@@ -285,13 +285,16 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 for tag, raw_articles in all_articles_map.items():
     processed_groups = batch_results.get(tag, [])
 
-    # Fallback if API failed or didn't return this category
+    # CLEAN FALLBACK: No debug tags or "(AI Formatting Failed)" labels
     if not processed_groups:
-        processed_groups = [{
-            "headline": f"[RAW] {a['title']}",
-            "takeaways": [a["content"][:200] + "... (AI Formatting Failed)"] if a["content"] else [a["title"]],
-            "source_ids": [i]
-        } for i, a in enumerate(raw_articles[:8])]
+        processed_groups = []
+        for i, a in enumerate(raw_articles[:8]):
+            fallback_text = a["content"][:220] + "..." if len(a["content"]) > 220 else a["content"]
+            processed_groups.append({
+                "headline": a["title"],
+                "takeaways": [fallback_text] if fallback_text else [a["title"]],
+                "source_ids": [i]
+            })
 
     cat_tab_html = {"today": "", "yesterday": "", "older": ""}
     for group in processed_groups:
