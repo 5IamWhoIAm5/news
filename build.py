@@ -1,16 +1,17 @@
-import feedparser, google.generativeai as genai, os, time, calendar, html, json, datetime, re, requests
+import feedparser, os, time, calendar, html, json, datetime, re, requests
 from bs4 import BeautifulSoup
+from google import genai
+from google.genai import types
 
-# Configure Gemini API using gemini-2.5-flash for 1,500 RPD quota
+# Configure Gemini API using the modern google.genai SDK
 api_key = os.environ.get("GEMINI_API_KEY")
-model = None
+client = None
 
 if not api_key:
     print("🚨 CRITICAL ERROR: GEMINI_API_KEY is missing or empty!")
 else:
     try:
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        client = genai.Client(api_key=api_key)
     except Exception as e:
         print(f"Gemini init error: {e}")
 
@@ -176,10 +177,10 @@ for tag, feed_list in FEEDS.items():
             for i, a in enumerate(raw_articles[:8])
         ]
 
-# 2. Batched API call
+# 2. Batched API call with model fallback
 batch_results = {}
 
-if model and category_raw_data:
+if client and category_raw_data:
     prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category.
 
 CATEGORIES AND RAW ARTICLES:
@@ -207,26 +208,25 @@ STRICT RULES:
 3. DEDUPLICATION: Combine articles covering the exact same event into ONE object within that category.
 """
 
-    safety_settings = [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
-    ]
+    # List of models to try in priority order
+    candidate_models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.8-flash"]
 
-    try:
-        res = model.generate_content(
-            prompt,
-            safety_settings=safety_settings,
-            generation_config={
-                "temperature": 0.1,
-                "response_mime_type": "application/json"
-            }
-        )
-        if res and res.text:
-            batch_results = json.loads(res.text)
-    except Exception as e:
-        print(f"Batched Gemini API Error: {e}")
+    for model_name in candidate_models:
+        try:
+            res = client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    response_mime_type="application/json"
+                )
+            )
+            if res and res.text:
+                batch_results = json.loads(res.text)
+                print(f"✅ Successfully processed news using model: {model_name}")
+                break
+        except Exception as e:
+            print(f"⚠️ Model '{model_name}' failed: {e}")
 
 # 3. Construct HTML output
 html_out = f"""<!DOCTYPE html>
@@ -285,7 +285,7 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 for tag, raw_articles in all_articles_map.items():
     processed_groups = batch_results.get(tag, [])
 
-    # CLEAN FALLBACK: No debug tags or "(AI Formatting Failed)" labels
+    # Clean fallback without debug tags or raw error labels
     if not processed_groups:
         processed_groups = []
         for i, a in enumerate(raw_articles[:8]):
