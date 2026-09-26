@@ -19,12 +19,8 @@ now_ts = time.time()
 ist_tz = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 build_time_str = datetime.datetime.now(ist_tz).strftime("%b %d, %H:%M IST")
 
+# Removed "ALL TOP STORIES" to reduce redundant RSS fetching & token overhead
 FEEDS = {
-    "ALL TOP STORIES": [
-        ("NDTV", "https://feeds.feedburner.com/ndtvnews-top-stories"),
-        ("BBC", "https://feeds.bbci.co.uk/news/rss.xml"),
-        ("Indian Express", "https://indianexpress.com/feed/")
-    ],
     "PUNE (LOCAL)": [
         ("Hindustan Times", "https://www.hindustantimes.com/feeds/rss/cities/pune-news/rssfeed.xml"),
         ("Indian Express Pune", "https://indianexpress.com/section/cities/pune/feed/")
@@ -177,7 +173,7 @@ for tag, feed_list in FEEDS.items():
             for i, a in enumerate(raw_articles[:8])
         ]
 
-# 2. Batched API call trying multiple Flash models
+# 2. Batched API call with non-redundant takeaway instructions
 batch_results = {}
 
 if client and category_raw_data:
@@ -192,10 +188,10 @@ Return a JSON object where each key is the category name, mapping to an array of
 {{
   "CATEGORY_NAME": [
     {{
-      "headline": "Clean, Factual Headline Here",
+      "headline": "Concise Headline Title",
       "takeaways": [
-        "First standalone factual sentence goes here.",
-        "Second standalone factual sentence goes here."
+        "First factual takeaway providing extra details/context beyond what's stated in the headline.",
+        "Second takeaway elaborating on key metrics, quotes, or secondary facts."
       ],
       "source_ids": [0, 1]
     }}
@@ -203,12 +199,12 @@ Return a JSON object where each key is the category name, mapping to an array of
 }}
 
 STRICT RULES:
-1. 2 TO 4 COMPLETE SENTENCES: Write 2 to 4 crisp, standalone sentences per story takeaway. Do not truncate.
-2. HARD NEWS ONLY: Delete rhetorical questions, fluff, and journalist names.
-3. DEDUPLICATION: Combine articles covering the exact same event into ONE object within that category.
+1. NO HEADLINE REPETITION: The takeaways MUST NOT repeat, rephrase, or re-state the headline. The headline gives the main announcement; takeaways must provide non-redundant context, figures, background details, or implications.
+2. 2 DISTINCT TAKEAWAYS: Provide 2 crisp, standalone bullet points that complement the headline with fresh information.
+3. HARD NEWS ONLY: Delete fluff, opinions, rhetorical questions, and journalist names.
+4. DEDUPLICATION: Combine articles covering the exact same event into ONE object with multiple source_ids.
 """
 
-    # Active model candidates array
     candidate_models = [
         "gemini-3.5-flash",
         "gemini-3.5-flash-lite",
@@ -291,7 +287,6 @@ tab_data = {"today": "", "yesterday": "", "older": ""}
 for tag, raw_articles in all_articles_map.items():
     processed_groups = batch_results.get(tag, [])
 
-    # Fallback if API fails across all models
     if not processed_groups:
         processed_groups = []
         for i, a in enumerate(raw_articles[:8]):
