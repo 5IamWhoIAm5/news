@@ -1,9 +1,9 @@
 import feedparser, os, time, calendar, html, json, datetime, re, requests
+from difflib import SequenceMatcher
 from bs4 import BeautifulSoup
 from google import genai
 from google.genai import types
 
-# Configure Gemini API using modern google.genai SDK
 api_key = os.environ.get("GEMINI_API_KEY")
 client = None
 
@@ -78,14 +78,18 @@ def clean_text(raw_html):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+def sanitize_truncated_endings(text):
+    if not text:
+        return ""
+    text = re.sub(r'\b\w+\.\.\.+$', '', text).strip()
+    text = re.sub(r'(\.\.\.|\…)+$', '', text).strip()
+    return text
+
 def is_unwanted_article(title, content):
-    """Filters out live blogs, opinion pieces, reviews, and personal recommendations."""
     combined = f"{title} {content}".lower()
     unwanted_patterns = [
-        # Live blogs / intraday noise
         "stock market live", "sensex", "nifty", "trade flat", "opening bell",
         "market live updates", "rupee opens", "equity benchmarks", "stocks to watch",
-        # Opinion & recommendations
         "opinion:", "editorial:", "my take:", "buying guide", "should you buy",
         "top 10", "best deals", "hands-on review", "our verdict", "why you should",
         "perspective:", "viewpoint:", "review:"
@@ -93,36 +97,39 @@ def is_unwanted_article(title, content):
     return any(p in combined for p in unwanted_patterns)
 
 def get_full_article_content(entry, url):
+    summary = clean_text(entry.get('summary', entry.get('description', '')))
+    
     if hasattr(entry, 'content') and entry.content:
         for c in entry.content:
             val = clean_text(c.get('value', ''))
-            if len(val) > 250:
+            if len(val) > 250 and not val.endswith('...'):
                 return val[:2500]
 
-    summary = clean_text(entry.get('summary', entry.get('description', '')))
-    
-    if url and url != '#' and len(summary) < 400:
+    needs_scrape = len(summary) < 500 or summary.endswith('...') or summary.endswith('…') or '...' in summary[-20:]
+
+    if url and url != '#' and needs_scrape:
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
             }
-            resp = requests.get(url, headers=headers, timeout=5)
+            resp = requests.get(url, headers=headers, timeout=6)
             if resp.status_code == 200:
                 resp.encoding = 'utf-8'
                 soup = BeautifulSoup(resp.text, 'html.parser')
-                for s in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form']):
+                for s in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form', 'noscript']):
                     s.decompose()
                 paragraphs = soup.find_all('p')
-                p_texts = [clean_text(p.get_text()) for p in paragraphs if len(clean_text(p.get_text())) > 30]
+                p_texts = [clean_text(p.get_text()) for p in paragraphs if len(clean_text(p.get_text())) > 35]
                 scraped_text = " ".join(p_texts[:8])
                 if len(scraped_text) > len(summary):
                     return scraped_text[:2500]
         except Exception:
             pass
-    return summary
+            
+    return sanitize_truncated_endings(summary)
 
 def parse_time_info(parsed_time):
-    """Uses IST calendar date boundaries so local news isn't pushed into 'Yesterday' due to UTC offsets."""
     if not parsed_time:
         return ("today", "Today", 0, now_ts)
     try:
@@ -138,7 +145,6 @@ def parse_time_info(parsed_time):
             days = diff_sec // 86400
             time_ago = f"{days}d ago"
 
-        # Compare calendar dates in IST
         pub_date = pub_dt_ist.date()
         today_date = now_dt_ist.date()
         day_diff = (today_date - pub_date).days
@@ -154,9 +160,60 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# 1. Fetch articles across categories
+# Zero-Token Python Deduplication Helper
+STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after"}
+
+def get_title_keywords(title):
+    words = re.findall(r'\w+', title.lower())
+    return set(w for w in words if w not in STOPWORDS and len(w) > 2)
+
+def is_same_story(title1, title2):
+    """Determines if two headlines refer to the same event without using AI."""
+    kw1 = get_title_keywords(title1)
+    kw2 = get_title_keywords(title2)
+    if not kw1 or not kw2:
+        return False
+        
+    jaccard = len(kw1.intersection(kw2)) / float(len(kw1.union(kw2)))
+    seq_ratio = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
+    
+    return jaccard >= 0.38 or seq_ratio >= 0.58
+
+def deduplicate_raw_articles(articles):
+    """Clusters identical stories across feeds locally using Python."""
+    clusters = []
+    for art in articles:
+        matched = False
+        for cluster in clusters:
+            if is_same_story(art["title"], cluster["title"]):
+                # Merge sources & links if not already present
+                if not any(s["source"] == art["source"] for s in cluster["sources"]):
+                    cluster["sources"].append({"source": art["source"], "link": art["link"]})
+                # Keep the longer, richer article content
+                if len(art["content"]) > len(cluster["content"]):
+                    cluster["content"] = art["content"]
+                # Keep the most recent timestamp
+                if art["pub_ts"] > cluster["pub_ts"]:
+                    cluster["pub_ts"] = art["pub_ts"]
+                    cluster["time_ago"] = art["time_ago"]
+                    cluster["group_key"] = art["group_key"]
+                matched = True
+                break
+                
+        if not matched:
+            clusters.append({
+                "title": art["title"],
+                "content": art["content"],
+                "pub_ts": art["pub_ts"],
+                "group_key": art["group_key"],
+                "time_ago": art["time_ago"],
+                "sources": [{"source": art["source"], "link": art["link"]}]
+            })
+    return clusters
+
+# 1. Fetch and locally deduplicate articles
 category_raw_data = {}
-all_articles_map = {}
+all_clusters_map = {}
 
 for tag, feed_list in FEEDS.items():
     raw_articles = []
@@ -183,14 +240,19 @@ for tag, feed_list in FEEDS.items():
                 "group_key": group_key,
                 "time_ago": time_ago
             })
+            
     if raw_articles:
-        all_articles_map[tag] = raw_articles
+        # Pre-deduplicate locally in Python
+        deduped_clusters = deduplicate_raw_articles(raw_articles)
+        all_clusters_map[tag] = deduped_clusters
+        
+        # Send ONLY unique story clusters to Gemini
         category_raw_data[tag] = [
-            {"id": i, "title": a["title"], "full_text": a["content"]}
-            for i, a in enumerate(raw_articles[:12])
+            {"id": i, "title": c["title"], "full_text": c["content"]}
+            for i, c in enumerate(deduped_clusters[:10])
         ]
 
-# 2. Batched API call with strict business focus & sports topic balancing
+# 2. Batched API call
 batch_results = {}
 
 if client and category_raw_data:
@@ -207,33 +269,26 @@ Return a JSON object where each key is the category name, mapping to an array of
     {{
       "headline": "Concise, Factual Headline",
       "takeaways": [
-        "First factual takeaway with details/metrics not in the headline.",
-        "Second factual takeaway providing essential background."
+        "First complete sentence takeaway with details/metrics not in the headline.",
+        "Second complete sentence takeaway providing essential background."
       ],
-      "source_ids": [0, 1]
+      "source_ids": [0]
     }}
   ]
 }}
 
 STRICT EDITORIAL RULES:
-1. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS: Exclude reviews, buying advice, personal opinions, editorials, and predictions. State ONLY verifiable, established facts.
+1. COMPLETE SENTENCES ONLY:
+   - Every takeaway MUST be a full, grammatically complete sentence ending in a period.
+   - NEVER end a sentence mid-word or with an ellipsis ('...').
 
-2. "BUSINESS" CATEGORY REQUIREMENTS:
-   - ONLY include company acquisitions, mergers, corporate policies, quarterly financial earnings, leadership changes, and strategic business deals.
-   - EXCLUDE general politics, air crashes, or stock market ticker recommendations.
+2. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS: Exclude reviews, buying advice, editorials, and predictions.
 
-3. "SPORTS" CATEGORY DIVERSITY RULE (CRITICAL):
-   - Sports news is vast. You MUST NOT allow one sport (like Cricket or Football) to dominate.
-   - Select AT MOST 2 stories per sport (e.g. max 2 Cricket, max 2 Football, max 1 Tennis, max 1 Chess, max 1 F1).
-   - ALWAYS prefix the sport name to the headline (e.g., "[Cricket] India Defeats Australia in 3rd Test", "[Chess] Gukesh Advances to Candidates Final", "[F1] Ferrari Announces New Engine Specs").
-   - Explicitly mention tournament names, team names, and country context so identity is never ambiguous.
+3. "BUSINESS" CATEGORY: Include ONLY corporate acquisitions, mergers, business policies, earnings, and leadership news.
 
-4. "PUNE (LOCAL)" CATEGORY:
-   - Include only events taking place in Pune city, PCMC, or local Pune district.
+4. "SPORTS" CATEGORY DIVERSITY RULE: Select AT MOST 2 stories per sport. ALWAYS prefix the sport name (e.g., "[Cricket] ...", "[F1] ...").
 
-5. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline. Provide new figures, context, or implications.
-
-6. DEDUPLICATION: Combine articles covering the exact same event into ONE object with multiple source_ids.
+5. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline.
 """
 
     candidate_models = [
@@ -317,16 +372,16 @@ html_out = f"""<!DOCTYPE html>
 
 tab_data = {"today": "", "yesterday": "", "older": ""}
 
-for tag, raw_articles in all_articles_map.items():
+for tag, raw_clusters in all_clusters_map.items():
     processed_groups = batch_results.get(tag, [])
 
     if not processed_groups:
         processed_groups = []
-        for i, a in enumerate(raw_articles[:10]):
-            fallback_text = a["content"][:220] + "..." if len(a["content"]) > 220 else a["content"]
+        for i, c in enumerate(raw_clusters[:10]):
+            fallback_text = c["content"]
             processed_groups.append({
-                "headline": a["title"],
-                "takeaways": [fallback_text] if fallback_text else [a["title"]],
+                "headline": c["title"],
+                "takeaways": [fallback_text] if fallback_text else [c["title"]],
                 "source_ids": [i]
             })
 
@@ -334,27 +389,30 @@ for tag, raw_articles in all_articles_map.items():
     for group in processed_groups:
         source_ids = group.get("source_ids", [])
         if not source_ids: continue
-        matched_articles = [raw_articles[idx] for idx in source_ids if idx < len(raw_articles)]
-        if not matched_articles: continue
+        matched_clusters = [raw_clusters[idx] for idx in source_ids if idx < len(raw_clusters)]
+        if not matched_clusters: continue
         
-        newest_article = max(matched_articles, key=lambda x: x["pub_ts"])
-        group_key = newest_article["group_key"]
-        time_ago = newest_article["time_ago"]
+        newest_cluster = max(matched_clusters, key=lambda x: x["pub_ts"])
+        group_key = newest_cluster["group_key"]
+        time_ago = newest_cluster["time_ago"]
         
-        headline = group.get("headline") or newest_article["title"]
+        headline = group.get("headline") or newest_cluster["title"]
         headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', headline, flags=re.IGNORECASE)
         takeaways = group.get("takeaways", [])
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
         if not valid_takeaways:
-            valid_takeaways = [newest_article["content"]]
+            valid_takeaways = [newest_cluster["content"]]
             
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
+        
+        # Merge all sources across matched clusters
         sources_html = ""
         seen_sources = set()
-        for a in matched_articles:
-            if a["source"] not in seen_sources:
-                sources_html += f'<a href="{a["link"]}" target="_blank" class="source-btn">{a["source"]} ↗</a>'
-                seen_sources.add(a["source"])
+        for c in matched_clusters:
+            for s in c["sources"]:
+                if s["source"] not in seen_sources:
+                    sources_html += f'<a href="{s["link"]}" target="_blank" class="source-btn">{s["source"]} ↗</a>'
+                    seen_sources.add(s["source"])
                 
         card_html = f"""
         <div class="card">
@@ -398,7 +456,6 @@ function switchTab(tabName) {
   event.target.classList.add('active');
 }
 
-// Auto-close open cards when a new card is opened
 document.querySelectorAll('details').forEach((el) => {
   el.addEventListener('toggle', (e) => {
     if (el.open) {
