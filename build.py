@@ -78,6 +78,11 @@ def clean_text(raw_html):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+def normalize_title(title):
+    """Strips city/source prefixes so matching works across different news outlets."""
+    title = re.sub(r'^(pune news|pune|india news|city news|breaking|watch|live|update):?\s*', '', title, flags=re.IGNORECASE)
+    return title.strip()
+
 def sanitize_truncated_endings(text):
     if not text:
         return ""
@@ -160,15 +165,14 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# Zero-Token Python Deduplication Helper
-STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after"}
+# Zero-Token Deduplication Logic
+STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune"}
 
 def get_title_keywords(title):
     words = re.findall(r'\w+', title.lower())
     return set(w for w in words if w not in STOPWORDS and len(w) > 2)
 
 def is_same_story(title1, title2):
-    """Determines if two headlines refer to the same event without using AI."""
     kw1 = get_title_keywords(title1)
     kw2 = get_title_keywords(title2)
     if not kw1 or not kw2:
@@ -177,46 +181,12 @@ def is_same_story(title1, title2):
     jaccard = len(kw1.intersection(kw2)) / float(len(kw1.union(kw2)))
     seq_ratio = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
     
-    return jaccard >= 0.38 or seq_ratio >= 0.58
+    return jaccard >= 0.35 or seq_ratio >= 0.55
 
-def deduplicate_raw_articles(articles):
-    """Clusters identical stories across feeds locally using Python."""
-    clusters = []
-    for art in articles:
-        matched = False
-        for cluster in clusters:
-            if is_same_story(art["title"], cluster["title"]):
-                # Merge sources & links if not already present
-                if not any(s["source"] == art["source"] for s in cluster["sources"]):
-                    cluster["sources"].append({"source": art["source"], "link": art["link"]})
-                # Keep the longer, richer article content
-                if len(art["content"]) > len(cluster["content"]):
-                    cluster["content"] = art["content"]
-                # Keep the most recent timestamp
-                if art["pub_ts"] > cluster["pub_ts"]:
-                    cluster["pub_ts"] = art["pub_ts"]
-                    cluster["time_ago"] = art["time_ago"]
-                    cluster["group_key"] = art["group_key"]
-                matched = True
-                break
-                
-        if not matched:
-            clusters.append({
-                "title": art["title"],
-                "content": art["content"],
-                "pub_ts": art["pub_ts"],
-                "group_key": art["group_key"],
-                "time_ago": art["time_ago"],
-                "sources": [{"source": art["source"], "link": art["link"]}]
-            })
-    return clusters
-
-# 1. Fetch and locally deduplicate articles
-category_raw_data = {}
-all_clusters_map = {}
+# 1. Fetch ALL articles globally across feeds first
+all_fetched_articles = []
 
 for tag, feed_list in FEEDS.items():
-    raw_articles = []
     fetch_limit = 12 if "PUNE" in tag else 8
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
@@ -231,28 +201,84 @@ for tag, feed_list in FEEDS.items():
             if is_unwanted_article(raw_title, full_content):
                 continue
                 
-            raw_articles.append({
+            clean_t = normalize_title(raw_title)
+            
+            # Route Pune stories exclusively to PUNE (LOCAL)
+            assigned_category = tag
+            if assigned_category == "INDIA" and "pune" in clean_t.lower():
+                assigned_category = "PUNE (LOCAL)"
+
+            all_fetched_articles.append({
+                "category": assigned_category,
                 "source": source_name,
                 "title": raw_title,
+                "clean_title": clean_t,
                 "content": full_content,
                 "link": link,
                 "pub_ts": pub_ts,
                 "group_key": group_key,
                 "time_ago": time_ago
             })
-            
-    if raw_articles:
-        # Pre-deduplicate locally in Python
-        deduped_clusters = deduplicate_raw_articles(raw_articles)
-        all_clusters_map[tag] = deduped_clusters
-        
-        # Send ONLY unique story clusters to Gemini
-        category_raw_data[tag] = [
-            {"id": i, "title": c["title"], "full_text": c["content"]}
-            for i, c in enumerate(deduped_clusters[:10])
-        ]
 
-# 2. Batched API call
+# 2. Global Deduplication Across ALL Feeds & Categories
+global_clusters = []
+
+for art in all_fetched_articles:
+    matched = False
+    for cluster in global_clusters:
+        if is_same_story(art["clean_title"], cluster["clean_title"]):
+            # Merge sources & links
+            if not any(s["source"] == art["source"] for s in cluster["sources"]):
+                cluster["sources"].append({"source": art["source"], "link": art["link"]})
+            
+            # PUNE (LOCAL) takes priority over national category
+            if art["category"] == "PUNE (LOCAL)":
+                cluster["category"] = "PUNE (LOCAL)"
+                
+            # Keep richer content
+            if len(art["content"]) > len(cluster["content"]):
+                cluster["content"] = art["content"]
+                
+            # Keep newest timestamp & time badge
+            if art["pub_ts"] > cluster["pub_ts"]:
+                cluster["pub_ts"] = art["pub_ts"]
+                cluster["time_ago"] = art["time_ago"]
+                cluster["group_key"] = art["group_key"]
+                
+            matched = True
+            break
+            
+    if not matched:
+        global_clusters.append({
+            "category": art["category"],
+            "title": art["title"],
+            "clean_title": art["clean_title"],
+            "content": art["content"],
+            "pub_ts": art["pub_ts"],
+            "group_key": art["group_key"],
+            "time_ago": art["time_ago"],
+            "sources": [{"source": art["source"], "link": art["link"]}]
+        })
+
+# 3. Group deduplicated clusters back into categories for Gemini
+category_raw_data = {}
+all_clusters_map = {}
+
+for cluster in global_clusters:
+    tag = cluster["category"]
+    if tag not in all_clusters_map:
+        all_clusters_map[tag] = []
+    all_clusters_map[tag].append(cluster)
+
+for tag, clusters in all_clusters_map.items():
+    # Sort by timestamp descending
+    clusters.sort(key=lambda x: x["pub_ts"], reverse=True)
+    category_raw_data[tag] = [
+        {"id": i, "title": c["title"], "full_text": c["content"]}
+        for i, c in enumerate(clusters[:10])
+    ]
+
+# 4. Batched API call
 batch_results = {}
 
 if client and category_raw_data:
@@ -316,7 +342,7 @@ STRICT EDITORIAL RULES:
         except Exception as e:
             print(f"⚠️ Model '{model_name}' failed: {e}")
 
-# 3. Construct HTML output
+# 5. Construct HTML output
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -405,7 +431,7 @@ for tag, raw_clusters in all_clusters_map.items():
             
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
         
-        # Merge all sources across matched clusters
+        # Merge sources
         sources_html = ""
         seen_sources = set()
         for c in matched_clusters:
