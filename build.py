@@ -57,6 +57,9 @@ FEEDS = {
     ]
 }
 
+TECH_KEYWORDS = {"amd", "nvidia", "intel", "apple", "google", "microsoft", "openai", "qualcomm", "semiconductor", "chip", "chips", "ai", "software", "tech", "gadget", "smartphone"}
+AUTO_KEYWORDS = {"car", "cars", "suv", "ev", "electric vehicle", "motor", "auto", "vehicle", "hybrid", "rover", "jlr", "tata motors", "maruti", "hyundai", "bmw", "mercedes", "audi"}
+
 def fix_encoding(text):
     if not text:
         return ""
@@ -79,8 +82,7 @@ def clean_text(raw_html):
     return text
 
 def normalize_title(title):
-    """Strips city/source prefixes so matching works across different news outlets."""
-    title = re.sub(r'^(pune news|pune|india news|city news|breaking|watch|live|update):?\s*', '', title, flags=re.IGNORECASE)
+    title = re.sub(r'^(pune news|pune|india news|city news|breaking|watch|live|update|opinion|review):?\s*', '', title, flags=re.IGNORECASE)
     return title.strip()
 
 def sanitize_truncated_endings(text):
@@ -107,10 +109,10 @@ def get_full_article_content(entry, url):
     if hasattr(entry, 'content') and entry.content:
         for c in entry.content:
             val = clean_text(c.get('value', ''))
-            if len(val) > 250 and not val.endswith('...'):
-                return val[:2500]
+            if len(val) > 200 and not val.endswith('...'):
+                return val[:1500]
 
-    needs_scrape = len(summary) < 500 or summary.endswith('...') or summary.endswith('…') or '...' in summary[-20:]
+    needs_scrape = len(summary) < 300 or summary.endswith('...') or summary.endswith('…') or '...' in summary[-20:]
 
     if url and url != '#' and needs_scrape:
         try:
@@ -118,7 +120,7 @@ def get_full_article_content(entry, url):
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
             }
-            resp = requests.get(url, headers=headers, timeout=6)
+            resp = requests.get(url, headers=headers, timeout=5)
             if resp.status_code == 200:
                 resp.encoding = 'utf-8'
                 soup = BeautifulSoup(resp.text, 'html.parser')
@@ -126,9 +128,9 @@ def get_full_article_content(entry, url):
                     s.decompose()
                 paragraphs = soup.find_all('p')
                 p_texts = [clean_text(p.get_text()) for p in paragraphs if len(clean_text(p.get_text())) > 35]
-                scraped_text = " ".join(p_texts[:8])
+                scraped_text = " ".join(p_texts[:4])
                 if len(scraped_text) > len(summary):
-                    return scraped_text[:2500]
+                    return scraped_text[:1500]
         except Exception:
             pass
             
@@ -165,8 +167,8 @@ def parse_time_info(parsed_time):
     except Exception:
         return ("today", "Today", 0, now_ts)
 
-# Zero-Token Deduplication Logic
-STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune"}
+# Zero-Token Smart Entity & Keyword Deduplication
+STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune", "billion", "million"}
 
 def get_title_keywords(title):
     words = re.findall(r'\w+', title.lower())
@@ -178,16 +180,35 @@ def is_same_story(title1, title2):
     if not kw1 or not kw2:
         return False
         
-    jaccard = len(kw1.intersection(kw2)) / float(len(kw1.union(kw2)))
+    overlap = kw1.intersection(kw2)
+    jaccard = len(overlap) / float(len(kw1.union(kw2)))
     seq_ratio = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
     
+    # Match if high overlap OR shared rare entities (e.g., AMD + ZT or Acquire + Deal)
+    if len(overlap) >= 2 and any(w in TECH_KEYWORDS or w in AUTO_KEYWORDS or len(w) > 5 for w in overlap):
+        return True
+        
     return jaccard >= 0.35 or seq_ratio >= 0.55
+
+def determine_canonical_category(title, content, feed_tag):
+    combined = f"{title} {content}".lower()
+    
+    if feed_tag == "PUNE (LOCAL)" or "pune" in combined:
+        return "PUNE (LOCAL)"
+        
+    if any(k in combined for k in AUTO_KEYWORDS) or feed_tag == "AUTO":
+        return "AUTO"
+        
+    if any(k in combined for k in TECH_KEYWORDS) or feed_tag == "TECH":
+        return "TECH"
+        
+    return feed_tag
 
 # 1. Fetch ALL articles globally across feeds first
 all_fetched_articles = []
 
 for tag, feed_list in FEEDS.items():
-    fetch_limit = 12 if "PUNE" in tag else 8
+    fetch_limit = 10 if "PUNE" in tag else 6
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
         for entry in parsed.entries[:fetch_limit]:
@@ -202,11 +223,7 @@ for tag, feed_list in FEEDS.items():
                 continue
                 
             clean_t = normalize_title(raw_title)
-            
-            # Route Pune stories exclusively to PUNE (LOCAL)
-            assigned_category = tag
-            if assigned_category == "INDIA" and "pune" in clean_t.lower():
-                assigned_category = "PUNE (LOCAL)"
+            assigned_category = determine_canonical_category(clean_t, full_content, tag)
 
             all_fetched_articles.append({
                 "category": assigned_category,
@@ -227,19 +244,18 @@ for art in all_fetched_articles:
     matched = False
     for cluster in global_clusters:
         if is_same_story(art["clean_title"], cluster["clean_title"]):
-            # Merge sources & links
+            # Merge sources
             if not any(s["source"] == art["source"] for s in cluster["sources"]):
                 cluster["sources"].append({"source": art["source"], "link": art["link"]})
             
-            # PUNE (LOCAL) takes priority over national category
-            if art["category"] == "PUNE (LOCAL)":
-                cluster["category"] = "PUNE (LOCAL)"
+            # Category Precedence: PUNE > AUTO > TECH > BUSINESS > INDIA > WORLD
+            category_priority = ["PUNE (LOCAL)", "AUTO", "TECH", "BUSINESS", "SPORTS", "INDIA", "WORLD"]
+            if category_priority.index(art["category"]) < category_priority.index(cluster["category"]):
+                cluster["category"] = art["category"]
                 
-            # Keep richer content
             if len(art["content"]) > len(cluster["content"]):
                 cluster["content"] = art["content"]
                 
-            # Keep newest timestamp & time badge
             if art["pub_ts"] > cluster["pub_ts"]:
                 cluster["pub_ts"] = art["pub_ts"]
                 cluster["time_ago"] = art["time_ago"]
@@ -260,7 +276,7 @@ for art in all_fetched_articles:
             "sources": [{"source": art["source"], "link": art["link"]}]
         })
 
-# 3. Group deduplicated clusters back into categories for Gemini
+# 3. Group deduplicated clusters into compact payloads for Gemini
 category_raw_data = {}
 all_clusters_map = {}
 
@@ -271,11 +287,10 @@ for cluster in global_clusters:
     all_clusters_map[tag].append(cluster)
 
 for tag, clusters in all_clusters_map.items():
-    # Sort by timestamp descending
     clusters.sort(key=lambda x: x["pub_ts"], reverse=True)
     category_raw_data[tag] = [
-        {"id": i, "title": c["title"], "full_text": c["content"]}
-        for i, c in enumerate(clusters[:10])
+        {"id": i, "title": c["title"], "full_text": c["content"][:700]}
+        for i, c in enumerate(clusters[:8])
     ]
 
 # 4. Batched API call
@@ -295,8 +310,8 @@ Return a JSON object where each key is the category name, mapping to an array of
     {{
       "headline": "Concise, Factual Headline",
       "takeaways": [
-        "First complete sentence takeaway with details/metrics not in the headline.",
-        "Second complete sentence takeaway providing essential background."
+        "First complete sentence takeaway with essential details/metrics.",
+        "Second complete sentence takeaway providing context."
       ],
       "source_ids": [0]
     }}
@@ -304,17 +319,10 @@ Return a JSON object where each key is the category name, mapping to an array of
 }}
 
 STRICT EDITORIAL RULES:
-1. COMPLETE SENTENCES ONLY:
-   - Every takeaway MUST be a full, grammatically complete sentence ending in a period.
-   - NEVER end a sentence mid-word or with an ellipsis ('...').
-
-2. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS: Exclude reviews, buying advice, editorials, and predictions.
-
-3. "BUSINESS" CATEGORY: Include ONLY corporate acquisitions, mergers, business policies, earnings, and leadership news.
-
-4. "SPORTS" CATEGORY DIVERSITY RULE: Select AT MOST 2 stories per sport. ALWAYS prefix the sport name (e.g., "[Cricket] ...", "[F1] ...").
-
-5. NO HEADLINE REPETITION: Takeaways MUST NOT repeat or rephrase the headline.
+1. COMPLETE SENTENCES ONLY: Every takeaway MUST be a complete sentence ending in a period.
+2. CONCISE SUMMARY: Maximum 2 sentences per story. Do not output raw copied text.
+3. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS.
+4. SPORTS DIVERSITY: Select AT MOST 2 stories per sport. ALWAYS prefix sport name like "[Cricket] ...".
 """
 
     candidate_models = [
@@ -331,6 +339,7 @@ STRICT EDITORIAL RULES:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.1,
+                    max_output_tokens=3500,
                     response_mime_type="application/json",
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
                 )
@@ -341,6 +350,18 @@ STRICT EDITORIAL RULES:
                 break
         except Exception as e:
             print(f"⚠️ Model '{model_name}' failed: {e}")
+
+# Helper for clean fallback formatting if API is bypassed/fails
+def clean_fallback_takeaways(text):
+    if not text:
+        return ["Details unavailable."]
+    # Split text into sentences and take first 2
+    sentences = [s.strip() + "." for s in re.split(r'\.|\n', text) if len(s.strip()) > 20]
+    if len(sentences) >= 2:
+        return sentences[:2]
+    elif len(sentences) == 1:
+        return [sentences[0]]
+    return [text[:250] + "."]
 
 # 5. Construct HTML output
 html_out = f"""<!DOCTYPE html>
@@ -403,11 +424,10 @@ for tag, raw_clusters in all_clusters_map.items():
 
     if not processed_groups:
         processed_groups = []
-        for i, c in enumerate(raw_clusters[:10]):
-            fallback_text = c["content"]
+        for i, c in enumerate(raw_clusters[:8]):
             processed_groups.append({
                 "headline": c["title"],
-                "takeaways": [fallback_text] if fallback_text else [c["title"]],
+                "takeaways": clean_fallback_takeaways(c["content"]),
                 "source_ids": [i]
             })
 
@@ -424,14 +444,14 @@ for tag, raw_clusters in all_clusters_map.items():
         
         headline = group.get("headline") or newest_cluster["title"]
         headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', headline, flags=re.IGNORECASE)
+        
         takeaways = group.get("takeaways", [])
         valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
-        if not valid_takeaways:
-            valid_takeaways = [newest_cluster["content"]]
+        if not valid_takeaways or len(valid_takeaways[0]) > 400:
+            valid_takeaways = clean_fallback_takeaways(newest_cluster["content"])
             
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
         
-        # Merge sources
         sources_html = ""
         seen_sources = set()
         for c in matched_clusters:
