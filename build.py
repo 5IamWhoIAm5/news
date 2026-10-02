@@ -138,36 +138,34 @@ def get_full_article_content(entry, url):
 
 def parse_time_info(parsed_time):
     if not parsed_time:
-        return ("today", "Today", 0, now_ts)
+        return ("24h", "Today", 0, now_ts)
     try:
         pub_ts = calendar.timegm(parsed_time)
         pub_dt_ist = datetime.datetime.fromtimestamp(pub_ts, tz=datetime.timezone.utc).astimezone(ist_tz)
         
         diff_sec = max(0, int(now_ts - pub_ts))
+        diff_hours = diff_sec / 3600.0
+        
         if diff_sec < 3600:
             time_ago = f"{max(1, diff_sec // 60)}m ago"
         elif diff_sec < 86400:
-            time_ago = f"{diff_sec // 3600}h ago"
+            time_ago = f"{int(diff_hours)}h ago"
         else:
             days = diff_sec // 86400
             time_ago = f"{days}d ago"
 
-        pub_date = pub_dt_ist.date()
-        today_date = now_dt_ist.date()
-        day_diff = (today_date - pub_date).days
-
-        if day_diff <= 0:
-            return ("today", time_ago, day_diff, pub_ts)
-        elif day_diff == 1:
-            return ("yesterday", time_ago, day_diff, pub_ts)
-        elif day_diff in [2, 3]:
-            return ("older", time_ago, day_diff, pub_ts)
+        # Rolling 24-hour windows (Fixes missing overnight news)
+        if diff_hours <= 24:
+            return ("24h", time_ago, diff_hours, pub_ts)
+        elif diff_hours <= 48:
+            return ("48h", time_ago, diff_hours, pub_ts)
+        elif diff_hours <= 72:
+            return ("72h", time_ago, diff_hours, pub_ts)
         else:
-            return ("discard", time_ago, day_diff, pub_ts)
+            return ("discard", time_ago, diff_hours, pub_ts)
     except Exception:
-        return ("today", "Today", 0, now_ts)
+        return ("24h", "Today", 0, now_ts)
 
-# Zero-Token Smart Entity & Keyword Deduplication
 STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune", "billion", "million"}
 
 def get_title_keywords(title):
@@ -184,7 +182,6 @@ def is_same_story(title1, title2):
     jaccard = len(overlap) / float(len(kw1.union(kw2)))
     seq_ratio = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
     
-    # Match if high overlap OR shared rare entities (e.g., AMD + ZT or Acquire + Deal)
     if len(overlap) >= 2 and any(w in TECH_KEYWORDS or w in AUTO_KEYWORDS or len(w) > 5 for w in overlap):
         return True
         
@@ -212,7 +209,7 @@ for tag, feed_list in FEEDS.items():
     for source_name, feed_url in feed_list:
         parsed = feedparser.parse(feed_url)
         for entry in parsed.entries[:fetch_limit]:
-            group_key, time_ago, days_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
+            group_key, time_ago, hours_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
             if group_key == "discard":
                 continue
             raw_title = clean_text(entry.get('title', ''))
@@ -239,16 +236,13 @@ for tag, feed_list in FEEDS.items():
 
 # 2. Global Deduplication Across ALL Feeds & Categories
 global_clusters = []
-
 for art in all_fetched_articles:
     matched = False
     for cluster in global_clusters:
         if is_same_story(art["clean_title"], cluster["clean_title"]):
-            # Merge sources
             if not any(s["source"] == art["source"] for s in cluster["sources"]):
                 cluster["sources"].append({"source": art["source"], "link": art["link"]})
             
-            # Category Precedence: PUNE > AUTO > TECH > BUSINESS > INDIA > WORLD
             category_priority = ["PUNE (LOCAL)", "AUTO", "TECH", "BUSINESS", "SPORTS", "INDIA", "WORLD"]
             if category_priority.index(art["category"]) < category_priority.index(cluster["category"]):
                 cluster["category"] = art["category"]
@@ -276,8 +270,9 @@ for art in all_fetched_articles:
             "sources": [{"source": art["source"], "link": art["link"]}]
         })
 
-# 3. Group deduplicated clusters into compact payloads for Gemini
-category_raw_data = {}
+# 3. Create Flat List mapping (Strict 1-to-1) to avoid LLM grouping/hallucinations
+llm_input_list = []
+item_lookup = {}
 all_clusters_map = {}
 
 for cluster in global_clusters:
@@ -288,50 +283,44 @@ for cluster in global_clusters:
 
 for tag, clusters in all_clusters_map.items():
     clusters.sort(key=lambda x: x["pub_ts"], reverse=True)
-    category_raw_data[tag] = [
-        {"id": i, "title": c["title"], "full_text": c["content"][:700]}
-        for i, c in enumerate(clusters[:8])
-    ]
+    for i, c in enumerate(clusters[:8]):
+        uid = f"{tag}|||{i}"
+        item_lookup[uid] = c
+        llm_input_list.append({
+            "id": uid,
+            "title": c["title"],
+            "text": c["content"][:600]
+        })
 
 # 4. Batched API call
-batch_results = {}
+llm_results_list = []
 
-if client and category_raw_data:
-    prompt = f"""You are an elite news editor. Summarize these raw articles for each provided category with absolute factual accuracy.
+if client and llm_input_list:
+    prompt = f"""You are a strict news editor. Summarize the following independent news articles.
+    
+CRITICAL INSTRUCTIONS:
+1. DO NOT group multiple articles together. Treat EVERY item independently.
+2. Return exactly ONE output object for every input object.
+3. You MUST retain the exact "id" provided for each article. Do not invent keys.
 
-CATEGORIES AND RAW ARTICLES:
-{json.dumps(category_raw_data)}
+INPUT JSON:
+{json.dumps(llm_input_list)}
 
 OUTPUT FORMAT:
-Return a JSON object where each key is the category name, mapping to an array of summarized story objects:
-
-{{
-  "CATEGORY_NAME": [
-    {{
-      "headline": "Concise, Factual Headline",
-      "takeaways": [
-        "First complete sentence takeaway with essential details/metrics.",
-        "Second complete sentence takeaway providing context."
-      ],
-      "source_ids": [0]
-    }}
-  ]
-}}
-
-STRICT EDITORIAL RULES:
-1. COMPLETE SENTENCES ONLY: Every takeaway MUST be a complete sentence ending in a period.
-2. CONCISE SUMMARY: Maximum 2 sentences per story. Do not output raw copied text.
-3. ABSOLUTELY NO OPINIONS OR RECOMMENDATIONS.
-4. SPORTS DIVERSITY: Select AT MOST 2 stories per sport. ALWAYS prefix sport name like "[Cricket] ...".
+Return ONLY a JSON array of objects with this exact structure:
+[
+  {{
+    "id": "EXACT_ID_FROM_INPUT",
+    "headline": "Specific, Factual Headline for this story",
+    "takeaways": [
+      "First complete sentence takeaway.",
+      "Second complete sentence takeaway."
+    ]
+  }}
+]
 """
 
-    candidate_models = [
-        "gemini-3.5-flash",
-        "gemini-3.5-flash-lite",
-        "gemini-3.8-flash-lite",
-        "gemini-3.8-flash"
-    ]
-
+    candidate_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash-lite"]
     for model_name in candidate_models:
         try:
             res = client.models.generate_content(
@@ -339,29 +328,42 @@ STRICT EDITORIAL RULES:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.1,
-                    max_output_tokens=3500,
+                    max_output_tokens=4000,
                     response_mime_type="application/json",
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
                 )
             )
             if res and res.text:
-                batch_results = json.loads(res.text)
+                llm_results_list = json.loads(res.text)
                 print(f"✅ Successfully processed news using model: {model_name}")
                 break
         except Exception as e:
             print(f"⚠️ Model '{model_name}' failed: {e}")
 
-# Helper for clean fallback formatting if API is bypassed/fails
 def clean_fallback_takeaways(text):
     if not text:
         return ["Details unavailable."]
-    # Split text into sentences and take first 2
     sentences = [s.strip() + "." for s in re.split(r'\.|\n', text) if len(s.strip()) > 20]
     if len(sentences) >= 2:
         return sentences[:2]
     elif len(sentences) == 1:
         return [sentences[0]]
-    return [text[:250] + "."]
+    return [text[:250] + "..."]
+
+# Group summarized items safely back into categories using the strict UID
+processed_categories = {tag: [] for tag in all_clusters_map.keys()}
+
+if isinstance(llm_results_list, list):
+    for res_item in llm_results_list:
+        uid = res_item.get("id")
+        if not uid or uid not in item_lookup: continue
+        tag, idx = uid.split("|||")
+        original = item_lookup[uid]
+        processed_categories[tag].append({
+            "original_cluster": original,
+            "headline": res_item.get("headline", original["title"]),
+            "takeaways": res_item.get("takeaways", [])
+        })
 
 # 5. Construct HTML output
 html_out = f"""<!DOCTYPE html>
@@ -409,56 +411,49 @@ html_out = f"""<!DOCTYPE html>
     <span class="refresh-badge">Refreshed: {build_time_str}</span>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('today')">Today</button>
-    <button class="tab-btn" onclick="switchTab('yesterday')">Yesterday</button>
-    <button class="tab-btn" onclick="switchTab('older')">2-3 Days Ago</button>
+    <button class="tab-btn active" onclick="switchTab('24h')">Last 24h</button>
+    <button class="tab-btn" onclick="switchTab('48h')">24-48h</button>
+    <button class="tab-btn" onclick="switchTab('72h')">Older</button>
   </div>
 </header>
-<div id="tab-today" class="tab-content active">
+<div id="tab-24h" class="tab-content active">
 """
 
-tab_data = {"today": "", "yesterday": "", "older": ""}
+tab_data = {"24h": "", "48h": "", "72h": ""}
 
-for tag, raw_clusters in all_clusters_map.items():
-    processed_groups = batch_results.get(tag, [])
-
-    if not processed_groups:
-        processed_groups = []
-        for i, c in enumerate(raw_clusters[:8]):
-            processed_groups.append({
+for tag, clusters in all_clusters_map.items():
+    items = processed_categories.get(tag, [])
+    
+    # Fallback for any articles the LLM dropped
+    processed_titles = {item["original_cluster"]["title"] for item in items}
+    for c in clusters[:8]:
+        if c["title"] not in processed_titles:
+            items.append({
+                "original_cluster": c,
                 "headline": c["title"],
-                "takeaways": clean_fallback_takeaways(c["content"]),
-                "source_ids": [i]
+                "takeaways": clean_fallback_takeaways(c["content"])
             })
-
-    cat_tab_html = {"today": "", "yesterday": "", "older": ""}
-    for group in processed_groups:
-        source_ids = group.get("source_ids", [])
-        if not source_ids: continue
-        matched_clusters = [raw_clusters[idx] for idx in source_ids if idx < len(raw_clusters)]
-        if not matched_clusters: continue
+            
+    # Sort category items by newest first
+    items.sort(key=lambda x: x["original_cluster"]["pub_ts"], reverse=True)
+    
+    cat_tab_html = {"24h": "", "48h": "", "72h": ""}
+    
+    for item in items:
+        c = item["original_cluster"]
+        group_key = c["group_key"]
         
-        newest_cluster = max(matched_clusters, key=lambda x: x["pub_ts"])
-        group_key = newest_cluster["group_key"]
-        time_ago = newest_cluster["time_ago"]
-        
-        headline = group.get("headline") or newest_cluster["title"]
-        headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', headline, flags=re.IGNORECASE)
-        
-        takeaways = group.get("takeaways", [])
-        valid_takeaways = [t.strip() for t in takeaways if t and isinstance(t, str)]
+        headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', item["headline"], flags=re.IGNORECASE)
+        valid_takeaways = [t.strip() for t in item["takeaways"] if t and isinstance(t, str)]
         if not valid_takeaways or len(valid_takeaways[0]) > 400:
-            valid_takeaways = clean_fallback_takeaways(newest_cluster["content"])
+            valid_takeaways = clean_fallback_takeaways(c["content"])
             
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
         
-        sources_html = ""
-        seen_sources = set()
-        for c in matched_clusters:
-            for s in c["sources"]:
-                if s["source"] not in seen_sources:
-                    sources_html += f'<a href="{s["link"]}" target="_blank" class="source-btn">{s["source"]} ↗</a>'
-                    seen_sources.add(s["source"])
+        sources_html = "".join([
+            f'<a href="{s["link"]}" target="_blank" class="source-btn">{s["source"]} ↗</a>' 
+            for s in c["sources"]
+        ])
                 
         card_html = f"""
         <div class="card">
@@ -466,7 +461,7 @@ for tag, raw_clusters in all_clusters_map.items():
             <summary>
               <span class="bullet">•</span>
               <span class="summary-text">{html.escape(headline)}</span>
-              <span class="time-badge">{time_ago}</span>
+              <span class="time-badge">{c["time_ago"]}</span>
             </summary>
             <div class="details-content">
               <div class="sources-header">
@@ -482,15 +477,15 @@ for tag, raw_clusters in all_clusters_map.items():
         """
         cat_tab_html[group_key] += card_html
 
-    for gk in ["today", "yesterday", "older"]:
+    for gk in ["24h", "48h", "72h"]:
         if cat_tab_html[gk]:
             tab_data[gk] += f"<h2>{tag}</h2>" + cat_tab_html[gk]
 
-html_out += tab_data["today"] if tab_data["today"] else "<div class='no-news'>No news published today yet.</div>"
-html_out += '</div><div id="tab-yesterday" class="tab-content">'
-html_out += tab_data["yesterday"] if tab_data["yesterday"] else "<div class='no-news'>No articles from yesterday.</div>"
-html_out += '</div><div id="tab-older" class="tab-content">'
-html_out += tab_data["older"] if tab_data["older"] else "<div class='no-news'>No articles from 2-3 days ago.</div>"
+html_out += tab_data["24h"] if tab_data["24h"] else "<div class='no-news'>No news in the last 24 hours.</div>"
+html_out += '</div><div id="tab-48h" class="tab-content">'
+html_out += tab_data["48h"] if tab_data["48h"] else "<div class='no-news'>No news between 24 and 48 hours ago.</div>"
+html_out += '</div><div id="tab-72h" class="tab-content">'
+html_out += tab_data["72h"] if tab_data["72h"] else "<div class='no-news'>No older news available.</div>"
 
 html_out += """
 </div>
