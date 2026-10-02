@@ -60,6 +60,13 @@ FEEDS = {
 TECH_KEYWORDS = {"amd", "nvidia", "intel", "apple", "google", "microsoft", "openai", "qualcomm", "semiconductor", "chip", "chips", "ai", "software", "tech", "gadget", "smartphone"}
 AUTO_KEYWORDS = {"car", "cars", "suv", "ev", "electric vehicle", "motor", "auto", "vehicle", "hybrid", "rover", "jlr", "tata motors", "maruti", "hyundai", "bmw", "mercedes", "audi"}
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": "https://www.google.com/"
+}
+
 def fix_encoding(text):
     if not text: return ""
     try: text = text.encode('latin-1').decode('utf-8')
@@ -70,12 +77,31 @@ def fix_encoding(text):
         text = text.replace(bad, good)
     return text
 
+def clean_boilerplate(text):
+    if not text: return ""
+    junk_patterns = [
+        r"be respectful\s*[·•|-]?\s*toi community guidelines.*",
+        r"toi community guidelines.*",
+        r"community guidelines.*",
+        r"follow us on\s+.*",
+        r"subscribe to\s+.*",
+        r"click here to\s+.*",
+        r"copyright\s*©.*",
+        r"all rights reserved.*",
+        r"read more at:?.*",
+        r"also read:?.*",
+        r"must read:?.*"
+    ]
+    for pattern in junk_patterns:
+        text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+    return text.strip()
+
 def clean_text(raw_html):
     if not raw_html: return ""
     text = re.sub(r'<[^>]+>', ' ', raw_html)
     text = fix_encoding(text)
     text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return clean_boilerplate(text)
 
 def normalize_title(title):
     return re.sub(r'^(pune news|pune|india news|city news|breaking|watch|live|update|opinion|review):?\s*', '', title, flags=re.IGNORECASE).strip()
@@ -86,13 +112,14 @@ def sanitize_truncated_endings(text):
     return re.sub(r'(\.\.\.|\…)+$', '', text).strip()
 
 def is_unwanted_article(title, content):
+    if not title or len(title) < 10: return True
     combined = f"{title} {content}".lower()
     unwanted_patterns = [
         "stock market live", "sensex", "nifty", "trade flat", "opening bell",
         "market live updates", "rupee opens", "equity benchmarks", "stocks to watch",
         "opinion:", "editorial:", "my take:", "buying guide", "should you buy",
         "top 10", "best deals", "hands-on review", "our verdict", "why you should",
-        "perspective:", "viewpoint:", "review:"
+        "perspective:", "viewpoint:", "review:", "toi community guidelines", "be respectful"
     ]
     return any(p in combined for p in unwanted_patterns)
 
@@ -108,8 +135,7 @@ def get_full_article_content(entry, url):
 
     if url and url != '#' and needs_scrape:
         try:
-            headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"}
-            resp = requests.get(url, headers=headers, timeout=5)
+            resp = requests.get(url, headers=HEADERS, timeout=5)
             if resp.status_code == 200:
                 resp.encoding = 'utf-8'
                 soup = BeautifulSoup(resp.text, 'html.parser')
@@ -123,7 +149,8 @@ def get_full_article_content(entry, url):
         except Exception:
             pass
             
-    return sanitize_truncated_endings(summary)
+    summary_clean = sanitize_truncated_endings(summary)
+    return summary_clean if len(summary_clean) >= 30 else entry.get('title', '')
 
 def parse_time_info(parsed_time):
     if not parsed_time:
@@ -148,18 +175,14 @@ def determine_canonical_category(title, content, feed_tag):
     combined = f"{title} {content}".lower()
     
     def has_exact_keyword(keywords, text):
-        # The FIX: \b enforces whole-word matches so 'ev' doesn't match 'event'
         return any(re.search(rf'\b{re.escape(k)}\b', text) for k in keywords)
 
-    # 1. Always prioritize PUNE
     if feed_tag == "PUNE (LOCAL)" or bool(re.search(r'\bpune\b', combined)):
         return "PUNE (LOCAL)"
         
-    # 2. Strict Feed Lock-in: Keep specific categories mapped to their source.
     if feed_tag in ["SPORTS", "AUTO", "TECH", "BUSINESS"]:
         return feed_tag
         
-    # 3. For broad feeds (INDIA, WORLD), re-categorize ONLY on exact whole-word matches
     if has_exact_keyword(AUTO_KEYWORDS, combined):
         return "AUTO"
         
@@ -184,7 +207,7 @@ def is_same_story(title1, title2):
         return True
     return jaccard >= 0.35 or seq_ratio >= 0.55
 
-# 1. Fetch ALL articles globally across feeds first
+# 1. Fetch ALL articles globally across feeds
 all_fetched_articles = []
 
 for tag, feed_list in FEEDS.items():
@@ -273,12 +296,13 @@ for tag, clusters in all_clusters_map.items():
 llm_results_list = []
 
 if client and llm_input_list:
-    prompt = f"""You are a strict news editor. Summarize the following independent news articles.
-    
+    prompt = f"""You are a strict news editor. Summarize the following independent news articles into concise, factual bullet point takeaways.
+
 CRITICAL INSTRUCTIONS:
-1. DO NOT group multiple articles together. Treat EVERY item independently.
-2. Return exactly ONE output object for every input object.
-3. You MUST retain the exact "id" provided for each article. Do not invent keys.
+1. DO NOT include website disclaimers, comment moderation rules, or guidelines (e.g. "TOI community guidelines", "Be respectful").
+2. Focus strictly on the factual news event described in the headline and text.
+3. Treat EVERY item independently. Return exactly ONE output object for every input object.
+4. You MUST retain the exact "id" provided for each article.
 
 INPUT JSON:
 {json.dumps(llm_input_list)}
@@ -289,7 +313,7 @@ Return ONLY a JSON array of objects with this exact structure:
   {{
     "id": "EXACT_ID_FROM_INPUT",
     "headline": "Specific, Factual Headline",
-    "takeaways": ["First takeaway.", "Second takeaway."]
+    "takeaways": ["First key fact.", "Second key fact."]
   }}
 ]
 """
@@ -310,12 +334,21 @@ Return ONLY a JSON array of objects with this exact structure:
                 print(f"✅ Success with model: {model_name}")
                 break
         except Exception as e:
-            print(f"⚠️️ Model '{model_name}' failed: {e}")
+            print(f"⚠ Model '{model_name}' failed: {e}")
 
-def clean_fallback_takeaways(text):
-    if not text: return ["Details unavailable."]
-    sentences = [s.strip() + "." for s in re.split(r'\.|\n', text) if len(s.strip()) > 20]
-    return sentences[:2] if len(sentences) >= 2 else ([sentences[0]] if len(sentences) == 1 else [text[:250] + "..."])
+def sanitize_takeaways(takeaways, title):
+    valid = []
+    for t in takeaways:
+        if not t or not isinstance(t, str): continue
+        cleaned = clean_boilerplate(t)
+        if "guideline" in cleaned.lower() or "respectful" in cleaned.lower() or "comment" in cleaned.lower():
+            continue
+        if len(cleaned) > 10:
+            valid.append(cleaned)
+            
+    if not valid:
+        valid = [f"Event updates: {title}"]
+    return valid[:2]
 
 processed_categories = {tag: [] for tag in all_clusters_map.keys()}
 
@@ -324,10 +357,15 @@ if isinstance(llm_results_list, list):
         uid = res_item.get("id")
         if not uid or uid not in item_lookup: continue
         tag, idx = uid.split("|||")
+        
+        c_title = item_lookup[uid]["title"]
+        raw_takeaways = res_item.get("takeaways", [])
+        clean_t_list = sanitize_takeaways(raw_takeaways, c_title)
+
         processed_categories[tag].append({
             "original_cluster": item_lookup[uid],
-            "headline": res_item.get("headline", item_lookup[uid]["title"]),
-            "takeaways": res_item.get("takeaways", [])
+            "headline": res_item.get("headline", c_title),
+            "takeaways": clean_t_list
         })
 
 # 5. Construct HTML output
@@ -384,7 +422,6 @@ html_out = f"""<!DOCTYPE html>
 """
 
 tab_data = {"24h": "", "48h": "", "72h": ""}
-# Define priority sorting logic so categories render in a nice visual order
 category_order = ["PUNE (LOCAL)", "AUTO", "TECH", "SPORTS", "BUSINESS", "INDIA", "WORLD"]
 
 for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t) if t in category_order else 99):
@@ -397,7 +434,7 @@ for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t)
             items.append({
                 "original_cluster": c,
                 "headline": c["title"],
-                "takeaways": clean_fallback_takeaways(c["content"])
+                "takeaways": sanitize_takeaways([], c["title"])
             })
             
     items.sort(key=lambda x: x["original_cluster"]["pub_ts"], reverse=True)
@@ -407,9 +444,7 @@ for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t)
         c = item["original_cluster"]
         group_key = c["group_key"]
         headline = re.sub(r'^(Watch|LIVE|BREAKING):?\s*', '', item["headline"], flags=re.IGNORECASE)
-        valid_takeaways = [t.strip() for t in item["takeaways"] if t and isinstance(t, str)]
-        if not valid_takeaways or len(valid_takeaways[0]) > 400:
-            valid_takeaways = clean_fallback_takeaways(c["content"])
+        valid_takeaways = item["takeaways"]
             
         takeaways_html = "".join([f"<li>{html.escape(t)}</li>" for t in valid_takeaways])
         sources_html = "".join([f'<a href="{s["link"]}" target="_blank" class="source-btn">{s["source"]} ↗</a>' for s in c["sources"]])
