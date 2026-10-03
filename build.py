@@ -90,7 +90,8 @@ def clean_boilerplate(text):
         r"all rights reserved.*",
         r"read more at:?.*",
         r"also read:?.*",
-        r"must read:?.*"
+        r"must read:?.*",
+        r"^event updates:?\s*"
     ]
     for pattern in junk_patterns:
         text = re.sub(pattern, "", text, flags=re.IGNORECASE)
@@ -131,7 +132,7 @@ def get_full_article_content(entry, url):
             if len(val) > 200 and not val.endswith('...'):
                 return val[:1500]
 
-    needs_scrape = len(summary) < 300 or summary.endswith('...') or summary.endswith('…') or '...' in summary[-20:]
+    needs_scrape = len(summary) < 250 or summary.endswith('...') or summary.endswith('…') or '...' in summary[-20:]
 
     if url and url != '#' and needs_scrape:
         try:
@@ -139,13 +140,26 @@ def get_full_article_content(entry, url):
             if resp.status_code == 200:
                 resp.encoding = 'utf-8'
                 soup = BeautifulSoup(resp.text, 'html.parser')
+                
+                meta_desc = ""
+                for meta in soup.find_all('meta'):
+                    m_name = meta.get('name', '').lower()
+                    m_prop = meta.get('property', '').lower()
+                    if m_name in ['description', 'og:description', 'twitter:description'] or \
+                       m_prop in ['og:description', 'twitter:description']:
+                        c_val = clean_text(meta.get('content', ''))
+                        if len(c_val) > len(meta_desc):
+                            meta_desc = c_val
+
                 for s in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form', 'noscript']):
                     s.decompose()
                 paragraphs = soup.find_all('p')
                 p_texts = [clean_text(p.get_text()) for p in paragraphs if len(clean_text(p.get_text())) > 35]
-                scraped_text = " ".join(p_texts[:4])
-                if len(scraped_text) > len(summary):
-                    return scraped_text[:1500]
+                scraped_p = " ".join(p_texts[:4])
+                
+                best_scraped = scraped_p if len(scraped_p) > 150 else meta_desc
+                if len(best_scraped) > len(summary):
+                    return best_scraped[:1500]
         except Exception:
             pass
             
@@ -207,7 +221,7 @@ def is_same_story(title1, title2):
         return True
     return jaccard >= 0.35 or seq_ratio >= 0.55
 
-# 1. Fetch ALL articles globally across feeds
+# Fetch feed entries
 all_fetched_articles = []
 
 for tag, feed_list in FEEDS.items():
@@ -239,7 +253,7 @@ for tag, feed_list in FEEDS.items():
                 "time_ago": time_ago
             })
 
-# 2. Global Deduplication
+# Global Deduplication
 global_clusters = []
 for art in all_fetched_articles:
     matched = False
@@ -275,7 +289,7 @@ for art in all_fetched_articles:
             "sources": [{"source": art["source"], "link": art["link"]}]
         })
 
-# 3. Create Flat List mapping
+# Map items for API processing
 llm_input_list = []
 item_lookup = {}
 all_clusters_map = {}
@@ -290,65 +304,75 @@ for tag, clusters in all_clusters_map.items():
     for i, c in enumerate(clusters[:8]):
         uid = f"{tag}|||{i}"
         item_lookup[uid] = c
-        llm_input_list.append({"id": uid, "title": c["title"], "text": c["content"][:600]})
+        llm_input_list.append({"id": uid, "title": c["title"], "text": c["content"][:800]})
 
-# 4. Batched API call
+# Batched API call using gemini-3.5-flash with Exponential Backoff
 llm_results_list = []
 
 if client and llm_input_list:
-    prompt = f"""You are a strict news editor. Summarize the following independent news articles into concise, factual bullet point takeaways.
+    prompt = f"""You are a news editor. Summarize each news item into 2 clear bullet takeaways based on the provided text.
 
 CRITICAL INSTRUCTIONS:
-1. DO NOT include website disclaimers, comment moderation rules, or guidelines (e.g. "TOI community guidelines", "Be respectful").
-2. Focus strictly on the factual news event described in the headline and text.
-3. Treat EVERY item independently. Return exactly ONE output object for every input object.
-4. You MUST retain the exact "id" provided for each article.
+1. Provide actual factual details explaining the news context.
+2. Never output filler text like "Event updates", "No info", or website guidelines.
+3. Return exactly ONE output object for every input item. Keep the exact "id" provided.
 
 INPUT JSON:
 {json.dumps(llm_input_list)}
 
 OUTPUT FORMAT:
-Return ONLY a JSON array of objects with this exact structure:
+Return ONLY a JSON array of objects:
 [
   {{
     "id": "EXACT_ID_FROM_INPUT",
-    "headline": "Specific, Factual Headline",
-    "takeaways": ["First key fact.", "Second key fact."]
+    "headline": "Clear Headline",
+    "takeaways": ["First key factual detail.", "Second key factual detail."]
   }}
 ]
 """
-    for model_name in ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash-lite"]:
-        try:
-            res = client.models.generate_content(
-                model=model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.1,
-                    max_output_tokens=4000,
-                    response_mime_type="application/json",
-                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+    # Active Gemini 3.5 models
+    active_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]
+    
+    for model_name in active_models:
+        success = False
+        for attempt in range(3): # Retry up to 3 times for 429/503 errors
+            try:
+                res = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.1,
+                        max_output_tokens=4000,
+                        response_mime_type="application/json",
+                        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+                    )
                 )
-            )
-            if res and res.text:
-                llm_results_list = json.loads(res.text)
-                print(f"✅ Success with model: {model_name}")
-                break
-        except Exception as e:
-            print(f"⚠ Model '{model_name}' failed: {e}")
+                if res and res.text:
+                    llm_results_list = json.loads(res.text)
+                    print(f"✅ Successful summary generated using: {model_name}")
+                    success = True
+                    break
+            except Exception as e:
+                err_str = str(e)
+                print(f"⚠ Attempt {attempt+1} failed for {model_name}: {err_str}")
+                if "429" in err_str or "503" in err_str:
+                    time.sleep(2 * (attempt + 1)) # Backoff delay for Rate Limit / Service Unavailable
+                else:
+                    break
+        if success:
+            break
 
-def sanitize_takeaways(takeaways, title):
-    valid = []
-    for t in takeaways:
-        if not t or not isinstance(t, str): continue
-        cleaned = clean_boilerplate(t)
-        if "guideline" in cleaned.lower() or "respectful" in cleaned.lower() or "comment" in cleaned.lower():
-            continue
-        if len(cleaned) > 10:
-            valid.append(cleaned)
-            
-    if not valid:
-        valid = [f"Event updates: {title}"]
-    return valid[:2]
+def generate_fallback_takeaways(title, content):
+    c_clean = clean_boilerplate(content)
+    if c_clean.lower().startswith(title.lower()):
+        c_clean = c_clean[len(title):].strip()
+        
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', c_clean) if len(s.strip()) > 25]
+    valid = [s for s in sentences if not any(j in s.lower() for j in ["guideline", "respectful", "comment", "copyright", "subscribe"])]
+    
+    if valid:
+        return valid[:2]
+    return [c_clean] if len(c_clean) > 20 else [title]
 
 processed_categories = {tag: [] for tag in all_clusters_map.keys()}
 
@@ -359,16 +383,25 @@ if isinstance(llm_results_list, list):
         tag, idx = uid.split("|||")
         
         c_title = item_lookup[uid]["title"]
+        c_content = item_lookup[uid]["content"]
         raw_takeaways = res_item.get("takeaways", [])
-        clean_t_list = sanitize_takeaways(raw_takeaways, c_title)
+        
+        cleaned_takeaways = []
+        for t in raw_takeaways:
+            if t and isinstance(t, str) and len(t) > 15:
+                cleaned = clean_boilerplate(t)
+                if cleaned: cleaned_takeaways.append(cleaned)
+                
+        if not cleaned_takeaways:
+            cleaned_takeaways = generate_fallback_takeaways(c_title, c_content)
 
         processed_categories[tag].append({
             "original_cluster": item_lookup[uid],
             "headline": res_item.get("headline", c_title),
-            "takeaways": clean_t_list
+            "takeaways": cleaned_takeaways[:2]
         })
 
-# 5. Construct HTML output
+# Build UI HTML
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -434,7 +467,7 @@ for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t)
             items.append({
                 "original_cluster": c,
                 "headline": c["title"],
-                "takeaways": sanitize_takeaways([], c["title"])
+                "takeaways": generate_fallback_takeaways(c["title"], c["content"])
             })
             
     items.sort(key=lambda x: x["original_cluster"]["pub_ts"], reverse=True)
