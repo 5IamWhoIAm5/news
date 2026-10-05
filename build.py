@@ -1,9 +1,18 @@
-import feedparser, os, time, calendar, html, json, datetime, re, requests
+import feedparser
+import os
+import time
+import calendar
+import html
+import json
+import datetime
+import re
+import requests
 from difflib import SequenceMatcher
 from bs4 import BeautifulSoup
 from google import genai
 from google.genai import types
 
+# --- CONFIGURATION & INIT ---
 api_key = os.environ.get("GEMINI_API_KEY")
 client = None
 
@@ -67,6 +76,7 @@ HEADERS = {
     "Referer": "https://www.google.com/"
 }
 
+# --- TEXT CLEANING & HELPER FUNCTIONS ---
 def fix_encoding(text):
     if not text: return ""
     try: text = text.encode('latin-1').decode('utf-8')
@@ -187,22 +197,13 @@ def parse_time_info(parsed_time):
 
 def determine_canonical_category(title, content, feed_tag):
     combined = f"{title} {content}".lower()
-    
     def has_exact_keyword(keywords, text):
         return any(re.search(rf'\b{re.escape(k)}\b', text) for k in keywords)
 
-    if feed_tag == "PUNE (LOCAL)" or bool(re.search(r'\bpune\b', combined)):
-        return "PUNE (LOCAL)"
-        
-    if feed_tag in ["SPORTS", "AUTO", "TECH", "BUSINESS"]:
-        return feed_tag
-        
-    if has_exact_keyword(AUTO_KEYWORDS, combined):
-        return "AUTO"
-        
-    if has_exact_keyword(TECH_KEYWORDS, combined):
-        return "TECH"
-        
+    if feed_tag == "PUNE (LOCAL)" or bool(re.search(r'\bpune\b', combined)): return "PUNE (LOCAL)"
+    if feed_tag in ["SPORTS", "AUTO", "TECH", "BUSINESS"]: return feed_tag
+    if has_exact_keyword(AUTO_KEYWORDS, combined): return "AUTO"
+    if has_exact_keyword(TECH_KEYWORDS, combined): return "TECH"
     return feed_tag
 
 STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune", "billion", "million"}
@@ -217,43 +218,60 @@ def is_same_story(title1, title2):
     jaccard = len(overlap) / float(len(kw1.union(kw2)))
     seq_ratio = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
     
-    if len(overlap) >= 2 and any(w in TECH_KEYWORDS or w in AUTO_KEYWORDS or len(w) > 5 for w in overlap):
-        return True
+    if len(overlap) >= 2 and any(w in TECH_KEYWORDS or w in AUTO_KEYWORDS or len(w) > 5 for w in overlap): return True
     return jaccard >= 0.35 or seq_ratio >= 0.55
 
-# Fetch feed entries
-all_fetched_articles = []
+def generate_fallback_takeaways(title, content):
+    c_clean = clean_boilerplate(content)
+    if c_clean.lower().startswith(title.lower()):
+        c_clean = c_clean[len(title):].strip()
+        
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', c_clean) if len(s.strip()) > 25]
+    valid = [s for s in sentences if not any(j in s.lower() for j in ["guideline", "respectful", "comment", "copyright", "subscribe"])]
+    
+    if valid: return valid[:2]
+    return [c_clean] if len(c_clean) > 20 else [title]
 
+
+# --- MAIN PIPELINE ---
+
+# 1. Fetch feed entries
+print("Fetching RSS feeds...")
+all_fetched_articles = []
 for tag, feed_list in FEEDS.items():
     fetch_limit = 10 if "PUNE" in tag else 6
     for source_name, feed_url in feed_list:
-        parsed = feedparser.parse(feed_url)
-        for entry in parsed.entries[:fetch_limit]:
-            group_key, time_ago, hours_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
-            if group_key == "discard": continue
-            
-            raw_title = clean_text(entry.get('title', ''))
-            link = entry.get('link', '#')
-            full_content = get_full_article_content(entry, link)
-            
-            if is_unwanted_article(raw_title, full_content): continue
+        try:
+            parsed = feedparser.parse(feed_url)
+            for entry in parsed.entries[:fetch_limit]:
+                group_key, time_ago, hours_old, pub_ts = parse_time_info(entry.get('published_parsed') or entry.get('updated_parsed'))
+                if group_key == "discard": continue
                 
-            clean_t = normalize_title(raw_title)
-            assigned_category = determine_canonical_category(clean_t, full_content, tag)
+                raw_title = clean_text(entry.get('title', ''))
+                link = entry.get('link', '#')
+                full_content = get_full_article_content(entry, link)
+                
+                if is_unwanted_article(raw_title, full_content): continue
+                    
+                clean_t = normalize_title(raw_title)
+                assigned_category = determine_canonical_category(clean_t, full_content, tag)
 
-            all_fetched_articles.append({
-                "category": assigned_category,
-                "source": source_name,
-                "title": raw_title,
-                "clean_title": clean_t,
-                "content": full_content,
-                "link": link,
-                "pub_ts": pub_ts,
-                "group_key": group_key,
-                "time_ago": time_ago
-            })
+                all_fetched_articles.append({
+                    "category": assigned_category,
+                    "source": source_name,
+                    "title": raw_title,
+                    "clean_title": clean_t,
+                    "content": full_content,
+                    "link": link,
+                    "pub_ts": pub_ts,
+                    "group_key": group_key,
+                    "time_ago": time_ago
+                })
+        except Exception as e:
+            print(f"Error fetching {source_name}: {e}")
 
-# Global Deduplication
+# 2. Global Deduplication
+print("Deduplicating stories...")
 global_clusters = []
 for art in all_fetched_articles:
     matched = False
@@ -289,7 +307,7 @@ for art in all_fetched_articles:
             "sources": [{"source": art["source"], "link": art["link"]}]
         })
 
-# Map items for API processing
+# 3. Map items for API processing
 llm_input_list = []
 item_lookup = {}
 all_clusters_map = {}
@@ -306,74 +324,92 @@ for tag, clusters in all_clusters_map.items():
         item_lookup[uid] = c
         llm_input_list.append({"id": uid, "title": c["title"], "text": c["content"][:800]})
 
-# Batched API call using gemini-3.5-flash with Exponential Backoff
+# 4. HYBRID API CALL: Mini-Batches to prevent hallucination & respect rate limits
 llm_results_list = []
 
 if client and llm_input_list:
-    prompt = f"""You are a news editor. Summarize each news item into 2 clear bullet takeaways based on the provided text.
+    BATCH_SIZE = 5 # Process 5 articles per API call to balance speed, rate limits, and accuracy.
+    active_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]
+    
+    def chunker(seq, size):
+        return [seq[pos:pos + size] for pos in range(0, len(seq), size)]
+        
+    chunks = chunker(llm_input_list, BATCH_SIZE)
+    print(f"\nSending {len(llm_input_list)} articles to Gemini in {len(chunks)} mini-batches of {BATCH_SIZE}...")
 
-CRITICAL INSTRUCTIONS:
-1. Provide actual factual details explaining the news context.
-2. Never output filler text like "Event updates", "No info", or website guidelines.
-3. Return exactly ONE output object for every input item. Keep the exact "id" provided.
+    for chunk_idx, chunk in enumerate(chunks):
+        expected_ids = {item["id"] for item in chunk}
+        
+        prompt = f"""You are a precise news editor. You will receive a batch of {len(chunk)} independent news articles.
+For EACH article in the input array, you must generate exactly ONE output object containing a clear headline and 2 factual bullet takeaways.
+
+CRITICAL RULES TO PREVENT DATA MIXING:
+1. STRICT ISOLATION: Never mix facts, names, or events from one article into another's summary.
+2. Return an array of exactly {len(chunk)} objects.
+3. You MUST preserve and return the exact "id" string provided for each article.
+4. Never output filler text like "Event updates" or website guidelines.
 
 INPUT JSON:
-{json.dumps(llm_input_list)}
+{json.dumps(chunk, indent=2)}
 
 OUTPUT FORMAT:
-Return ONLY a JSON array of objects:
+Return ONLY a valid JSON array of objects matching this structure:
 [
   {{
     "id": "EXACT_ID_FROM_INPUT",
-    "headline": "Clear Headline",
+    "headline": "Clear concise headline",
     "takeaways": ["First key factual detail.", "Second key factual detail."]
   }}
 ]
 """
-    # Active Gemini 3.5 models
-    active_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]
-    
-    for model_name in active_models:
         success = False
-        for attempt in range(3): # Retry up to 3 times for 429/503 errors
-            try:
-                res = client.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        temperature=0.1,
-                        max_output_tokens=4000,
-                        response_mime_type="application/json",
-                        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+        for model_name in active_models:
+            if success: break
+            
+            for attempt in range(3): # Retry for 429/503 errors
+                try:
+                    res = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            temperature=0.0, # Zero temperature prevents creative hallucination
+                            max_output_tokens=2000,
+                            response_mime_type="application/json",
+                            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+                        )
                     )
-                )
-                if res and res.text:
-                    llm_results_list = json.loads(res.text)
-                    print(f"✅ Successful summary generated using: {model_name}")
-                    success = True
-                    break
-            except Exception as e:
-                err_str = str(e)
-                print(f"⚠ Attempt {attempt+1} failed for {model_name}: {err_str}")
-                if "429" in err_str or "503" in err_str:
-                    time.sleep(2 * (attempt + 1)) # Backoff delay for Rate Limit / Service Unavailable
-                else:
-                    break
-        if success:
-            break
+                    
+                    if res and res.text:
+                        batch_results = json.loads(res.text)
+                        
+                        # Validate that the AI returned what we asked for
+                        returned_ids = {item.get("id") for item in batch_results if isinstance(item, dict)}
+                        missing_ids = expected_ids - returned_ids
+                        if missing_ids:
+                            print(f"  ⚠ AI missed IDs {missing_ids} in this batch. Falling back.")
+                            
+                        for res_item in batch_results:
+                            if res_item.get("id") in expected_ids:
+                                llm_results_list.append(res_item)
+                                
+                        success = True
+                        print(f"  ✅ Batch [{chunk_idx+1}/{len(chunks)}] processed via {model_name}")
+                        time.sleep(2) # Prevent Free Tier RPM limiting
+                        break
+                        
+                except Exception as e:
+                    err_str = str(e)
+                    if "429" in err_str or "503" in err_str:
+                        print(f"  ⏳ Rate limit hit. Backing off {5 * (attempt + 1)}s...")
+                        time.sleep(5 * (attempt + 1))
+                    else:
+                        print(f"  ❌ JSON Parse error on Batch {chunk_idx+1}: {err_str}")
+                        break 
+                        
+        if not success:
+            print(f"  🚨 Batch [{chunk_idx+1}/{len(chunks)}] failed. Using fallback text.")
 
-def generate_fallback_takeaways(title, content):
-    c_clean = clean_boilerplate(content)
-    if c_clean.lower().startswith(title.lower()):
-        c_clean = c_clean[len(title):].strip()
-        
-    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', c_clean) if len(s.strip()) > 25]
-    valid = [s for s in sentences if not any(j in s.lower() for j in ["guideline", "respectful", "comment", "copyright", "subscribe"])]
-    
-    if valid:
-        return valid[:2]
-    return [c_clean] if len(c_clean) > 20 else [title]
-
+# 5. Process categories and apply fallbacks
 processed_categories = {tag: [] for tag in all_clusters_map.keys()}
 
 if isinstance(llm_results_list, list):
@@ -401,7 +437,8 @@ if isinstance(llm_results_list, list):
             "takeaways": cleaned_takeaways[:2]
         })
 
-# Build UI HTML
+# 6. Build UI HTML
+print("\nBuilding HTML output...")
 html_out = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -462,6 +499,7 @@ for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t)
     items = processed_categories.get(tag, [])
     processed_titles = {item["original_cluster"]["title"] for item in items}
     
+    # Fill in any missing items that were skipped by AI/Failed batches
     for c in clusters[:8]:
         if c["title"] not in processed_titles:
             items.append({
@@ -523,6 +561,7 @@ function switchTab(tabName) {
   document.getElementById('tab-' + tabName).classList.add('active');
   event.target.classList.add('active');
 }
+// Accordion behavior: close others when one opens
 document.querySelectorAll('details').forEach((el) => {
   el.addEventListener('toggle', (e) => {
     if (el.open) {
@@ -537,5 +576,7 @@ document.querySelectorAll('details').forEach((el) => {
 </html>
 """
 
-with open("index.html", "w") as f:
+with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_out)
+    
+print("✅ Done! Saved output to index.html")
