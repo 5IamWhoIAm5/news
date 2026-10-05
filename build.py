@@ -35,6 +35,12 @@ FEEDS = {
         ("Indian Express Pune", "https://indianexpress.com/section/cities/pune/feed/"),
         ("Times of India Pune", "https://timesofindia.indiatimes.com/rssfeeds/-2128821991.cms")
     ],
+    "NATURAL CALAMITIES": [
+        ("GDACS Disasters", "https://www.gdacs.org/xml/rss.xml"),
+        ("USGS Earthquakes", "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.atom"),
+        ("ReliefWeb Disasters", "https://reliefweb.int/updates/rss.xml"),
+        ("BBC Environment & Disasters", "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml")
+    ],
     "INDIA": [
         ("NDTV India", "https://feeds.feedburner.com/ndtvnews-india-news"),
         ("Indian Express", "https://indianexpress.com/section/india/feed/"),
@@ -68,6 +74,18 @@ FEEDS = {
 
 TECH_KEYWORDS = {"amd", "nvidia", "intel", "apple", "google", "microsoft", "openai", "qualcomm", "semiconductor", "chip", "chips", "ai", "software", "tech", "gadget", "smartphone"}
 AUTO_KEYWORDS = {"car", "cars", "suv", "ev", "electric vehicle", "motor", "auto", "vehicle", "hybrid", "rover", "jlr", "tata motors", "maruti", "hyundai", "bmw", "mercedes", "audi"}
+CALAMITY_KEYWORDS = {"earthquake", "tsunami", "cyclone", "hurricane", "typhoon", "volcano", "volcanic", "eruption", "drought", "wildfire", "floods", "flooding", "landslide", "catastrophic storm", "magnitude", "tremor"}
+
+SPORT_KEYWORDS = {
+    "Cricket": ["cricket", "ipl", "odi", "t20", "test match", "wicket", "cricinfo", "bcci", "icc", "runs", "over-rate", "ind vs", "aus vs", "eng vs"],
+    "Football": ["football", "soccer", "premier league", "la liga", "champions league", "messi", "ronaldo", "fifa", "epl", "chelsea", "arsenal", "real madrid", "barcelona", "manchester"],
+    "F1": ["f1", "formula 1", "grand prix", "verstappen", "hamilton", "ferrari", "red bull racing", "perez", "leclerc"],
+    "Tennis": ["tennis", "wimbledon", "us open", "french open", "australian open", "djokovic", "alcaraz", "sinner", "swiatek", "atp", "wta"],
+    "Chess": ["chess", "grandmaster", "praggnanandhaa", "fide", "carlsen", "gukesh", "fide world cup", "championship bid"],
+    "Motorsport": ["rally", "wrc", "motogp", "nascar", "elfyn evans", "rallying", "motorsport"],
+    "Basketball": ["nba", "basketball", "lakers", "celtics"],
+    "Golf": ["pga", "golf", "liv golf", "masters"]
+}
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -134,6 +152,17 @@ def is_unwanted_article(title, content):
     ]
     return any(p in combined for p in unwanted_patterns)
 
+def detect_and_tag_sport(title, content):
+    if re.match(r'^\[.*?\]', title):
+        return title # Already tagged
+        
+    combined = f"{title} {content}".lower()
+    for sport_name, kw_list in SPORT_KEYWORDS.items():
+        if any(re.search(rf'\b{re.escape(k)}\b', combined) for k in kw_list):
+            return f"[{sport_name}] {title}"
+            
+    return f"[Sports] {title}"
+
 def get_full_article_content(entry, url):
     summary = clean_text(entry.get('summary', entry.get('description', '')))
     if hasattr(entry, 'content') and entry.content:
@@ -197,13 +226,20 @@ def parse_time_info(parsed_time):
 
 def determine_canonical_category(title, content, feed_tag):
     combined = f"{title} {content}".lower()
+    
     def has_exact_keyword(keywords, text):
         return any(re.search(rf'\b{re.escape(k)}\b', text) for k in keywords)
+
+    # Calamity Filter (Exclude trivial daily weather/forecasts)
+    if feed_tag == "NATURAL CALAMITIES" or has_exact_keyword(CALAMITY_KEYWORDS, combined):
+        if not any(ignore in combined for ignore in ["today's temperature", "weekly forecast", "mild rain", "temperature in", "degrees celsius"]):
+            return "NATURAL CALAMITIES"
 
     if feed_tag == "PUNE (LOCAL)" or bool(re.search(r'\bpune\b', combined)): return "PUNE (LOCAL)"
     if feed_tag in ["SPORTS", "AUTO", "TECH", "BUSINESS"]: return feed_tag
     if has_exact_keyword(AUTO_KEYWORDS, combined): return "AUTO"
     if has_exact_keyword(TECH_KEYWORDS, combined): return "TECH"
+    
     return feed_tag
 
 STOPWORDS = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are", "was", "were", "by", "as", "from", "it", "this", "that", "its", "new", "vs", "has", "have", "after", "pune", "billion", "million"}
@@ -280,7 +316,7 @@ for art in all_fetched_articles:
             if not any(s["source"] == art["source"] for s in cluster["sources"]):
                 cluster["sources"].append({"source": art["source"], "link": art["link"]})
             
-            category_priority = ["PUNE (LOCAL)", "AUTO", "TECH", "BUSINESS", "SPORTS", "INDIA", "WORLD"]
+            category_priority = ["PUNE (LOCAL)", "NATURAL CALAMITIES", "AUTO", "TECH", "BUSINESS", "SPORTS", "INDIA", "WORLD"]
             if category_priority.index(art["category"]) < category_priority.index(cluster["category"]):
                 cluster["category"] = art["category"]
                 
@@ -328,7 +364,7 @@ for tag, clusters in all_clusters_map.items():
 llm_results_list = []
 
 if client and llm_input_list:
-    BATCH_SIZE = 5 # Process 5 articles per API call to balance speed, rate limits, and accuracy.
+    BATCH_SIZE = 5
     active_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]
     
     def chunker(seq, size):
@@ -347,7 +383,8 @@ CRITICAL RULES TO PREVENT DATA MIXING:
 1. STRICT ISOLATION: Never mix facts, names, or events from one article into another's summary.
 2. Return an array of exactly {len(chunk)} objects.
 3. You MUST preserve and return the exact "id" string provided for each article.
-4. Never output filler text like "Event updates" or website guidelines.
+4. For SPORTS articles (where ID starts with 'SPORTS'), identify the specific sport (e.g. Cricket, Football, F1, Chess, Tennis, Motorsport, Basketball) and prefix the headline with '[Sport]' (e.g. '[Cricket] India wins third ODI').
+5. Never output filler text like "Event updates" or website guidelines.
 
 INPUT JSON:
 {json.dumps(chunk, indent=2)}
@@ -366,13 +403,13 @@ Return ONLY a valid JSON array of objects matching this structure:
         for model_name in active_models:
             if success: break
             
-            for attempt in range(3): # Retry for 429/503 errors
+            for attempt in range(3):
                 try:
                     res = client.models.generate_content(
                         model=model_name,
                         contents=prompt,
                         config=types.GenerateContentConfig(
-                            temperature=0.0, # Zero temperature prevents creative hallucination
+                            temperature=0.0,
                             max_output_tokens=2000,
                             response_mime_type="application/json",
                             automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
@@ -382,7 +419,6 @@ Return ONLY a valid JSON array of objects matching this structure:
                     if res and res.text:
                         batch_results = json.loads(res.text)
                         
-                        # Validate that the AI returned what we asked for
                         returned_ids = {item.get("id") for item in batch_results if isinstance(item, dict)}
                         missing_ids = expected_ids - returned_ids
                         if missing_ids:
@@ -394,7 +430,7 @@ Return ONLY a valid JSON array of objects matching this structure:
                                 
                         success = True
                         print(f"  ✅ Batch [{chunk_idx+1}/{len(chunks)}] processed via {model_name}")
-                        time.sleep(2) # Prevent Free Tier RPM limiting
+                        time.sleep(2)
                         break
                         
                 except Exception as e:
@@ -431,9 +467,13 @@ if isinstance(llm_results_list, list):
         if not cleaned_takeaways:
             cleaned_takeaways = generate_fallback_takeaways(c_title, c_content)
 
+        headline_text = res_item.get("headline", c_title)
+        if tag == "SPORTS":
+            headline_text = detect_and_tag_sport(headline_text, c_content)
+
         processed_categories[tag].append({
             "original_cluster": item_lookup[uid],
-            "headline": res_item.get("headline", c_title),
+            "headline": headline_text,
             "takeaways": cleaned_takeaways[:2]
         })
 
@@ -492,19 +532,22 @@ html_out = f"""<!DOCTYPE html>
 """
 
 tab_data = {"24h": "", "48h": "", "72h": ""}
-category_order = ["PUNE (LOCAL)", "AUTO", "TECH", "SPORTS", "BUSINESS", "INDIA", "WORLD"]
+category_order = ["PUNE (LOCAL)", "NATURAL CALAMITIES", "AUTO", "TECH", "SPORTS", "BUSINESS", "INDIA", "WORLD"]
 
 for tag in sorted(all_clusters_map.keys(), key=lambda t: category_order.index(t) if t in category_order else 99):
     clusters = all_clusters_map[tag]
     items = processed_categories.get(tag, [])
     processed_titles = {item["original_cluster"]["title"] for item in items}
     
-    # Fill in any missing items that were skipped by AI/Failed batches
+    # Fill in any missing items skipped by AI/Failed batches
     for c in clusters[:8]:
         if c["title"] not in processed_titles:
+            headline_text = c["title"]
+            if tag == "SPORTS":
+                headline_text = detect_and_tag_sport(headline_text, c["content"])
             items.append({
                 "original_cluster": c,
-                "headline": c["title"],
+                "headline": headline_text,
                 "takeaways": generate_fallback_takeaways(c["title"], c["content"])
             })
             
@@ -561,7 +604,6 @@ function switchTab(tabName) {
   document.getElementById('tab-' + tabName).classList.add('active');
   event.target.classList.add('active');
 }
-// Accordion behavior: close others when one opens
 document.querySelectorAll('details').forEach((el) => {
   el.addEventListener('toggle', (e) => {
     if (el.open) {
