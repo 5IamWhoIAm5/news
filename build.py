@@ -87,6 +87,12 @@ SPORT_KEYWORDS = {
     "Golf": ["pga", "golf", "liv golf", "masters"]
 }
 
+JUNK_KEYWORDS = [
+    "guideline", "respectful", "comment", "copyright", "subscribe",
+    "disclaimer", "indicative", "responsibility", "tracked on", "browser",
+    "event page", "all rights reserved", "terms of use", "privacy policy"
+]
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -163,6 +169,12 @@ def detect_and_tag_sport(title, content):
             
     return f"[Sports] {title}"
 
+def is_valid_takeaway(text):
+    if not text or not isinstance(text, str) or len(text) < 15:
+        return False
+    lower_t = text.lower()
+    return not any(jk in lower_t for jk in JUNK_KEYWORDS)
+
 def get_full_article_content(entry, url):
     summary = clean_text(entry.get('summary', entry.get('description', '')))
     if hasattr(entry, 'content') and entry.content:
@@ -230,7 +242,7 @@ def determine_canonical_category(title, content, feed_tag):
     def has_exact_keyword(keywords, text):
         return any(re.search(rf'\b{re.escape(k)}\b', text) for k in keywords)
 
-    # Calamity Filter (Exclude trivial daily weather/forecasts)
+    # Calamity Filter
     if feed_tag == "NATURAL CALAMITIES" or has_exact_keyword(CALAMITY_KEYWORDS, combined):
         if not any(ignore in combined for ignore in ["today's temperature", "weekly forecast", "mild rain", "temperature in", "degrees celsius"]):
             return "NATURAL CALAMITIES"
@@ -263,10 +275,10 @@ def generate_fallback_takeaways(title, content):
         c_clean = c_clean[len(title):].strip()
         
     sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', c_clean) if len(s.strip()) > 25]
-    valid = [s for s in sentences if not any(j in s.lower() for j in ["guideline", "respectful", "comment", "copyright", "subscribe"])]
+    valid = [s for s in sentences if is_valid_takeaway(s)]
     
     if valid: return valid[:2]
-    return [c_clean] if len(c_clean) > 20 else [title]
+    return [c_clean] if is_valid_takeaway(c_clean) else [title]
 
 
 # --- MAIN PIPELINE ---
@@ -384,7 +396,8 @@ CRITICAL RULES TO PREVENT DATA MIXING:
 2. Return an array of exactly {len(chunk)} objects.
 3. You MUST preserve and return the exact "id" string provided for each article.
 4. For SPORTS articles (where ID starts with 'SPORTS'), identify the specific sport (e.g. Cricket, Football, F1, Chess, Tennis, Motorsport, Basketball) and prefix the headline with '[Sport]' (e.g. '[Cricket] India wins third ODI').
-5. Never output filler text like "Event updates" or website guidelines.
+5. NO DISCLAIMERS/METADATA: NEVER output disclaimers, copyright details, accuracy notes, or web/app usage text (e.g., 'data is indicative', 'copyright disclaimer', 'tracked on application', 'supports modern web browsers').
+6. Never output filler text like "Event updates" or website guidelines.
 
 INPUT JSON:
 {json.dumps(chunk, indent=2)}
@@ -460,9 +473,10 @@ if isinstance(llm_results_list, list):
         
         cleaned_takeaways = []
         for t in raw_takeaways:
-            if t and isinstance(t, str) and len(t) > 15:
+            if is_valid_takeaway(t):
                 cleaned = clean_boilerplate(t)
-                if cleaned: cleaned_takeaways.append(cleaned)
+                if cleaned and is_valid_takeaway(cleaned):
+                    cleaned_takeaways.append(cleaned)
                 
         if not cleaned_takeaways:
             cleaned_takeaways = generate_fallback_takeaways(c_title, c_content)
